@@ -570,9 +570,11 @@ console.log(JSON.parse(localStorage.getItem("selectedAccount")))
               }
         
               const Novawallet = async () => {
+                const Novawallet = window.injectedWeb3 && window.injectedWeb3['Nova Wallet'];
+                console.log(Novawallet);
               
                 try {
-                  const extension = await web3Enable(NAME);
+                  const extension = await Novawallet.enable();
                   const getAccounts = await extension.accounts.get();
               
                   if (getAccounts && getAccounts.length > 0) {
@@ -738,13 +740,14 @@ console.log(JSON.parse(localStorage.getItem("selectedAccount")))
         selectAccount,
       } = Connections();
       const walletConnected = JSON.parse(localStorage.getItem("walletConnected"))
+      const theme = JSON.parse(localStorage.getItem("theme"))
       return (
         <>
          {walletConnected ? (
         <Button variant="text" style={{ display: 'flex', alignItems: 'center' }} onClick={handleOpen} ><Identicon
           value={selectedAccount?.address}
           size={32}
-          theme="polkadot" className='icon-float-left' /><span style={{ marginLeft: '8px' }}>{selectedAccount?.name}</span></Button>
+          theme="polkadot" className='icon-float-left' /><span style={{ marginLeft: '8px' }} className={theme}>{selectedAccount?.name}</span></Button>
           ) : (
           <><Button onClick={handleOpen} className="connect" style={{ display: 'flex', alignItems: 'center' }}>Connect
               <svg style={{ marginLeft: '8px' }}  xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
@@ -756,10 +759,10 @@ console.log(JSON.parse(localStorage.getItem("selectedAccount")))
       
           )}
     
-       <Dialog size="lg" open={open} handler={handleOpen}>
+       <Dialog size="lg" open={open} handler={handleOpen} className={theme}>
             <DialogHeader className="justify-between">
               <div>
-                <Typography variant="h5" color="blue-gray">
+                <Typography variant="h5" className={theme}>
                   Connect a Wallet
                 </Typography>
               </div>
@@ -796,7 +799,7 @@ console.log(JSON.parse(localStorage.getItem("selectedAccount")))
                           alt="Subwallet"
                           className="h-12 w-12" />
                         <Typography
-                          className="uppercase"
+                          className={`uppercase ${theme}`}
                           color="blue-gray"
                           variant="h6"
                         >
@@ -809,7 +812,7 @@ console.log(JSON.parse(localStorage.getItem("selectedAccount")))
                           alt="Talisman"
                           className="h-12 w-12 rounded-md" />
                         <Typography
-                          className="uppercase"
+                          className={`uppercase ${theme}`}
                           color="blue-gray"
                           variant="h6"
                         >
@@ -825,7 +828,7 @@ console.log(JSON.parse(localStorage.getItem("selectedAccount")))
                             alt="Polkadot"
                             className="h-12 w-12 rounded-md border border-blue-gray-50" />
                           <Typography
-                            className="uppsecase"
+                            className={`uppercase ${theme}`}
                             color="blue-gray"
                             variant="h6"
                           >
@@ -835,11 +838,11 @@ console.log(JSON.parse(localStorage.getItem("selectedAccount")))
                         {isMobile && (
                         <MenuItem className="mb-4 flex items-center justify-center gap-3 !py-4 shadow-md" onClick={Novawallet}>
                         <img
-                          src="./src/assets/Nova.jpg"
+                          src="./src/assets/Nova.png"
                           alt="Nova"
                           className="h-12 w-12" />
                         <Typography
-                          className="uppercase"
+                          className={`uppercase ${theme}`}
                           color="blue-gray"
                           variant="h6"
                         >
@@ -870,14 +873,14 @@ console.log(JSON.parse(localStorage.getItem("selectedAccount")))
           size={32}
           theme="polkadot" className='icon' />
                         <Typography
-                          className="uppercase"
+                          className={`uppercase ${theme}`}
                           color="blue-gray"
                           variant="h6"
                           key={account.name}
                         >
                           {account.name}
                           <Typography
-                        className="lowercase text-nowrap"
+                        className={`lowercase text-nowrap uppercase ${theme}`}
                         color="blue-gray"
                         variant="h12"
                         key={account.address}
@@ -895,11 +898,11 @@ console.log(JSON.parse(localStorage.getItem("selectedAccount")))
               }
             </DialogBody>
             <DialogFooter className="justify-between gap-2">
-              <Typography variant="small" color="gray" className="font-normal">
+              <Typography variant="small" color="gray" className={`font-normal ${theme}`}>
                 New to Polkador wallets?
               </Typography>
               <Button variant="outlined" size="sm" >
-                <a href="https://polkadot.network/ecosystem/wallets/">Learn More</a>
+                <a href="https://polkadot.network/ecosystem/wallets/" className={theme}>Learn More</a>
               </Button>
             </DialogFooter>
           </Dialog>
@@ -915,13 +918,14 @@ console.log(JSON.parse(localStorage.getItem("selectedAccount")))
           providers
         } = Connections();
         const walletConnected = JSON.parse(localStorage.getItem("walletConnected"));
+        const theme = JSON.parse(localStorage.getItem("theme"))
         return (
           <>
             {
               isMobile? 
               (
                 <div className="w-72">
-            <Select label="Endpoints">
+            <Select label="Endpoints" className={theme}>
               <Option onClick={() => (selectProvider(providers.Polkadot))}>Hosted by Polkadot</Option>
               <Option onClick={() => (selectProvider(providers.OnFinality))}>Hosted by OnFinality</Option>
               <Option onClick={() => (selectProvider(providers.Dwellir))}>Hosted by Dwellir</Option>
@@ -937,11 +941,11 @@ console.log(JSON.parse(localStorage.getItem("selectedAccount")))
               )
               : <Menu>
               <MenuHandler>
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={`w-6 h-6 ${theme}`}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 14.25v2.25m3-4.5v4.5m3-6.75v6.75m3-9v9M6 20.25h12A2.25 2.25 0 0 0 20.25 18V6A2.25 2.25 0 0 0 18 3.75H6A2.25 2.25 0 0 0 3.75 6v12A2.25 2.25 0 0 0 6 20.25Z" />
                     </svg>
               </MenuHandler>
-              <MenuList>
+              <MenuList className={theme}>
                 <MenuItem onClick={() => (selectProvider(providers.Polkadot))}>Hosted by Polkadot</MenuItem>
                 <MenuItem onClick={() => (selectProvider(providers.OnFinality))}>Hosted by OnFinality</MenuItem>
                 <MenuItem onClick={() => (selectProvider(providers.Dwellir))}>Hosted by Dwellir</MenuItem>
@@ -961,7 +965,7 @@ console.log(JSON.parse(localStorage.getItem("selectedAccount")))
       // Wallet is connected
       <Chip
         variant="ghost"
-        color="green"
+        className={theme}
         size="lg"
         value={` ${Object.keys(providers).find(key => providers[key] === endpoint)}`}
         icon={
@@ -972,7 +976,7 @@ console.log(JSON.parse(localStorage.getItem("selectedAccount")))
       // Wallet is not connected
       <Chip
         variant="ghost"
-        color="red"
+        className={theme}
         size="sm"
         value="Offline"
         icon={
