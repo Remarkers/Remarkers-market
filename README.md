@@ -3,7 +3,6 @@
 ### Prerequisite
 Node-js installed
 React-js 
-React-ts
 
 VS code installed or github codespace
 
