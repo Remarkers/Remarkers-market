@@ -18,12 +18,27 @@ import DayNightToggle from 'react-day-and-night-toggle'
 import Profile from './Profile';
 import Explore from './Explore';
 
+export const themes = () => {
+  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [theme, setTheme] = useState('light');
+
+  useEffect(() => {
+    if (isDarkMode) {
+      setTheme("dark");
+    } else {
+      setTheme("light");
+    }
+  }, [isDarkMode]);
+  localStorage.setItem("theme", JSON.stringify(theme));
+
+  return { isDarkMode, setIsDarkMode, theme, setTheme };
+}
+
 
 //main app
 function App() {
   const [openRight, setOpenRight] = React.useState(false);
-  const [isDarkMode, setIsDarkMode] = useState(false)
-  const [theme, setTheme] = useState('light');
+  const { isDarkMode, setIsDarkMode, theme, setTheme} = themes()
   const [isMobile, setIsMobile] = useState(false)
   useEffect(() => {
     const handleResize = () => {
@@ -216,7 +231,7 @@ function App() {
         placement="right"
         open={openRight}
         onClose={closeDrawerRight}
-        className="p-4"
+        className={`p-4 ${theme}`} // Apply bg-black for dark mode and bg-white for light mode
       >
         <div className="mb-6 flex items-center justify-between">
         <Connection />
@@ -246,7 +261,7 @@ function App() {
         </div>
       </Drawer>
       <footer className="flex w-full flex-row flex-wrap items-center justify-center gap-y-6 gap-x-12 border-t border-blue-gray-50 py-6 text-center md:justify-between">
-      <Chip variant="ghost"  className={"font-normal text-${theme} "} color='purple' value="&copy; 2023 Remarker" />
+      <Chip variant="ghost"  className={"font-normal text-${theme} "} color='purple' value="&copy; 2024 Remarker" />
       <ul className="flex flex-wrap items-center gap-y-2 gap-x-8">
         <li>
           <a href="https://t.me/polkadotpunks"><svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 256 256"><path fill="currentColor" d="M234.27 29.22a5 5 0 0 0-5.1-.87L26.51 107.66a10.22 10.22 0 0 0 1.75 19.56L84 138.16V200a12 12 0 0 0 7.51 11.13A12.1 12.1 0 0 0 96 212a12 12 0 0 0 8.62-3.68l28-29l43 37.71a12 12 0 0 0 7.89 3a12.47 12.47 0 0 0 3.74-.59a11.87 11.87 0 0 0 8-8.72l40.62-176.6a5 5 0 0 0-1.6-4.9M28 117.38a2.13 2.13 0 0 1 1.42-2.27l174.65-68.35l-117 83.85l-57.26-11.24a2.12 2.12 0 0 1-1.81-1.99m70.87 85.38A4 4 0 0 1 92 200v-56.3l34.58 30.3Zm88.58 6.14a4 4 0 0 1-6.57 2.09l-86.45-75.81l131.7-94.38Z"/></svg></a>
