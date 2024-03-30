@@ -418,7 +418,7 @@ theme="colored" />
 </div>
 
 <hr className='hr2'></hr>
-<small>©Remarker, 2023.</small>
+<small>©Remarker, 2024.</small>
 <div>
   <footer>
   <a href="https://twitter.com/polkadot_punks"><img className='logo' src={logo} alt="Logo" /> </a>
