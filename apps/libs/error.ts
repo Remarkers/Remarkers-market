@@ -1,7 +1,8 @@
 export type ErrorCode =
+  | 'UNAUTHORIZED'
+  | 'INVALID_SIGNATURE'
   | 'ERROR'
   | 'NO_EXTENSION'
-  | 'NO_AUTH'
   | 'NO_ACCOUNT'
   | 'USER_REJECTED';
 

@@ -1,6 +1,7 @@
 import { PrismaClient } from '@prisma/client';
-import { TRPCError, inferAsyncReturnType } from '@trpc/server';
+import { inferAsyncReturnType } from '@trpc/server';
 import { CreateFastifyContextOptions } from '@trpc/server/adapters/fastify';
+import { BizError } from 'apps/libs/error';
 import { verify } from 'jsonwebtoken';
 import { authConfig } from '../configs/auth.config';
 import { ServerOptions } from './server';
@@ -8,8 +9,7 @@ import { ServerOptions } from './server';
 export const prisma = new PrismaClient();
 
 export interface User {
-  email: string;
-  role: 'user' | 'admin';
+  address: string;
 }
 
 async function decodeAndVerifyJwtToken(token: string): Promise<User> {
@@ -25,7 +25,7 @@ export async function createContext({ req, res }: CreateFastifyContextOptions) {
       );
       return { req, res, prisma, user };
     } catch (err) {
-      throw new TRPCError({ message: 'Unauthorized', code: 'UNAUTHORIZED' });
+      throw BizError.ofTrpc("UNAUTHORIZED");
     }
   }
 

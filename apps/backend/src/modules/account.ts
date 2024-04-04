@@ -1,78 +1,56 @@
-import { PageReq, PageRes, noAuthProcedure, router } from '../server/trpc';
+import { u8aToHex } from '@polkadot/util';
+import { decodeAddress, signatureVerify } from '@polkadot/util-crypto';
+import { BizError } from 'apps/libs/error';
+import { sign } from 'jsonwebtoken';
+import { authConfig } from '../configs/auth.config';
+import { User } from '../server/context';
+import { noAuthProcedure, router } from '../server/trpc';
 
-export type CollectionsReq = {
+
+export type LoginReq = {
   /**
    * Account address
    */
   address: string;
   /**
-   * Collection name filter, support fuzzy search
+   * Nonce
    */
-  name?: string;
-}
-export type CollectionsRes = {
+  nonce: string;
   /**
-   * Collection id
+   * Signature
+   * Sign the message: `Login to NFT Market: ${nonce}`
    */
-  id: string;
+  signature: string;
+};
+export type LoginRes = {
   /**
-   * Collection name
+   * JWT token
    */
-  name: string;
-  /**
-   * Owned quantity
-   */
-  ownedQuantity: number;
-  /**
-   * Floor price
-   */
-  floorPrice: string;
-}[]
-
-export type TokensReq = PageReq & {
-  /**
-  * Account address
-  */
-  address: string;
-  /**
-   * Collection id
-   */
-  collectionId?: string;
-  /**
-   * Sort by field
-   */
-  sortBy: 'recently_received' | 'price_low_to_high' | 'price_high_to_low';
-}
-export type TokensRes = PageRes<{
-  /**
-   * Token id
-   */
-  id: number;
-  /**
-   * Collection id
-   */
-  collectionId: string;
-  /**
-   * Token name
-   */
-  name: string;
-  /**
-   * Token image
-   */
-  image: string;
-}>;
+  token: string;
+};
 
 export const accountRouter = router({
   /**
-   * Query account owned NFT collections
+   * Login with wallet
    */
-  collections: noAuthProcedure.input((input) => input as CollectionsReq).query(async ({ ctx }): Promise<CollectionsRes> => {
-    return null as unknown as CollectionsRes
-  }),
-  /**
-   * Query account owned NFT tokens with pagination
-   */
-  tokens: noAuthProcedure.input((input) => input as TokensReq).query(async ({ ctx }): Promise<TokensRes> => {
-    return null as unknown as TokensRes;
+  login: noAuthProcedure.input((input) => input as LoginReq).mutation(async ({ input, ctx }): Promise<LoginRes> => {
+    const { address, nonce, signature } = input;
+    const message = `Login to NFT Market: ${nonce}`;
+    const publicKey = decodeAddress(address);
+    const hexPublicKey = u8aToHex(publicKey);
+    if (!signatureVerify(message, signature, hexPublicKey).isValid) {
+      throw BizError.ofTrpc('INVALID_SIGNATURE');
+    }
+
+    const token = sign(
+      {
+        address: address,
+      } as User,
+      authConfig.secretKey,
+      { expiresIn: authConfig.jwtExpiresIn }
+    );
+    return {
+      token,
+    };
   }),
 });
