@@ -1,3 +1,4 @@
+import { scanner } from 'indexer/build/src/index.js';
 import { procedure, router } from '../server/trpc';
 
 export type SellReq = {
@@ -67,8 +68,12 @@ export const orderRouter = router({
   /**
    * Sell a NFT token
    */
-  sell: procedure.input((input) => input as SellReq).mutation(async ({ ctx }): Promise<SellRes> => {
-    return null as unknown as SellRes;
+  sell: procedure.input((input) => input as SellReq).mutation(async ({ input, ctx }): Promise<SellRes> => {
+    const extrinsic = ctx.api.tx(input.signedExtrinsic);
+    const inscription = scanner.parseInscription(extrinsic);
+    if (!inscription) {
+      throw new Error('Invalid extrinsic');
+    }
   }),
   /**
    * Cancel a NFT token sell order

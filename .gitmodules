@@ -1,0 +1,4 @@
+[submodule "indexer"]
+path = indexer
+url = git@github.com:Remarkers/Remarkers-Indexer.git
+branch = main
