@@ -1,4 +1,5 @@
-import { scanner } from 'indexer/build/src/index.js';
+import { BizError } from 'apps/libs/error';
+import { scanner } from 'indexer/src/index';
 import { procedure, router } from '../server/trpc';
 
 export type SellReq = {
@@ -33,8 +34,8 @@ export type CancelReq = {
 };
 export type CancelRes = {
   /**
-  * Order id
-  */
+   * Order id
+   */
   id: bigint;
   /**
    * Extrinsic hash
@@ -68,23 +69,37 @@ export const orderRouter = router({
   /**
    * Sell a NFT token
    */
-  sell: procedure.input((input) => input as SellReq).mutation(async ({ input, ctx }): Promise<SellRes> => {
-    const extrinsic = ctx.api.tx(input.signedExtrinsic);
-    const inscription = scanner.parseInscription(extrinsic);
-    if (!inscription) {
-      throw new Error('Invalid extrinsic');
-    }
-  }),
+  sell: procedure
+    .input((input) => input as SellReq)
+    .mutation(async ({ input, ctx }): Promise<SellRes> => {
+      const extrinsic = ctx.api.tx(input.signedExtrinsic);
+      const inscription = scanner.parseInscription(extrinsic);
+      if (!inscription) {
+        throw BizError.ofTrpc(
+          'INVALID_TRANSACTION',
+          'Invalid extrinsic format',
+        );
+      }
+
+      // Check seller is current login user
+      if (inscription.sender !== ctx.user.address) {
+        throw new Error('Invalid seller');
+      }
+    }),
   /**
    * Cancel a NFT token sell order
    */
-  cancel: procedure.input((input) => input as CancelReq).mutation(async ({ ctx }): Promise<CancelRes> => {
-    return null as unknown as CancelRes;
-  }),
+  cancel: procedure
+    .input((input) => input as CancelReq)
+    .mutation(async ({ ctx }): Promise<CancelRes> => {
+      return null as unknown as CancelRes;
+    }),
   /**
    * Buy a NFT token
    */
-  buy: procedure.input((input) => input as BuyReq).mutation(async ({ ctx }): Promise<BuyRes> => {
-    return null as unknown as BuyRes;
-  }),
+  buy: procedure
+    .input((input) => input as BuyReq)
+    .mutation(async ({ ctx }): Promise<BuyRes> => {
+      return null as unknown as BuyRes;
+    }),
 });

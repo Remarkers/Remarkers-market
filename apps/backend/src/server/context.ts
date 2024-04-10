@@ -6,7 +6,6 @@ import { BizError } from 'apps/libs/error';
 import { getApi } from 'apps/libs/util';
 import { verify } from 'jsonwebtoken';
 import { authConfig } from '../configs/auth.config';
-import { ServerOptions } from './server';
 
 export const prisma = new PrismaClient();
 
@@ -27,7 +26,7 @@ export async function createContext({ req, res }: CreateFastifyContextOptions) {
       );
       return { req, res, prisma, user };
     } catch (err) {
-      throw BizError.ofTrpc("UNAUTHORIZED");
+      throw BizError.ofTrpc('UNAUTHORIZED');
     }
   }
 
@@ -35,17 +34,15 @@ export async function createContext({ req, res }: CreateFastifyContextOptions) {
 }
 
 export type Context = inferAsyncReturnType<typeof createContext> & {
-  opts: ServerOptions;
   api: ApiPromise;
 };
 
-export async function createContextProxy(
-  opts: ServerOptions,
-): Promise<({ req, res }: CreateFastifyContextOptions) => Promise<Context>> {
+export async function createContextProxy(): Promise<
+  ({ req, res }: CreateFastifyContextOptions) => Promise<Context>
+> {
   return async function (args: CreateFastifyContextOptions) {
     return {
       ...(await createContext(args)),
-      opts,
       api: await getApi(),
     };
   };

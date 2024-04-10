@@ -36,7 +36,7 @@ export async function createServer(opts: ServerOptions) {
     methods: '*',
   });
 
-  const createContext = await createContextProxy(opts);
+  const createContext = await createContextProxy();
   server.register(fastifyTRPCPlugin, {
     prefix,
     trpcOptions: {
