@@ -5,6 +5,7 @@
     "test",
     "dist",
     "**/*spec.ts",
-    "./indexer/src",
+    "indexer/src",
+    "src2",
   ]
 }

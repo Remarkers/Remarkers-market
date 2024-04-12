@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { PolkadotService } from 'src/polkadot.service';
-import { PrismaService } from 'src/prisma.service';
+import { PolkadotService } from 'src/core/polkadot.service';
+import { PrismaService } from 'src/core/prisma.service';
 import { parseInscription } from '../../indexer/src/types';
 import { ListingOrderReqDto, ListingOrderResDto } from './dto/order.dto';
 

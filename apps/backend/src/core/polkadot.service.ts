@@ -1,7 +1,7 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { ApiPromise, WsProvider } from '@polkadot/api';
-import { Config } from './config/configuration';
+import { Config } from 'src/config/configuration';
 
 @Injectable()
 export class PolkadotService implements OnModuleInit {
