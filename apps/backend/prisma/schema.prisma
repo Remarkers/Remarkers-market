@@ -56,11 +56,9 @@ model Order {
   status         Status      @default(PENDING)
   chainStatus    ChainStatus @default(PENDING) @map("chain_status")
   failReason     String?     @map("fail_reason")
-  totalPrice     BigInt      @map("total_price")
-  buyServiceFee  BigInt      @default(0) @map("buy_service_fee")
-  buyPayPrice    BigInt      @default(0) @map("buy_pay_price")
-  sellServiceFee BigInt      @default(0) @map("sell_service_fee")
-  sellPayPrice   BigInt      @default(0) @map("sell_pay_price")
+  totalPrice     Decimal     @map("total_price") @db.Decimal(19, 6)
+  buyServiceFee  Decimal     @default(0) @map("buy_service_fee") @db.Decimal(19, 6)
+  buyPayPrice    Decimal     @default(0) @map("buy_pay_price") @db.Decimal(19, 6)
   sellHash       String      @map("sell_hash") // 卖单区块哈希
   buyHash        String?     @map("buy_hash") // 买单区块哈希
   tradeHash      String?     @map("trade_hash") // 交易成功转账铭文给买家的哈希

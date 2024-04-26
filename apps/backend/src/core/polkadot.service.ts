@@ -6,6 +6,7 @@ import { Config } from 'src/config/configuration';
 @Injectable()
 export class PolkadotService implements OnModuleInit {
   private api: ApiPromise;
+  private decimals: number;
 
   constructor(private configService: ConfigService<Config>) {}
 
@@ -15,9 +16,14 @@ export class PolkadotService implements OnModuleInit {
     );
     this.api = await ApiPromise.create({ provider: wsProvider });
     await this.api.isReady;
+    this.decimals = this.api.registry.chainDecimals[0];
   }
 
   getApi(): ApiPromise {
     return this.api;
+  }
+
+  getDecimals(): number {
+    return this.decimals;
   }
 }

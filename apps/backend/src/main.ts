@@ -9,6 +9,12 @@ async function bootstrap() {
     .setTitle('DOT-721 NFT Marketplace API')
     .setDescription('The DOT-721 NFT Marketplace API description')
     .setVersion('1.0')
+    .addGlobalParameters({
+      name: 'Authorization',
+      in: 'header',
+      required: false,
+      example: 'Bearer $token',
+    })
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
