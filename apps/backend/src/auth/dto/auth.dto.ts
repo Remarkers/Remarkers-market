@@ -15,3 +15,7 @@ export class AuthLoginReqDto {
   })
   signature: string;
 }
+export class AuthLoginResDto {
+  @ApiProperty({ title: 'JWT token' })
+  token: string;
+}

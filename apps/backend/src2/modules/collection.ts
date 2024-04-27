@@ -1,4 +1,4 @@
-import { PageReq, PageRes, noAuthProcedure, router } from "../server/trpc";
+import { PageReq, PageRes, noAuthProcedure, router } from '../server/trpc';
 
 export type CollectionsReq = PageReq & {
   /**
@@ -12,7 +12,12 @@ export type CollectionsReq = PageReq & {
   /**
    * Sort by field
    */
-  sortBy: 'volume_low_to_high' | 'volume_hight_to_low' | 'price_low_to_high' | 'price_high_to_low' | 'recently_created';
+  sortBy:
+    | 'volume_low_to_high'
+    | 'volume_hight_to_low'
+    | 'price_low_to_high'
+    | 'price_high_to_low'
+    | 'recently_created';
 };
 export type CollectionsRes = PageRes<{
   /**
@@ -37,7 +42,9 @@ export const collectionRouter = router({
   /**
    * Query NFT collections
    */
-  collections: noAuthProcedure.input((input) => input as CollectionsReq).query(async ({ ctx }): Promise<CollectionsRes> => {
-    return null as unknown as CollectionsRes;
-  }),
+  collections: noAuthProcedure
+    .input((input) => input as CollectionsReq)
+    .query(async ({ ctx }): Promise<CollectionsRes> => {
+      return null as unknown as CollectionsRes;
+    }),
 });

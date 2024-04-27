@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { PageReq } from 'src/core/response.dto';
 
 export class ListingOrderReqDto {
   /**
@@ -28,6 +29,26 @@ export class ListingOrderResDto {
    */
   @ApiProperty({ title: 'Extrinsic hash' })
   hash: string;
+}
+
+export class OrderPageReqDto extends PageReq {
+  /**
+   * Order status
+   */
+  @ApiProperty({ title: 'Order status' })
+  status: string;
+}
+export class OrderPageResItemDto {
+  /**
+   * Order id
+   */
+  @ApiProperty({ title: 'Order id' })
+  id: bigint;
+  /**
+   * Order status
+   */
+  @ApiProperty({ title: 'Order status' })
+  status: string;
 }
 
 export class CancelOrderReqDto {
