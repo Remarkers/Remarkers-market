@@ -2416,7 +2416,7 @@ const ipfsItemUri = `ipfs://${ipfsItemHash}`;
   </Typography>
   <br />
               {
-                fetchLoading? (
+                price? (
 
                   <Card className="mt-6 w-50">
       <CardBody>
@@ -2560,7 +2560,7 @@ const ipfsItemUri = `ipfs://${ipfsItemHash}`;
   </Typography>
   <br />
               {
-                fetchLoading? (
+                price? (
                   <>
                    <Card className="mt-6 w-50">
       <CardBody>
