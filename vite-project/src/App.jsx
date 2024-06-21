@@ -52,6 +52,9 @@ import AHKCreate from './Kusama Asset Hub/Create';
 import AHKExplore from './Kusama Asset Hub/Explore';
 import AHKProfile from './Kusama Asset Hub/Profile';
 import { ThirdwebProvider } from "@thirdweb-dev/react";
+import RImage from '/src/assets/R.png';
+import DotIcon from '/src/assets/Untitled design.png';
+import KSMIcon from '/src/assets/Untitled design (1).png';
 
 export const themes = () => {
   const [isDarkMode, setIsDarkMode] = useState(false);
@@ -75,13 +78,13 @@ const navListMenuItems = [
     title: "Polkadot Asset Hub",
     description: "Asset parachain on polkadot network",
     // icon: "/src/assets/images.png",
-    icon: "/src/assets/Untitled design.png",
+    icon: `${DotIcon}`,
   },
   {
     title: "Kusama Asset Hub",
     description: "Asset parachain on Kusama network",
     // icon: "/src/assets/images (1).png",
-    icon: "/src/assets/Untitled design (1).png",
+    icon: `${KSMIcon}`,
     mode: <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="size-4">
     <path fill-rule="evenodd" d="M6.701 2.25c.577-1 2.02-1 2.598 0l5.196 9a1.5 1.5 0 0 1-1.299 2.25H2.804a1.5 1.5 0 0 1-1.3-2.25l5.197-9ZM8 4a.75.75 0 0 1 .75.75v3a.75.75 0 1 1-1.5 0v-3A.75.75 0 0 1 8 4Zm0 8a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z" clip-rule="evenodd" />
   </svg>
@@ -354,7 +357,7 @@ function App() {
         <div className="flex items-center justify-between text-blue-gray-900">
         {
           isMobile? (
-            <img src="/src/assets/R.png" width="50px" style={{ marginRight: '0.5rem' }}  />
+            <img src={RImage} alt="R Logo" width="50px" style={{ marginRight: '0.5rem' }} />
 
           ) :  
           <Typography
@@ -363,7 +366,7 @@ function App() {
         className="mr-4 cursor-pointer py-1.5 font-medium text-3xl flex items-center"
         color='pink'
         >
-          <img src="/src/assets/R.png" width="50px" style={{ marginRight: '0.5rem' }}  />
+          <img src={RImage} width="50px" style={{ marginRight: '0.5rem' }}  />
         Remarker
         </Typography>
         }

@@ -53,6 +53,10 @@ import { symbol } from "zod";
 import { u8aToHex, stringToHex, stringToU8a } from '@polkadot/util'
 import { MediaRenderer } from "@thirdweb-dev/react";
 import { useParams } from 'react-router-dom';
+import dotLogo from '/src/assets/statemint-native-dot.png';
+import usdtLogo from '/src/assets/logo.png';
+import usdcLogo from '/src/assets/usd-coin-usdc-logo.png';
+import dotWhiteLogo from '/src/assets/Polkadot_Token_PinkOnWhite.png';
 
 export default function PAHItems() {
     const [data, setData] = useState([]); // Initialize data as an empty array
@@ -908,17 +912,17 @@ const SWAP_TABLE_HEAD = ["Offered Item", "Offered Price", "Desired Price", item 
 const tokens = [
   {
     symbol: "DOT",
-    logo: "/src/assets/statemint-native-dot.png",
+    logo: {dotLogo},
     id: null
   },
   {
     symbol: "USDT",
-    logo: "/src/assets/logo.png",
+    logo: {usdtLogo},
     id: 1984
   },
   {
     symbol: "USDC",
-    logo: "/src/assets/usd-coin-usdc-logo.png",
+    logo: {usdcLogo},
     id: 1337
   },
 ]
@@ -2072,7 +2076,7 @@ const ipfsItemUri = `ipfs://${ipfsItemHash}`;
   }
   {item.price && 
     <Typography style={{ color: '#D81B60'}}>
-      <img src="/src/assets/Polkadot_Token_PinkOnWhite.png" style={{ width: "23px", marginLeft: "5px" }} alt="Polkadot Token" />
+      <img src={dotWhiteLogo} style={{ width: "23px", marginLeft: "5px" }} alt="Polkadot Token" />
     </Typography>
   }
 </Typography>
@@ -2312,7 +2316,7 @@ const ipfsItemUri = `ipfs://${ipfsItemHash}`;
                    </IconButton>
                    <Typography variant="h6" color="pink" style={{ display: 'flex', alignItems: 'center' }}>
   <span>{price}</span>
-  <span><img src="/src/assets/Polkadot_Token_PinkOnWhite.png" style={{ width: "23px", marginLeft: "5px" }} alt=""/></span>
+  <span><img src={dotWhiteLogo} style={{ width: "23px", marginLeft: "5px" }} alt=""/></span>
 </Typography>
 
   </Typography>
@@ -2324,7 +2328,7 @@ const ipfsItemUri = `ipfs://${ipfsItemHash}`;
 <div className="w-98" style={{marginTop: "30px"}}>
 <Input
         label="Price"
-        icon={ <img src="/src/assets/Polkadot_Token_PinkOnWhite.png " alt=""/>}
+        icon={ <img src={dotWhiteLogo} alt=""/>}
         value={itemPrice}
         onChange={(e) => setItemPrice(e.target.value)}
       />
@@ -2464,7 +2468,7 @@ const ipfsItemUri = `ipfs://${ipfsItemHash}`;
 <div className="w-98" style={{marginTop: "30px"}}>
 <Input
         label="Price"
-        icon={ <img src="/src/assets/Polkadot_Token_PinkOnWhite.png " alt=""/>}
+        icon={ <img src={dotWhiteLogo} alt=""/>}
         value={itemPrice}
         onChange={(e) => setItemPrice(e.target.value)}
       />
@@ -2675,7 +2679,7 @@ const ipfsItemUri = `ipfs://${ipfsItemHash}`;
                    <br />
                    <Typography variant="h6" color="pink" style={{ display: 'flex', alignItems: 'center' }}>
   <span>{price}</span>
-  <span><img src="/src/assets/Polkadot_Token_PinkOnWhite.png" style={{ width: "23px", marginLeft: "5px" }} alt=""/></span>
+  <span><img src={dotWhiteLogo} style={{ width: "23px", marginLeft: "5px" }} alt=""/></span>
 </Typography>
   </Typography>
 <br />
@@ -3133,7 +3137,7 @@ const ipfsItemUri = `ipfs://${ipfsItemHash}`;
               min="0"
               type="number"
               label="Offered Price"
-              icon={<img src="/src/assets/statemint-native-dot.png" />}
+              icon={<img src={dotLogo} />}
               onChange={handleSendInputChange}
             />
         </>
@@ -3149,7 +3153,7 @@ const ipfsItemUri = `ipfs://${ipfsItemHash}`;
             <Input
               type="number"
               label="Desired Price"
-              icon={<img src="/src/assets/statemint-native-dot.png" />}
+              icon={<img src={dotLogo} />}
               onChange={handleReceiveInputChange}
               min="0"
             />

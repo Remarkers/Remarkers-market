@@ -21,6 +21,10 @@ import {
 import {decodeAddress} from  '@polkadot/util-crypto';
 import { stringToHex, u8aToHex } from "@polkadot/util";
 import { ToastContainer, toast } from 'react-toastify';
+import subwalletImg from '/src/assets/download.jpeg';
+import talismanLogo from '/src/assets/download (1).jpeg';
+import polkadotjsLogo from '/src/assets/download.png';
+import novaWalletLogo from '/src/assets/Nova.png';
 
   export function Connections() {
 const [open, setOpen] = React.useState(false);
@@ -399,7 +403,7 @@ console.log(JSON.parse(localStorage.getItem("Account")))
                     <ul className="mt-3  -ml-2 flex flex-col gap-1">
                       <MenuItem className="mb-4 flex items-center justify-center gap-3 !py-4 shadow-md" onClick={SubWallet}>
                         <img
-                          src="/src/assets/download.jpeg"
+                          src={subwalletImg}
                           alt="Subwallet"
                           className="h-12 w-12" />
                         <Typography
@@ -412,7 +416,7 @@ console.log(JSON.parse(localStorage.getItem("Account")))
                       </MenuItem>
                       <MenuItem className="mb-1 flex items-center justify-center gap-3 !py-4 shadow-md" onClick={Talisman}>
                         <img
-                          src="/src/assets/download (1).jpeg"
+                          src={talismanLogo}
                           alt="Talisman"
                           className="h-12 w-12 rounded-md" />
                         <Typography
@@ -428,7 +432,7 @@ console.log(JSON.parse(localStorage.getItem("Account")))
                       <ul className="mt-4 -ml-2.5 flex flex-col gap-1">
                         <MenuItem className="mb-4 flex items-center justify-center gap-3 !py-4 shadow-md" onClick={PolkadotJs}>
                           <img
-                            src="/src/assets/download.png"
+                            src={polkadotjsLogo}
                             alt="Polkadot"
                             className="h-12 w-12 rounded-md border border-blue-gray-50" />
                           <Typography
@@ -442,7 +446,7 @@ console.log(JSON.parse(localStorage.getItem("Account")))
                         {isMobile && (
                         <MenuItem className="mb-4 flex items-center justify-center gap-3 !py-4 shadow-md" onClick={Novawallet}>
                         <img
-                          src="/src/assets/Nova.png"
+                          src={novaWalletLogo}
                           alt="Nova"
                           className="h-12 w-12" />
                         <Typography

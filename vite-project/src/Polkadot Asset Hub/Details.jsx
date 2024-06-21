@@ -48,6 +48,10 @@ import { MediaRenderer } from "@thirdweb-dev/react";
 import { CheckIcon, DocumentDuplicateIcon, ArrowRightIcon, ArrowLeftIcon  } from "@heroicons/react/24/outline";
 import { u8aToHex, stringToHex, stringToU8a } from '@polkadot/util'
 import { useParams } from 'react-router-dom';
+import dotLogo from '/src/assets/statemint-native-dot.png';
+import usdtLogo from '/src/assets/logo.png';
+import usdcLogo from '/src/assets/usd-coin-usdc-logo.png';
+import dotWhiteLogo from '/src/assets/Polkadot_Token_PinkOnWhite.png';
 
 export default function PAHDetails() {
     const [metadata, setMetadata] = useState()
@@ -837,17 +841,17 @@ const createSwap = async() => {
 const tokens = [
   {
     symbol: "DOT",
-    logo: "/src/assets/statemint-native-dot.png",
+    logo: {dotLogo},
     id: null
   },
   {
     symbol: "USDT",
-    logo: "/src/assets/logo.png",
+    logo: {usdtLogo},
     id: 1984
   },
   {
     symbol: "USDC",
-    logo: "/src/assets/usd-coin-usdc-logo.png",
+    logo: {usdcLogo},
     id: 1337
   },
 ]
@@ -1460,7 +1464,7 @@ const dataUrl = ((renderURL, JsonData) => {
                    </IconButton>
                    <Typography variant="h6" color="pink" style={{ display: 'flex', alignItems: 'center' }}>
   <span>{price && price}</span>
-  <span><img src="/src/assets/Polkadot_Token_PinkOnWhite.png" style={{ width: "23px", marginLeft: "5px" }} alt=""/></span>
+  <span><img src={dotWhiteLogo} style={{ width: "23px", marginLeft: "5px" }} alt=""/></span>
 </Typography>
   </Typography>
 <br />
@@ -1510,7 +1514,7 @@ const dataUrl = ((renderURL, JsonData) => {
         <div className="w-98" style={{marginTop: "30px"}}>
 <Input
         label="Price"
-        icon={ <img src="/src/assets/Polkadot_Token_PinkOnWhite.png " alt=""/>}
+        icon={ <img src={dotWhiteLogo} alt=""/>}
         value={itemPrice}
         onChange={(e) => setItemPrice(e.target.value)}
       />
@@ -1735,7 +1739,7 @@ const dataUrl = ((renderURL, JsonData) => {
         <div className="w-98" style={{marginTop: "30px"}}>
 <Input
         label="Price"
-        icon={ <img src="/src/assets/Polkadot_Token_PinkOnWhite.png " alt=""/>}
+        icon={ <img src={dotWhiteLogo} alt=""/>}
         value={itemPrice}
         onChange={(e) => setItemPrice(e.target.value)}
       />
@@ -1914,7 +1918,7 @@ const dataUrl = ((renderURL, JsonData) => {
           <br />
           <Typography variant="h6" color="pink" style={{ display: 'flex', alignItems: 'center' }}>
             <span>{price}</span>
-            <span><img src="/src/assets/Polkadot_Token_PinkOnWhite.png" style={{ width: "23px", marginLeft: "5px" }} alt="" /></span>
+            <span><img src={dotWhiteLogo} style={{ width: "23px", marginLeft: "5px" }} alt="" /></span>
           </Typography>
         </Typography>
         <br />
@@ -1999,7 +2003,7 @@ const dataUrl = ((renderURL, JsonData) => {
           <br />
           <Typography variant="h6" color="pink" style={{ display: 'flex', alignItems: 'center' }}>
             <span>{price}</span>
-            <span><img src="/src/assets/Polkadot_Token_PinkOnWhite.png" style={{ width: "23px", marginLeft: "5px" }} alt="" /></span>
+            <span><img src={dotWhiteLogo} style={{ width: "23px", marginLeft: "5px" }} alt="" /></span>
           </Typography>
         </Typography>
         <br />
@@ -2221,7 +2225,7 @@ const dataUrl = ((renderURL, JsonData) => {
               min="0"
               type="number"
               label="Offered Price"
-              icon={<img src="/src/assets/statemint-native-dot.png" />}
+              icon={<img src={dotLogo} />}
               onChange={handleSendInputChange}
             />
         </>
@@ -2237,7 +2241,7 @@ const dataUrl = ((renderURL, JsonData) => {
             <Input
               type="number"
               label="Desired Price"
-              icon={<img src="/src/assets/statemint-native-dot.png" />}
+              icon={<img src={dotLogo} />}
               onChange={handleReceiveInputChange}
               min="0"
             />

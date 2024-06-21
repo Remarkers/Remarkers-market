@@ -27,16 +27,18 @@ import { ToastContainer, toast } from 'react-toastify';
 import { stringToHex } from '@polkadot/util';
 import { CheckIcon } from "@heroicons/react/24/outline";
 import { encodeAddress, decodeAddress } from '@polkadot/util-crypto';
+import dotLogo from '/src/assets/statemint-native-dot.png';
+import polkadotAssetHubLogo from '/src/assets/1688559044_assethub.svg';
 
 export default function PAHTeleport() {
     const [chains, setChains] = useState([
         {
             name: "Polkadot",
-            logo: "/src/assets/statemint-native-dot.png",
+            logo: {dotLogo},
         },
         {
             name: "Polkadot Asset Hub",
-            logo: "/src/assets/1688559044_assethub.svg",
+            logo: {polkadotAssetHubLogo},
         },
     ]);
     const [amount, setAmount] = useState("");
