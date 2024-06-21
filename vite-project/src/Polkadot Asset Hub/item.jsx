@@ -199,7 +199,7 @@ console.log('Polkadot Address:', polkadotAddress);
     const Account = (JSON.parse(localStorage.getItem("Account")))
     const owned = async() => {
       try {
-          const response = await Axios.get(`http://localhost:3001/owned?address=${JSON.stringify(Account?.address)}&page=${ownedactive.toString()}`);
+          const response = await Axios.get(`https://asset-hub-indexer.vercel.app/owned?address=${JSON.stringify(Account?.address)}&page=${ownedactive.toString()}`);
           setOwner(response.data.data.result); // Store the data directly as an array of objects
           setOwnedMetadata(response.data.data.metadata)
           setOwnedPrice(response.data.data.result.price)
@@ -212,7 +212,7 @@ console.log('Polkadot Address:', polkadotAddress);
     const swap = async(item) => {
       try {
         setSwapLoading(true)
-        const response = await Axios.get(`http://localhost:3001/swap?data=${item.Id}&collectionId=${IdData}`);
+        const response = await Axios.get(`https://asset-hub-indexer.onrender.com/swap?data=${item.Id}&collectionId=${IdData}`);
         const res = response.data.data;
         const resarray = res && res.map(item => item)[0];
         setSwapData( resarray); // Store the data directly as an array of objects
@@ -224,7 +224,7 @@ console.log('Polkadot Address:', polkadotAddress);
 
     const getData = async (value) => {
         try {
-            const response = await Axios.get(`http://localhost:3001/itemData?data=${IdData}&image=${image}&page=${active.toString()}&orderBy=${value === "Recently Minted"? "blockNumber_DESC": value === "Earliest Minted"? "blockNumber_ASC": value === "Price Low To High"? "price_ASC" : value === "Price High To Low"? "price_DESC" : "blockNumber_DESC"}`);
+            const response = await Axios.get(`https://asset-hub-indexer.onrender.com/itemData?data=${IdData}&image=${image}&page=${active.toString()}&orderBy=${value === "Recently Minted"? "blockNumber_DESC": value === "Earliest Minted"? "blockNumber_ASC": value === "Price Low To High"? "price_ASC" : value === "Price High To Low"? "price_DESC" : "blockNumber_DESC"}`);
             setData(response.data.data); // Store the data directly as an array of objects
         } catch (error) {
             console.error('Error fetching data:', error);
@@ -233,7 +233,7 @@ console.log('Polkadot Address:', polkadotAddress);
     
     const giveItemId = async(item) => {
       try {
-        const response = await Axios.get(`http://localhost:3001/itemId?data=${item.Id}&collectionId=${IdData}`);
+        const response = await Axios.get(`https://asset-hub-indexer.vercel.app/itemId?data=${item.Id}&collectionId=${IdData}`);
         setItemConfig(response.data.data); // Store the data directly as an array of objects
     } catch (error) {
         console.error('Error fetching data:', error);
@@ -243,7 +243,7 @@ console.log('Polkadot Address:', polkadotAddress);
     const getItemPrice = async(item) => {
       try {
         setFetchLoading(true)
-        const response = await Axios.get(`http://localhost:3001/itemPrice?data=${item.Id}&collectionId=${IdData}&price=${item.price}`);
+        const response = await Axios.get(`https://asset-hub-indexer.vercel.app/itemPrice?data=${item.Id}&collectionId=${IdData}&price=${item.price}`);
         setPrice(response.data.data.priceDotUsd); // Store the data directly as an array of objects
         setIntegerPrice(response.data.data.price)
         setFetchLoading(false)
@@ -254,7 +254,7 @@ console.log('Polkadot Address:', polkadotAddress);
 
     const collectionActivity = async() => {
       try {
-        const response = await Axios.get(`http://localhost:3001/collectionActivity?collectionId=${IdData}`);
+        const response = await Axios.get(`https://asset-hub-indexer.vercel.app/collectionActivity?collectionId=${IdData}`);
         setCollectionActivity( response && response.data.data.data.list); // Store the data directly as an array of objects
     } catch (error) {
         console.error('Error fetching data:', error);
@@ -263,7 +263,7 @@ console.log('Polkadot Address:', polkadotAddress);
 
     const Holders = async() => {
       try {
-        const response = await Axios.get(`http://localhost:3001/Holders?collectionId=${IdData}&page=${subscanPage.toString()}`);
+        const response = await Axios.get(`https://asset-hub-indexer.vercel.app/Holders?collectionId=${IdData}&page=${subscanPage.toString()}`);
         setHolders(response.data.data.data.list); // Store the data directly as an array of objects
         setOwnersCount(response.data.data.data.count)
     } catch (error) {
@@ -273,7 +273,7 @@ console.log('Polkadot Address:', polkadotAddress);
     
     const metadata = async(item) => {
       try {
-        const response = await Axios.get(`http://localhost:3001/metadata?metadata=${item.metadata}`);
+        const response = await Axios.get(`https://asset-hub-indexer.vercel.app/metadata?metadata=${item.metadata}`);
         setItemMetadata(JSON.parse(response.data.data)); // Store the data directly as an array of objects
     } catch (error) {
         console.error('Error fetching data:', error);

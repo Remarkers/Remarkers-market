@@ -450,6 +450,7 @@ function App() {
         <Route path="/Kusama%20Asset%20Hub/Create" element={<AHKCreate />} />
         <Route path="/Kusama%20Asset%20Hub/Profile" element={<AHKProfile />} />
         <Route path="/Kusama%20Asset%20Hub/Explore" element={<AHKExplore />} />
+        <Route path="/" element={<PAHExplore />} />
 
       </Routes>
       </BrowserRouter>

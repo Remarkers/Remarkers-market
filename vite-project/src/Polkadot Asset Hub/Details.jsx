@@ -83,6 +83,9 @@ export default function PAHDetails() {
     const[tokenPrice, setTokenPrice] = useState(null)
     const [selectedCollectionName, setSelectedCollectionName] = useState()
     const [swapLoading, setSwapLoading] = useState()
+    const [fetchLoading, setFetchLoading] = useState()
+    const [selectedImageUrl, setSelectedImageUrl] = useState(null);
+    const [selectedJsondata, setJsondata] = useState(null);
 
     const { collectionId, itemId } = useParams();
     const sendHandleOpen= (value) => setSendDialog(value);
@@ -124,7 +127,7 @@ console.log('Polkadot Address:', polkadotAddress);
 
 const ownedNft = async() => {
   try {
-      const response = await Axios.get(`http://localhost:3001/owned?address=${JSON.stringify(address)}&page=${ownedactive.toString()}`);
+      const response = await Axios.get(`https://asset-hub-indexer.vercel.app/owned?address=${JSON.stringify(address)}&page=${ownedactive.toString()}`);
       setOwner(response.data.data.result); // Store the data directly as an array of objects
       setOwnedMetadata(response.data.data.metadata)
       setOwnedPrice(response.data.data.result.price)
@@ -136,7 +139,8 @@ const ownedNft = async() => {
     
     const owned = async() => {
         try {
-            const response = await Axios.get(`http://localhost:3001/metadatas?item=${ItemId}&collection=${collectionId}`);
+          setFetchLoading(true)
+            const response = await Axios.get(`https://asset-hub-indexer.onrender.com/metadatas?item=${ItemId}&collection=${collectionId}`);
             setMetadata(response.data.data.itemJson); // Store the data directly as an array of objects
             setCollectionOwner(response.data.data.collectionOwner);
             setItemOwner(response.data.data.itemOwner);
@@ -144,6 +148,7 @@ const ownedNft = async() => {
             setIntegerPrice(response.data.data.price && response.data.data.price.price === 0 ? null : response.data.data.price && response.data.data.price.price)
             setSelectedCollectionName(response.data.data.collectionName)
 
+            setFetchLoading(false)
       } catch (error) {
           console.error('Error fetching data:', error);
       }
@@ -151,7 +156,7 @@ const ownedNft = async() => {
       const swap = async() => {
         try {
           setSwapLoading(true)
-          const response = await Axios.get(`http://localhost:3001/swap?data=${ItemId}&collectionId=${collectionId}`);
+          const response = await Axios.get(`https://asset-hub-indexer.onrender.com/swap?data=${ItemId}&collectionId=${collectionId}`);
           const res = response.data.data;
           const resarray = res && res.map(item => item)[0];
           setSwapData( resarray); // Store the data directly as an array of objects
@@ -171,7 +176,7 @@ const ownedNft = async() => {
       console.log(itemOwner)
       console.log(collectionOwner)
       console.log("price",price)
-      console.log(integerPrice)
+      console.log("integerPrice",integerPrice)
 
       const endpoint = "wss://polkadot-asset-hub-rpc.polkadot.io";
 // Transaction
@@ -1206,6 +1211,10 @@ useEffect(() => {
   fetchDotBalance();
 }, [polkadotAddress, integerPrice]);
 
+const dataUrl = ((renderURL, JsonData) => {
+  setSelectedImageUrl(renderURL);
+  setJsondata(JsonData)})
+
     return (
         <>
             {
@@ -1404,7 +1413,7 @@ useEffect(() => {
           </Dialog>
  {itemOwner === polkadotAddress? (
             <>
-            {integerPrice > 0? (
+            {integerPrice? (
               <>
               <div style={{float: "right", marginTop: "50px"}}>
               <Typography variant="h4">{metadata.name}</Typography>
@@ -1641,6 +1650,31 @@ useEffect(() => {
                    </div>
   </Typography>
   <br />
+  {
+                integerPrice? (
+
+                  <Card className="mt-6 w-50">
+      <CardBody>
+      <Typography variant="h5" color="blue-gray" style={{marginLeft: "20px"}}>
+                   <br />
+
+                   
+    <Typography as="div"
+        variant="h1"
+        className="mb-4 h-3 w-56 rounded-full bg-gray-300">  &nbsp;</Typography>
+    <br />
+  </Typography>
+      </CardBody>
+      <CardFooter className="pt-0">
+      <Typography variant="h4" as="div"
+        className="mb-4 h-3 w-56 rounded-full bg-gray-300">&nbsp;</Typography>
+      <Typography variant="h3" as="div"
+        className="mb-4 h-3 w-56 rounded-full bg-gray-300">&nbsp;</Typography>
+      <Typography variant="h2" as="div"
+        className="mb-4 h-3 w-56 rounded-full bg-gray-300">&nbsp;</Typography>
+      </CardFooter>
+    </Card>
+                ) : (
   <Card className="mt-6 w-50">
       <CardBody>
       <Typography variant="h5" color="blue-gray" style={{marginLeft: "20px"}}>
@@ -1747,6 +1781,7 @@ useEffect(() => {
 </Button>
       </CardFooter>
     </Card>
+                )}
     <Dialog
         open={sendDialog === "lg"}
         size={"lg"}
@@ -1810,7 +1845,7 @@ useEffect(() => {
             </>
           ) : (
             <>
-{integerPrice > 0? (
+{fetchLoading? (
   <div style={{ float: "right", marginTop: "50px" }}>
      <Typography variant="h4">{metadata.name}</Typography>
  <Link to={`/Polkadot%20Asset%20Hub/marketplace/${collectionId}/${selectedCollectionName}`}>
@@ -1840,6 +1875,39 @@ useEffect(() => {
       </div>
     </Typography>
     <br />
+    {
+                price? (
+                  <>
+                   <Card className="mt-6 w-50">
+      <CardBody>
+      <Typography variant="h3" color="blue-gray">
+                   <br />
+                   <Typography  as="div" variant="h6" className="mb-4 h-3 w-56 rounded-full bg-gray-300" style={{ display: 'flex', alignItems: 'center' }}>
+  <span>&nbsp;</span>
+</Typography>
+  </Typography>
+<br />
+      </CardBody>
+      <CardFooter className="pt-0">
+      <Typography
+        as="div"
+        variant="h4"
+        className="mb-4 h-3 w-56 rounded-full bg-gray-300"
+      >
+        &nbsp;
+      </Typography>
+      <Typography
+        as="div"
+        variant="h3"
+        className="mb-4 h-3 w-56 rounded-full bg-gray-300"
+      >
+        &nbsp;
+      </Typography>
+      </CardFooter>
+    </Card>
+                  </>
+                ) : (
+                  <>
     <Card className="mt-6 w-50">
       <CardBody>
         <Typography variant="h5" color="blue-gray" style={{ marginLeft: "20px" }}>
@@ -1856,6 +1924,9 @@ useEffect(() => {
         <Button color="pink" size="md" variant="outlined" style={{ marginTop: "20px", float: "right" }} onClick={() => { ownedNft(); swapHandleOpen("xl") }}>Make Swap</Button>
       </CardFooter>
     </Card>
+    </>
+                )
+              }
   </div>
 ) : (
   <div style={{ float: "right", marginTop: "50px" }}>
@@ -1887,7 +1958,61 @@ useEffect(() => {
       </div>
     </Typography>
     <br />
-    <Card className="mt-6 w-50">
+    { fetchLoading? (
+                <>
+                <Card className="mt-6 w-50">
+      <CardBody>
+      <Typography variant="h3" color="blue-gray">
+                   <br />
+                   <Typography  as="div" variant="h6" className="mb-4 h-3 w-56 rounded-full bg-gray-300" style={{ display: 'flex', alignItems: 'center' }}>
+  <span>&nbsp;</span>
+</Typography>
+  </Typography>
+<br />
+      </CardBody>
+      <CardFooter className="pt-0">
+      <Typography
+        as="div"
+        variant="h4"
+        className="mb-4 h-3 w-56 rounded-full bg-gray-300"
+      >
+        &nbsp;
+      </Typography>
+      <Typography
+        as="div"
+        variant="h3"
+        className="mb-4 h-3 w-56 rounded-full bg-gray-300"
+      >
+        &nbsp;
+      </Typography>
+      </CardFooter>
+    </Card>
+                </>
+              ):(
+                <>
+                {
+                  price? (
+                    <>
+                        <Card className="mt-6 w-50">
+      <CardBody>
+        <Typography variant="h5" color="blue-gray" style={{ marginLeft: "20px" }}>
+          <br />
+          <Typography variant="h6" color="pink" style={{ display: 'flex', alignItems: 'center' }}>
+            <span>{price}</span>
+            <span><img src="/src/assets/Polkadot_Token_PinkOnWhite.png" style={{ width: "23px", marginLeft: "5px" }} alt="" /></span>
+          </Typography>
+        </Typography>
+        <br />
+      </CardBody>
+      <CardFooter className="pt-0">
+        <Button color="pink" onClick={() => {buyOpenHandleOpen("xl")}}>Buy now</Button>
+        <Button color="pink" size="md" variant="outlined" style={{ marginTop: "20px", float: "right" }} onClick={() => { ownedNft(); swapHandleOpen("xl") }}>Make Swap</Button>
+      </CardFooter>
+    </Card>
+                    </>
+                  ) : (
+                    <>
+                    <Card className="mt-6 w-50">
       <CardBody>
         <Typography variant="h5" color="blue-gray" style={{ marginLeft: "20px" }}>
           <br />
@@ -1897,6 +2022,10 @@ useEffect(() => {
       </CardBody>
       <CardFooter className="pt-0"></CardFooter>
     </Card>
+                    </>
+                  )
+                }
+                </>)}
   </div>
 )}
 

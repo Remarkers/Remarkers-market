@@ -24,7 +24,7 @@ export default function PAHExplore() {
   };
 
   const getData = async () => {
-    const response = await Axios.get("http://localhost:3001/getData");
+    const response = await Axios.get("https://asset-hub-indexer.vercel.app/getData");
     setData(response.data);
     setIsLoading(false);
   };
