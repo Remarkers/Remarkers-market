@@ -242,7 +242,7 @@ console.log(JSON.parse(localStorage.getItem("Account")))
           const allAccounts = await web3Accounts();
           
           // finds an injector for an address
-          const SENDER = account?.address;
+          const SENDER = account && account?.address;
           const injector = await web3FromAddress(SENDER);
           
           // the address we use to use for signing, as injected

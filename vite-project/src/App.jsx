@@ -95,7 +95,7 @@ const navListMenuItems = [
 function NavListMenu() {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
-  const [network,setNetwork]= useState(JSON.parse(localStorage.getItem("Network")))
+  const [network,setNetwork]= useState(JSON.parse(localStorage.getItem("Network")) || "Polkadot Asset Hub")
   localStorage.setItem("Network", JSON.stringify(network))
   const renderItems = navListMenuItems.map(
     ({ icon, title, description, mode }, key) => (

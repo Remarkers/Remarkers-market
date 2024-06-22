@@ -9,7 +9,7 @@ export default function Profile( ) {
         <br />
 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
     <Identicon
-        value={Account?.address}
+        value={Account && Account?.address}
         size={100}
         theme="polkadot"
         className='icon-float-center'
@@ -18,7 +18,7 @@ export default function Profile( ) {
     <br />
     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center',  fontSize: '25px'}}>
     <span style={{ marginLeft: '8px', textAlign: 'center' }} className={`${theme}`}>
-        {Account?.address}
+        {Account && Account?.address}
     </span>
 </div>
 
