@@ -1362,9 +1362,17 @@ const dataUrl = ((renderURL, JsonData) => {
     )}
   </>
 ) : null}
-{dotBalance === false?                       <Typography variant="h6" style={{float: "right"}}>
+{
+  selectedTokenLogo && selectedTokenLogo.symbol === "DOT" ? (
+    <> 
+    {dotBalance === false?                       <Typography variant="h6" style={{float: "right"}}>
                         2 confimations required
                       </Typography> : null}
+    </>
+  ) : (
+    null
+  )
+}
 
             </div>
             </DialogBody>

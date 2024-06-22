@@ -61,7 +61,7 @@ export default function PAHProfile( ) {
 
     const owned = async() => {
         try {
-            const response = await Axios.get(`https://asset-hub-indexer.vercel.app/owned?address=${JSON.stringify(Account?.address)}&page=${active.toString()}`);
+            const response = await Axios.get(`https://asset-hub-indexer.onrender.com/owned?address=${JSON.stringify(Account?.address)}&page=${active.toString()}`);
             setOwner(response.data.data.result); // Store the data directly as an array of objects
             setItemMetadata(response.data.data.metadata)
             setPrice(response.data.data.result.price)
@@ -87,7 +87,7 @@ export default function PAHProfile( ) {
 
     console.log(owner)
     console.log(price)
-    console.log(swap)
+    console.log("swap", swap)
 
     const jsonData = owner && JSON.parse(owner);
     const itemMetadata = (owner && jsonData.data);
@@ -282,8 +282,8 @@ export default function PAHProfile( ) {
 {metadata? (  <>
     <div >
       {metadata && metadata.map((item, index) => {
-         const ipfsHash =  item?.image?.replace(/^(ipfs:\/\/ipfs\/|ipfs:\/\/)/, "") || "";
-         const ipfsUri = `ipfs://${ipfsHash}`;
+const ipfsHash = item.image ? item.image.replace(/^(ipfs:\/\/ipfs\/|ipfs:\/\/)/, "") : "";
+const ipfsUri = ipfsHash ? `ipfs://${ipfsHash}` : "";
 const handleReload = () => {
   setIsLoading(true);
   setError(false);
@@ -379,8 +379,9 @@ const handleReload = () => {
   <>
 {createdCollection? (  <div>
     {createdCollection.map((item, index) => {
-      const ipfsHash =  item.itemData.image?.replace(/^(ipfs:\/\/ipfs\/|ipfs:\/\/)/, "") || "";
-      const ipfsUri = `ipfs://${ipfsHash}`;
+const ipfsHash = item.itemData?.image?.replace(/^(ipfs:\/\/ipfs\/|ipfs:\/\/)/, "") ?? "";
+const ipfsUri = `ipfs://${ipfsHash}`;
+
       return (
       <Link to={`/Polkadot%20Asset%20Hub/marketplace/${item.Id}/${item.itemData.name}`} key={index}>
         <Card onClick={() => {
@@ -452,9 +453,9 @@ const handleReload = () => {
         {swap && swap
     .filter(item => item !== null)
     .map((item, index) => {
-      const offeredItemImage =  item.offeredItemImage.replace(/^(ipfs:\/\/ipfs\/|ipfs:\/\/)/, "") || "";
+      const offeredItemImage = (item?.offeredItemImage ?? "").replace(/^(ipfs:\/\/ipfs\/|ipfs:\/\/)/, "");
       const offeredItemImageIpfsUri = `ipfs://${offeredItemImage}`;
-      const ipfsHash =  item.desiredItemImage.replace(/^(ipfs:\/\/ipfs\/|ipfs:\/\/)/, "") || "";
+      const ipfsHash = item && item.desiredItemImage ? item.desiredItemImage.replace(/^(ipfs:\/\/ipfs\/|ipfs:\/\/)/, "") : "";
       const ipfsUri = `ipfs://${ipfsHash}`;
       return (
               <tr key={index}>

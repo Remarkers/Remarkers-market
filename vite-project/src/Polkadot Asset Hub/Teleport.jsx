@@ -34,11 +34,11 @@ export default function PAHTeleport() {
     const [chains, setChains] = useState([
         {
             name: "Polkadot",
-            logo: {dotLogo},
+            logo: dotLogo,
         },
         {
             name: "Polkadot Asset Hub",
-            logo: {polkadotAssetHubLogo},
+            logo: polkadotAssetHubLogo,
         },
     ]);
     const [amount, setAmount] = useState("");
