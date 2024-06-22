@@ -841,17 +841,17 @@ const createSwap = async() => {
 const tokens = [
   {
     symbol: "DOT",
-    logo: {dotLogo},
+    logo: dotLogo,
     id: null
   },
   {
     symbol: "USDT",
-    logo: {usdtLogo},
+    logo: usdtLogo,
     id: 1984
   },
   {
     symbol: "USDC",
-    logo: {usdcLogo},
+    logo: usdcLogo,
     id: 1337
   },
 ]
@@ -1292,7 +1292,7 @@ const dataUrl = ((renderURL, JsonData) => {
                     }}>
                       <img
                         src={item.logo}
-                        alt="card-image"
+                        alt={`${item.symbol}`}
                         className="h-10 w-10 rounded-lg object-cover object-center"
                       />
                       <Typography color="blue-gray" className="font-medium" style={{ marginLeft: "20px" }}>

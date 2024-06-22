@@ -912,17 +912,17 @@ const SWAP_TABLE_HEAD = ["Offered Item", "Offered Price", "Desired Price", item 
 const tokens = [
   {
     symbol: "DOT",
-    logo: {dotLogo},
+    logo: dotLogo,
     id: null
   },
   {
     symbol: "USDT",
-    logo: {usdtLogo},
+    logo: usdtLogo,
     id: 1984
   },
   {
     symbol: "USDC",
-    logo: {usdcLogo},
+    logo: usdcLogo,
     id: 1337
   },
 ]
