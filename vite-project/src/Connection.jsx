@@ -357,12 +357,7 @@ console.log(JSON.parse(localStorage.getItem("Account")))
           size={32}
           theme="polkadot" className='icon-float-left' /><span style={{ marginLeft: '8px' }} className={theme}>{selectedAccount?.name}</span></Button>
           ) : (
-          <><Button onClick={handleOpen} className="connect" style={{ display: 'flex', alignItems: 'center' }}>Connect
-              <svg style={{ marginLeft: '8px' }}  xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-      <path strokeLinecap="round" strokeLinejoin="round" d="m3.75 13.5 10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75Z" />
-    </svg>
-    
-              </Button>
+          <><Button onClick={handleOpen} color='pink' variant='md' style={{ display: 'flex', alignItems: 'center' }}>Connect</Button>
                 </>
       
           )}
@@ -467,10 +462,7 @@ console.log(JSON.parse(localStorage.getItem("Account")))
                 currentPage === 2 && (
                   <>
                   <Button onClick={prevPage} variant='text' color='pink'> &#x2190; Back to wallet selection</Button>
-                  <button className='connect'   onClick={Disconnect}> <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-      <path strokeLinecap="round" strokeLinejoin="round" d="M11.412 15.655 9.75 21.75l3.745-4.012M9.257 13.5H3.75l2.659-2.849m2.048-2.194L14.25 2.25 12 10.5h8.25l-4.707 5.043M8.457 8.457 3 3m5.457 5.457 7.086 7.086m0 0L21 21" />
-    </svg>
-    Disconnect </button>
+                  <Button onClick={Disconnect} color='pink' variant='md' style={{ display: 'flex', alignItems: 'center', float: 'right' }}>Disconnect</Button>
     
                   { accounts.map((account) => (
         <>
