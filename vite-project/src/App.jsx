@@ -360,6 +360,7 @@ function App() {
   useEffect(() => {
     walletConnected? null : handleOpen()
   }, [])
+  handleOpen === true && walletConnected === true ? handleOpen() : null
   return (
     <React.Fragment>
        <Dialog open={open} handler={handleOpen}>
