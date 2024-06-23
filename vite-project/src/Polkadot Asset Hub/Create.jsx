@@ -929,7 +929,6 @@ export default function PAHCreate( ) {
         <Input
           label="Collection Name"
           name="collectionName"
-          value={formData.collectionName}
           onChange={handleInputChange}
           error={submitted && formData.collectionName.length < 1}
         />
@@ -1048,14 +1047,14 @@ export default function PAHCreate( ) {
     <br />
     <div className="w-96">
       <Input label=" Name" name="itemName"
-          onChange={handleInputCreateNftChange} value={nftformData.itemName}  />
+          onChange={handleInputCreateNftChange}  />
     </div>
     <br />
     <Typography variant="h6" color="gray"> Description </Typography>
     <br />
     <div className="w-96">
       <Input label=" Description"  size="lg" name="itemDescription"
-          onChange={handleInputCreateNftChange} value={nftformData.itemDescription}/>
+          onChange={handleInputCreateNftChange}/>
     </div>
     <br />
     <Typography variant="h6" color="gray"> Attributes (optional) </Typography>
@@ -1066,7 +1065,6 @@ export default function PAHCreate( ) {
     <Input
       label="Trait"
       size="lg"
-      value={traitType}
       onChange={handleTraitTypeChange}
     />
   </div>
@@ -1074,7 +1072,6 @@ export default function PAHCreate( ) {
     <Input
       label="Value"
       size="lg"
-      value={value}
       onChange={handleValueChange}
     />
   </div>
