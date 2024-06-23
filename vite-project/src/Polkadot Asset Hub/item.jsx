@@ -2718,7 +2718,7 @@ const ipfsItemUri = `ipfs://${ipfsItemHash}`;
 
         </CardBody>
         <CardFooter className="pt-0">
-          <Typography variant="h6">{itemMetadata.description}</Typography>
+          <Typography variant="h6">{itemMetadata && itemMetadata.description}</Typography>
 </CardFooter>
 </Card>
 
