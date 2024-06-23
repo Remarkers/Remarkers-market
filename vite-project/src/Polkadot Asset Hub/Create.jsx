@@ -220,6 +220,45 @@ export default function PAHCreate( ) {
         
       
         const createCollection = async () => {
+          if (!formData.collectionFile) {
+            toast.warning("Collection image is required", {
+              position: "top-right",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "colored",
+            });
+            return;
+          }
+          if (!formData.collectionName) {
+            toast.warning("Collection name is required", {
+              position: "top-right",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "colored",
+            });
+            return;
+          }
+          if (!formData.collectionDescription) {
+            toast.warning("Collection description is required", {
+              position: "top-right",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "colored",
+            });
+            return;
+          }
           // Function to upload metadata
           async function uploadMetadata() {
             const jsonMetadata = {
@@ -913,15 +952,8 @@ export default function PAHCreate( ) {
               </label>
             </>
           )}
-          <input  id="collection-file" accept="image/jpeg, image/png, image/gif" type="file" className="hidden" onChange={handleCollectionFileChange} onClick={uploadData} />
+          <input  id="collection-file" accept="image/jpeg, image/png, image/gif" type="file" className="hidden" onChange={handleCollectionFileChange} onClick={uploadData} required minLength={submitted && formData.collectionFile} />
         </div>
-          {
-            submitted && !formData.collectionFile && (
-              <Typography variant="caption" style={{fontSize: "13px", color: "red"}} color="error">
-              Collection Image File is required.
-            </Typography>
-            )
-          }
     <br />
     <Typography variant="h6" color="gray"> Name </Typography>
     <br />
@@ -930,26 +962,15 @@ export default function PAHCreate( ) {
           label="Collection Name"
           name="collectionName"
           onChange={handleInputChange}
-          error={submitted && formData.collectionName.length < 1}
+          required
+          minLength={submitted && formData.collectionName.length < 1}
         />
-        {submitted && formData.collectionName.length < 1 && (
-          <Typography variant="caption" style={{ fontSize: "13px" }} color="error">
-            Collection name is required.
-          </Typography>
-        )}
       </div>
     <br />
     <Typography variant="h6" color="gray"> Description </Typography>
     <br />
     <div className="w-96">
-      <Input label="Collection Description" name="collectionDescription" size="lg" onChange={handleInputChange} error={submitted && formData.collectionDescription.length < 1} />
-      {
-        submitted && formData.collectionDescription.length < 1 && (
-          <Typography variant="caption" style={{fontSize: "13px"}} color="error">
-            Collection Description is required.
-          </Typography>
-        )
-      }
+      <Input label="Collection Description" name="collectionDescription" size="lg" onChange={handleInputChange} required minLength={submitted && formData.collectionDescription.length < 1} />
     </div>
     <br />
     <Typography variant="h6">
