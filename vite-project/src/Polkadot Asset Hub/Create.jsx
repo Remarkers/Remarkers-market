@@ -230,9 +230,29 @@ export default function PAHCreate( ) {
               discord: formData.collectionDiscord,
               externalLink: formData.collectionExternalLink,
           };
-          
+          toast.info(`Creating collection`, {
+            position: "top-right",
+            autoClose: 2500,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+        });
           // Use 2 spaces for indentation
           const jsonMetadataString = JSON.stringify(jsonMetadata, null, 2);
+
+          toast.info(`Uploading Metadata`, {
+            position: "top-right",
+            autoClose: 2500,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+        });
           
           const jsonBlob = new Blob([jsonMetadataString], { type: 'application/json' });
           
@@ -260,7 +280,16 @@ export default function PAHCreate( ) {
                   return null;
               }
           }
-      
+          toast.info(`Metadata uploaded`, {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+        });
           const collectionMetadata = await uploadMetadata();
           if (!collectionMetadata) {
               console.error('Failed to upload metadata. Exiting collection creation.');
@@ -268,7 +297,16 @@ export default function PAHCreate( ) {
           }
       
           const collectionMetadataHex = stringToHex(collectionMetadata);
-      
+          toast.info(`Creating Transaction`, {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+        });
           const connectedAccount = JSON.parse(localStorage.getItem('Account'));
           const endpoint = "wss://polkadot-asset-hub-rpc.polkadot.io";
           const wsProvider = new WsProvider(endpoint);
@@ -396,19 +434,6 @@ export default function PAHCreate( ) {
           });
           return;
         }
-        if (nftformData.attributes.length === 0) {
-          toast.warning("Item Attribute is required", {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "colored",
-          });
-          return;
-        }
         // Function to upload metadata
         async function uploadMetadata() {
           const jsonMetadata = {
@@ -417,9 +442,31 @@ export default function PAHCreate( ) {
             image: "ipfs://" + nftformData.itemFile,
             attributes: nftformData.attributes,
         };
+
+        toast.info(`Creating nft`, {
+          position: "top-right",
+          autoClose: 2500,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+      });
         
         // Use 2 spaces for indentation
         const jsonMetadataString = JSON.stringify(jsonMetadata, null, 2);
+
+        toast.info(`Uploading metadata to ipfs`, {
+          position: "top-right",
+          autoClose: 2500,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+      });
         
         const jsonBlob = new Blob([jsonMetadataString], { type: 'application/json' });
         
@@ -453,8 +500,29 @@ export default function PAHCreate( ) {
             console.error('Failed to upload metadata. Exiting NFT creation.');
             return;
         }
+        toast.info(`Metadata uploaded`, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+      });
     
         const itemMetadataHex = stringToHex(itemMetadata);
+
+        toast.info(`Creating Transaction`, {
+          position: "top-right",
+          autoClose: 8000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+      });
 
         const connectedAccount = JSON.parse(localStorage.getItem('Account'));
           const endpoint = "wss://polkadot-asset-hub-rpc.polkadot.io";
@@ -610,7 +678,7 @@ export default function PAHCreate( ) {
 <Button onClick={handleOpen} color="pink" variant="outlined">Create Collection</Button>
 <br />
 <br />
-<Button variant="filled" color="pink" onClick={() => {handleOpenSelectCollection()}}>Select Collection </Button>
+<Button variant="filled" color="pink" onClick={() => {handleOpenSelectCollection(), created()}}>Select Collection </Button>
 <br />
 <br />
 <Typography variant="h6"> <div style={{ display: 'flex', alignItems: 'center' }}> Selected Collection 
