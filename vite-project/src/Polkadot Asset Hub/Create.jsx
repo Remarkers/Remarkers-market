@@ -31,6 +31,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import {stringToHex} from '@polkadot/util'
 import {CheckIcon} from "@heroicons/react/24/outline";
 import { promise } from "zod";
+import { MediaRenderer } from "@thirdweb-dev/react";
 
 export default function PAHCreate( ) {
     const [api, setApi] = useState()
@@ -58,6 +59,8 @@ export default function PAHCreate( ) {
     const [traitType, setTraitType] = useState('');
     const [value, setValue] = useState('');
     const [addAttribute, setaddAttribute] = useState([])
+    const [selectedFile, setSelectedFile] = useState(null);
+    const [fileType, setFileType] = useState('');  
     const [nftformData, setNftFormData] = useState({
       itemFile: null,
       itemName: '',
@@ -106,6 +109,8 @@ export default function PAHCreate( ) {
       const file = event.target.files[0];
       if (file) {
         setFile(file);
+        setSelectedFile(URL.createObjectURL(file));
+      setFileType(file.type);
           try {
             const fileData = new FormData();
             fileData.append("file", file);
@@ -793,11 +798,7 @@ export default function PAHCreate( ) {
                       // setOfferedItem(item.itemId);
                       // setOfferedCollection(item.collectionId);
                     }}>
-                      <img
-                        src={`https://cloudflare-ipfs.com/ipfs/${item && item.itemData.image ? item.itemData.image.replace(/ipfs:\/\/ipfs|ipfs:\/\//, "") : ""}`}
-                        alt="card-image"
-                        className="h-10 w-10 rounded-lg object-cover object-center"
-                      />
+                              <MediaRenderer src={`ipfs://${item && item.itemData.image && item.itemData.image.replace(/^(ipfs:\/\/ipfs\/|ipfs:\/\/)/, "")}`} style={{ height: '2.5rem', width: '2.5rem', borderRadius: '0.5rem', objectFit: 'cover', objectPosition: 'center' }} />
                       <Typography color="blue-gray" className="font-medium" style={{ marginLeft: "20px" }}>
                       {item.itemData.name}
                       </Typography>
@@ -824,11 +825,7 @@ export default function PAHCreate( ) {
   >
       <CardBody>
       <div className="flex items-center space-x-4">
-  <img
-    src={`https://cloudflare-ipfs.com/ipfs/${selectedCollection && selectedCollection.itemData.image ? selectedCollection.itemData.image.replace(/ipfs:\/\/ipfs|ipfs:\/\//, "") : ""}`}
-    alt="card-image"
-    className="h-20 w-20 rounded-lg object-cover object-center"
-  />
+      <MediaRenderer src={`ipfs://${selectedCollection && selectedCollection.itemData.image && selectedCollection.itemData.image.replace(/^(ipfs:\/\/ipfs\/|ipfs:\/\/)/, "")}`} style={{ height: '5rem', width: '5rem', borderRadius: '0.5rem', objectFit: 'cover', objectPosition: 'center' }} />
   <Typography variant="h5" color="blue-gray" className="mb-2">
     {selectedCollection.itemData.name}
   </Typography>
@@ -860,7 +857,13 @@ export default function PAHCreate( ) {
             color="white"
             className="font-normal opacity-80"
           >
-            supported file formats are : jpeg, png, gif
+            supported file formats are : Images
+Videos
+Audio files
+3D Models
+SVGs (for onchain NFTs)
+iframes and HTML
+If none of these are appropriate, the fallback is a link to the asset
           </Typography>
         </div>
       }
@@ -929,7 +932,31 @@ export default function PAHCreate( ) {
 <div className="flex items-center justify-center w-full">
           {collectionLogo ? (
             <div className="relative mt-4 text-center">
-    <img src={URL.createObjectURL(collectionLogo)} alt="Preview" className="max-h-80-w-20 rounded-lg" />
+               {selectedFile && (
+        <div>
+          {fileType.startsWith('image/') && (
+            <img
+              src={selectedFile}
+              alt="Preview"
+              style={{ maxHeight: '20rem', maxWidth: '5rem', borderRadius: '0.5rem' }}
+            />
+          )}
+          {fileType.startsWith('video/') && (
+            <video
+              controls
+              src={selectedFile}
+              style={{ maxHeight: '20rem', maxWidth: '5rem', borderRadius: '0.5rem' }}
+            />
+          )}
+          {fileType.startsWith('audio/') && (
+            <audio controls src={selectedFile} />
+          )}
+          {fileType === 'text/html' || fileType === 'application/xhtml+xml' ? (
+            <iframe src={selectedFile} style={{ maxHeight: '20rem', maxWidth: '5rem', borderRadius: '0.5rem' }} />
+          ) : null}
+          {/* Handle 3D models preview using an appropriate viewer if needed */}
+        </div>
+      )}
 
     {/* SVG icon */}
     <Chip variant="ghost" value={collectionLogo.name} className="absolute top-0 left-0 z-10 w-100 h-100 p-1 text-sm text-gray-100 dark:text-white" />
@@ -1062,7 +1089,22 @@ export default function PAHCreate( ) {
             </>
           )}
           <form onSubmit={handleCreateNftSubmit}>
-          <input required id="dropzone-file" accept="image/jpeg, image/png, image/gif" type="file" className="hidden" onChange={handleFileChange} name="itemFile" />
+          <input
+  required
+  id="dropzone-file"
+  accept="
+    image/jpeg, image/png, image/gif, image/svg+xml, image/webp, 
+    video/mp4, video/ogg, video/webm, video/quicktime, video/x-msvideo, video/x-matroska,
+    audio/mpeg, audio/ogg, audio/wav, audio/webm, audio/aac,
+    model/gltf-binary, model/gltf+json, model/obj, model/stl,
+    text/html, application/xhtml+xml
+  "
+  type="file"
+  className="hidden"
+  onChange={handleFileChange}
+  name="itemFile"
+/>
+
     <br />
     <Typography variant="h6" color="gray"> Name </Typography>
     <br />

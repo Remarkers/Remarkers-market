@@ -630,7 +630,7 @@ const buy = async() => {
           interior: "Here"
         }
       ],
-      amount_in: (tokenPrice * 1000000 + (tokenPrice * 1000000) * 0.02).toString(),
+      amount_in: (tokenPrice * 1000000).toString(),
       amount_out_min: (integerPrice * 1000000000).toString(),
       send_to: polkadotAddress.toString(),
       keep_alive: false
