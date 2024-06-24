@@ -2160,7 +2160,7 @@ const ipfsItemUri = `ipfs://${ipfsItemHash}`;
 <MediaRenderer src={ipfsUri}   alt=""
   className="h-full w-full object-cover"
   onClick={() => dataUrl(renderURL, JsonData)}
-  style={{ display: isLoading && error ? 'none' : 'block', borderRadius: "10px" }}
+  style={isMobile? {maxWidth: "130px", maxHeight: "130px" ,borderRadius: "10px",  display: isLoading || error ? 'none' : 'block' } : { display: isLoading && error ? 'none' : 'block', borderRadius: "10px" }}
   onLoad={() => setIsLoading(false)}
   onError={() => {
     setIsLoading(false);
@@ -2202,19 +2202,19 @@ const ipfsItemUri = `ipfs://${ipfsItemHash}`;
         variant="text"
         className={isMobile ? "flex items-center gap-2" :"flex items-center gap-2"}
         onClick={prev}
-        size={isMobile? "md" : "md"}
+        size={isMobile? "sm" : "md"}
         disabled={active === 1}
         color="pink"
       >
-        <ArrowLeftIcon strokeWidth={2} className={isMobile? "h-4 w-4" :"h-4 w-4"} color="pink"/> Previous
+        <ArrowLeftIcon strokeWidth={2} className={isMobile? "h-2 w-2" :"h-4 w-4"} color="pink"/> Previous
       </Button>
       <div className={isMobile ? "flex items-center gap-2" :"flex items-center gap-2"}>
         {
           isMobile? (
             <>
-                    <IconButton {...getItemProps(active)} color="pink" variant="outlined">{active}</IconButton>
-                    <IconButton {...getItemProps(active + 1 )} color="pink">{active + 1}</IconButton>
-        <IconButton {...getItemProps(active + 2)} color="pink">{active + 2}</IconButton>
+                    <IconButton {...getItemProps(active)} color="pink" variant="outlined" size="sm">{active}</IconButton>
+                    <IconButton {...getItemProps(active + 1 )} color="pink" size="sm">{active + 1}</IconButton>
+        <IconButton {...getItemProps(active + 2)} color="pink" size="sm">{active + 2}</IconButton>
             </>
           ) : (
             <>
@@ -2232,11 +2232,11 @@ const ipfsItemUri = `ipfs://${ipfsItemHash}`;
         variant="text"
         className={isMobile ? "flex items-center gap-2" :"flex items-center gap-2"}
         onClick={next}
-        size={isMobile? "md" : "md"}
+        size={isMobile? "sm" : "md"}
         color="pink"
       >
         Next
-        <ArrowRightIcon strokeWidth={2} className={isMobile? "h-4 w-4" :"h-4 w-4"} color="pink"/>
+        <ArrowRightIcon strokeWidth={2} className={isMobile? "h-2 w-2" :"h-4 w-4"} color="pink"/>
       </Button>
     </div>
     <br />
@@ -2401,7 +2401,7 @@ const ipfsItemUri = `ipfs://${ipfsItemHash}`;
                         <Card className="w-full  max-w-lg mx-auto shadow-lg overflow-hidden">
     <CardBody className="w-full ">
     <MediaRenderer src={ipfsItemUri} alt=""
-                style={{ width: '100%', height: 'auto' }} />
+                style={isMobile? {width:"auto ",  height: 'auto', borderRadius: "10px" }: { width: '100%', height: 'auto' }} />
     </CardBody>
     <CardFooter className="pt-0 text-center">
       
@@ -2414,7 +2414,7 @@ const ipfsItemUri = `ipfs://${ipfsItemHash}`;
             <>
             {price? (
               <>
-              <div style={{float: "right", marginTop: "50px"}}>
+              <div style={isMobile?  {marginTop: "50px"} :{float: "right", marginTop: "50px"}}  className= "overflow-scroll">
           <Typography variant="h5" color="blue-gray" style={{marginLeft: "20px"}}>
             <br />
     <br />
@@ -2530,7 +2530,7 @@ const ipfsItemUri = `ipfs://${ipfsItemHash}`;
               </>
             ) : (
               <> 
-                                              <div style={{float: "right", marginTop: "50px"}}>
+                                              <div style={isMobile?  {marginTop: "50px"} :{float: "right", marginTop: "50px"}}  className= "overflow-scroll">
           <Typography variant="h5" color="blue-gray" style={{marginLeft: "20px"}}>
             <br />
     <br />
@@ -2676,7 +2676,7 @@ const ipfsItemUri = `ipfs://${ipfsItemHash}`;
             <>
             {fetchLoading? (
               <>
-              <div style={{float: "right", marginTop: "50px"}}>
+              <div style={isMobile?  {marginTop: "50px"} :{float: "right", marginTop: "50px"}}  className= "overflow-scroll">
                     <Typography variant="h5" color="blue-gray" style={{marginLeft: "20px"}}>
     <div style={{ display: 'flex', alignItems: 'center' }}>
       <div style={{marginRight: "40px"}}>
@@ -2862,7 +2862,7 @@ const ipfsItemUri = `ipfs://${ipfsItemHash}`;
 </div>
 
         </CardBody>
-        <CardFooter className="pt-0">
+        <CardFooter className="pt-0 overflow-scroll">
           <Typography variant="h6">{itemMetadata && itemMetadata.description}</Typography>
 </CardFooter>
 </Card>
@@ -2880,7 +2880,7 @@ const ipfsItemUri = `ipfs://${ipfsItemHash}`;
 </div>
 
         </CardBody>
-        <CardFooter className="pt-0">
+        <CardFooter className="pt-0 overflow-scroll">
         {itemMetadata && itemMetadata.attributes? (
         <div>
           <div className="traits">
@@ -2918,7 +2918,7 @@ const ipfsItemUri = `ipfs://${ipfsItemHash}`;
 </div>
 
         </CardBody>
-        <CardFooter className="pt-0">
+        <CardFooter className="pt-0 overflow-scroll">
         <Button
       onMouseLeave={() => setIdcopied(false)}
       onClick={() => {

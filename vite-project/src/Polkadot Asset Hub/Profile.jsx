@@ -250,9 +250,19 @@ export default function PAHProfile( ) {
       />
       </div>
       <br />
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center',  fontSize: '15px'}}>
+      <div style={isMobile? { display: 'flex', alignItems: 'center', justifyContent: 'center',  fontSize: '20px'} : { display: 'flex', alignItems: 'center', justifyContent: 'center',  fontSize: '25px'}}>
       <span style={{ marginLeft: '8px', textAlign: 'center' }} className={`${theme}`}>
-          {Account?.address}
+        {
+          isMobile? (
+            <>
+                  {    Account && Account?.address &&     Account && Account?.address.length > 10 ? `${    Account && Account?.address.substring(0, 11)}...${    Account && Account?.address.slice(-11)}` :     Account && Account?.address}
+            </>
+          ) : (
+            <>
+            {Account?.address}
+            </>
+          )
+        }
       </span>
   </div>
   <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: '20px', marginRight: "20px" }}>
@@ -311,10 +321,10 @@ const handleReload = () => {
           localStorage.setItem('selectedCollectionName', JSON.stringify(item.collectionName));
             localStorage.setItem('selectedCollectionId', JSON.stringify(item.collectionId));
             localStorage.setItem('selectedCollectionItems', JSON.stringify(item.itemId));
-            }} className="Profile-Item-card">
+            }} className={isMobile? "Profile-Item-card" : "Item-card"}>
                             <Link to={`/Polkadot%20Asset%20Hub/Details/${item.collectionId}/${item.itemId}`}>
           <Card      key={index}>
-            <CardHeader shadow={false} floated={false} className="h-100">
+            <CardHeader shadow={false} floated={false} className={isMobile?  "h-50" : "h-100"}>
         {isLoading && !error && <Spinner color="pink" />}
         {error && (
           <>
@@ -325,7 +335,7 @@ const handleReload = () => {
           </>
         )}
             <MediaRenderer src={ipfsUri}
-                className="h-full w-full object-cover" style={{borderRadius: "10px",  display: isLoading || error ? 'none' : 'block' }}
+                className="h-full w-full object-cover" style={isMobile? {maxWidth: "130px", maxHeight: "130px" ,borderRadius: "10px",  display: isLoading || error ? 'none' : 'block' } : {borderRadius: "10px",  display: isLoading || error ? 'none' : 'block' }}
                           alt=""
                           onLoad={() => setIsLoading(false)}
                           onError={() => {
@@ -335,19 +345,22 @@ const handleReload = () => {
             </CardHeader>
             <CardBody>
               <div className="mb-2 flex items-center justify-between">
-                <Typography color="blue-gray" className="font-medium">
+                <Typography color="black" className="font-medium truncate text-nowrap">
                   {item && item.name}
                 </Typography>
-                {item &&item.price? (
+              </div>
+            </CardBody>
+            <br />
+            <CardFooter className="pt-0">
+            {item &&item.price? (
               <>
               <Typography variant="h6" color="pink">{`${item && item.price} DOT`}</Typography>
               </>
             ) : (
-               null
+               <>
+               Not Listed
+               </>
             )}
-              </div>
-            </CardBody>
-            <CardFooter className="pt-0">
               {/* Optional Footer Content */}
             </CardFooter>
           </Card>
@@ -356,7 +369,7 @@ const handleReload = () => {
       )})}
     </div>
     <br />
-    <div className="flex items-center gap-4" style={{marginLeft: "100px", marginTop: "50px"}}>
+    <div className="flex items-center gap-4" style={isMobile? { marginTop: "50px"} : {marginLeft: "100px", marginTop: "50px"}}>
       <Button
         variant="text"
         className="flex items-center gap-2"
@@ -371,9 +384,9 @@ const handleReload = () => {
         {
           isMobile? (
             <>
-                    <IconButton {...getItemProps(active)} color="pink" variant="outlined">{active}</IconButton>
-        <IconButton {...getItemProps(active + 1 )} color="pink">{active + 1}</IconButton>
-        <IconButton {...getItemProps(active + 2)} color="pink">{active + 2}</IconButton>
+                    <IconButton {...getItemProps(active)} color="pink" variant="outlined" size="sm">{active}</IconButton>
+        <IconButton {...getItemProps(active + 1 )} color="pink" size="sm">{active + 1}</IconButton>
+        <IconButton {...getItemProps(active + 2)} color="pink" size="sm">{active + 2}</IconButton>
             </>
           ) : (
             <>
@@ -421,10 +434,10 @@ const ipfsUri = `ipfs://${ipfsHash}`;
           localStorage.setItem('selectedCollectionName', JSON.stringify(item.itemData.name));
           localStorage.setItem('selectedCollectionImage', JSON.stringify(item.itemData.image));
           localStorage.setItem('selectedCollectionDescription', JSON.stringify(item.itemData.description));
-        }} className="Profile-Item-card">
-          <CardHeader shadow={false} floated={false} className="h-100">
+        }} className={isMobile? "Profile-Item-card": "Item-card"}>
+          <CardHeader shadow={false} floated={false} className={isMobile?  "h-50" : "h-100"}>
           <MediaRenderer src={ipfsUri}
-                className="h-full w-full object-cover" style={{borderRadius: "10px",  display: isLoading || error ? 'none' : 'block' }}
+                className="h-full w-full object-cover" style={isMobile? {maxWidth: "130px", maxHeight: "130px" ,borderRadius: "10px",  display: isLoading || error ? 'none' : 'block' } : {borderRadius: "10px",  display: isLoading || error ? 'none' : 'block' }}
                 alt=""
                 onLoad={() => setIsLoading(false)}
                 onError={() => {
@@ -434,7 +447,7 @@ const ipfsUri = `ipfs://${ipfsHash}`;
           </CardHeader>
           <CardBody>
             <div className="mb-2 flex items-center justify-between">
-              <Typography color="blue-gray" className="font-medium">
+              <Typography color="blue-gray" className="font-medium truncate text-nowrap">
                 {item.itemData.name}
               </Typography>
             </div>

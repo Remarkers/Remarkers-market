@@ -1122,21 +1122,60 @@ SVGs (for onchain NFTs)
     <br />
     <Typography variant="h6" color="gray"> Name </Typography>
     <br />
-    <div className="w-96">
+    <div className={isMobile? "w-80" : "w-96"}>
       <Input label=" Name" name="itemName"
           onChange={handleInputCreateNftChange}  />
     </div>
     <br />
     <Typography variant="h6" color="gray"> Description </Typography>
     <br />
-    <div className="w-96">
+    <div className={isMobile? "w-80" : "w-96"}>
       <Input label=" Description"  size="lg" name="itemDescription"
           onChange={handleInputCreateNftChange}/>
     </div>
     <br />
     <Typography variant="h6" color="gray"> Attributes (optional) </Typography>
     <br />
-    <div style={{ display: 'flex', alignItems: 'center' }}>
+    {
+      isMobile? (
+        <>
+  <div style={{ marginLeft: '10px',  width: '24px', marginBottom: "10px"  }}>
+    <Input
+      label="Trait"
+      size="lg"
+      onChange={handleTraitTypeChange}
+    />
+  </div>
+  <div style={{ display: 'flex', alignItems: 'center' }}>
+  <div style={{ marginLeft: '10px' }}>
+    <Input
+      label="Value"
+      size="lg"
+      onChange={handleValueChange}
+    />
+  </div>
+<IconButton color="pink" variant="text" style={{marginLeft: "20px"}} onClick={traitType && value? itemAttribute: null}>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        strokeWidth={1.5}
+        stroke="currentColor"
+        className="size-6"
+        style={{ width: '24px', height: '24px' }} // Ensure SVG fits within the button
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+        />
+      </svg>
+    </IconButton>
+    </div> 
+        </>
+      ) : (
+        <>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
           <div style={{ display: 'flex' }}>
   <div style={{ marginRight: '10px' }}>
     <Input
@@ -1171,6 +1210,9 @@ SVGs (for onchain NFTs)
       </svg>
     </IconButton>
 </div> 
+        </>
+      )
+    }
 <br />
 { addAttribute? (<Card className="h-full w-full overflow-scroll">
       <table className="w-full min-w-max table-auto text-left">

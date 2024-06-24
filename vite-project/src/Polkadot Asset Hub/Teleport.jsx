@@ -367,8 +367,53 @@ export default function PAHTeleport() {
                 Bridge DOT between Polkadot & Polkadot Asset Hub
             </Typography>
             <div style={{ marginTop: "100px" }}>
-                <div style={{display: "flex", alignItems: "center"}}>
-                <Button color="pink" className={isMobile? "rounded-full h-25 w-50" : "rounded-full h-50 w-100"} style={isMobile? {marginRight: "20px"} :{ padding: '10px 20px', marginLeft: "300px" }}>
+                {
+                    isMobile? (
+                        <>
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: isMobile ? 'column' : 'row' }}>
+  <Button color="pink" className={isMobile ? "rounded-full h-20 w-50" : "rounded-full h-50 w-100"} style={isMobile ? { marginRight: "20px" } : { padding: '10px 20px', marginLeft: "300px" }}>
+    <div style={{ display: 'flex', alignItems: 'center' }}>
+      <div className="h-10 w-10 rounded-full object-cover object-center">
+        <img
+          src={chains[0].logo}
+          alt={chains[0].name}
+          style={{ height: '100%', width: '100%', borderRadius: '50%' }}
+        />
+      </div>
+      <Typography variant="h5" style={{ marginLeft: '20px' }}>
+        {chains[0].name}
+      </Typography>
+    </div>
+  </Button>
+
+  <IconButton variant="text" style={{ padding: '10px', margin: isMobile ? '10px 0' : '0 50px' }} onClick={swapChains}>
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6" style={{ height: '24px', width: '24px' }}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" />
+    </svg>
+  </IconButton>
+
+  <Button color="black" className={isMobile ? "rounded-full h-20 w-50" : "rounded-full h-50 w-100"} style={isMobile ? { marginLeft: "20px" } : { padding: '10px 20px' }}>
+    <div style={{ display: 'flex', alignItems: 'center' }}>
+      <div className="h-10 w-10 rounded-full object-cover object-center">
+        <img
+          src={chains[1].logo}
+          alt={chains[1].name}
+          style={{ height: '100%', width: '100%', borderRadius: '50%' }}
+        />
+      </div>
+      <Typography variant="h5" style={{ marginLeft: '20px' }}>
+        {chains[1].name}
+      </Typography>
+    </div>
+  </Button>
+</div>
+
+                        </>
+                    )
+                    : (
+                        <>
+                        
+                <Button color="pink" className={isMobile? "rounded-full h-20 w-50" : "rounded-full h-50 w-100"} style={isMobile? {marginRight: "20px"} :{ padding: '10px 20px', marginLeft: "300px" }}>
                     <div style={{ display: 'flex', alignItems: 'center' }}>
                         <div className="h-10 w-10 rounded-full object-cover object-center">
                             <img
@@ -404,8 +449,11 @@ export default function PAHTeleport() {
                             </Typography>
                         </div>
                     </Button>
+
                 </div>
-                </div>
+                </>
+                    )
+                }
                 <form onSubmit={handleSubmit}>
                     <div className="w-[32rem]" style={isMobile? { marginLeft: "30px", marginTop: "50px", marginRight: "20px" } : { marginLeft: "300px", marginTop: "50px", marginRight: "300px" }}>
                     <Input 

@@ -1459,7 +1459,7 @@ null
         )}
                       <MediaRenderer src={ipfsUri}
       onClick={() => dataUrl(renderURL, JsonData)}
-                                              style={{maxWidth:"480px", minWidth: "480px", maxHeight: "480px", minHeight: "480px", borderRadius: "10px"}}
+                                              style={{width: "auto", marginLeft: "30px", borderRadius: "10px"}}
                                               className="mt-5 ml-2"
                                         alt=""
           onLoad={() => setIsLoading(false)}
@@ -1475,7 +1475,7 @@ null
             <>
             {integerPrice? (
               <>
-              <div style={isMobile? {marginLeft: "10px", marginTop: "40px"} : {float: "right", marginTop: "50px"}}>
+              <div style={isMobile? {marginLeft: "10px", marginTop: "40px"} : {float: "right", marginTop: "50px"}} className={isMobile? "overflow-scroll": undefined}>
               <Typography variant="h4">{metadata.name}</Typography>
  <Link to={`/Polkadot%20Asset%20Hub/marketplace/${collectionId}/${selectedCollectionName}`}>
  <Typography variant="h6" color="pink">{selectedCollectionName}</Typography>
@@ -1678,7 +1678,7 @@ null
               </>
             ) : (
               <> 
-              <div style={isMobile? {marginLeft: "10px", marginTop: "40px"} : {float: "right", marginTop: "50px"}}>
+              <div style={isMobile? {marginLeft: "10px", marginTop: "40px"} : {float: "right", marginTop: "50px"}} className={isMobile? "overflow-scroll": undefined}>
               <Typography variant="h4">{metadata.name}</Typography>
  <Link to={'/Polkadot%20Asset%20Hub/item'}>
  <Typography variant="h6" color="pink">{selectedCollectionName}</Typography>
@@ -1906,7 +1906,7 @@ null
           ) : (
             <>
 {fetchLoading? (
-  <div style={isMobile? {marginLeft: "10px", marginTop: "40px"}: { float: "right", marginTop: "50px" }}>
+  <div style={isMobile? {marginLeft: "10px", marginTop: "40px"}: { float: "right", marginTop: "50px" }} className={isMobile? "overflow-scroll": undefined}>
      <Typography variant="h4">{metadata.name}</Typography>
  <Link to={`/Polkadot%20Asset%20Hub/marketplace/${collectionId}/${selectedCollectionName}`}>
  <Typography variant="h6" color="pink">{selectedCollectionName}</Typography>
@@ -1989,7 +1989,7 @@ null
               }
   </div>
 ) : (
-  <div style={isMobile? {marginLeft: "10px", marginTop: "40px"} :{ float: "right", marginTop: "50px" }}>
+  <div style={isMobile? {marginLeft: "10px", marginTop: "40px"} :{ float: "right", marginTop: "50px" }} className={isMobile? "overflow-scroll": undefined}>
      <Typography variant="h4">{metadata.name}</Typography>
  <Link to={`/Polkadot%20Asset%20Hub/marketplace/${collectionId}/${selectedCollectionName}`}>
  <Typography variant="h6" color="pink">{selectedCollectionName}</Typography>

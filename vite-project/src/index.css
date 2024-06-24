@@ -224,7 +224,7 @@ word-break: break-word;
 }
 
 .Profile-Item-card{
-  width: calc(48.33% - 9px); /* Set width to one-third of the container width with some margin */
+  width: calc(51.33% - 20px); /* Set width to one-third of the container width with some margin */
   margin: 4px; /* Add margin between cards */
   display: inline-block; /* Ensure cards display in rows */
 }
