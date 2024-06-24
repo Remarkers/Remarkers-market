@@ -90,6 +90,25 @@ export default function PAHDetails() {
     const [fetchLoading, setFetchLoading] = useState()
     const [selectedImageUrl, setSelectedImageUrl] = useState(null);
     const [selectedJsondata, setJsondata] = useState(null);
+    const [isMobile, setIsMobile] = useState();
+
+    useEffect(() => {
+      const handleResize = () => {
+        setIsMobile(window.matchMedia('(max-width: 600px)').matches);
+      };
+  
+      // Initial check on mount
+      handleResize();
+  
+      // Listen for window resize events
+      window.addEventListener('resize', handleResize);
+  
+      // Cleanup the event listener on component unmount
+      return () => {
+        window.removeEventListener('resize', handleResize);
+      };
+    }, []);
+    
 
     const { collectionId, itemId } = useParams();
     const sendHandleOpen= (value) => setSendDialog(value);
@@ -1224,7 +1243,7 @@ const dataUrl = ((renderURL, JsonData) => {
             {
                 metadata? (
                     <>
-                            <div style={{float: "right", marginRight: "300px"}}>
+                            <div style={isMobile? undefined :{float: "right", marginRight: "300px"}} className={isMobile? "max-w-full" : undefined}>
  <ToastContainer
         position="top-right"
         autoClose={5000}
@@ -1423,11 +1442,40 @@ const dataUrl = ((renderURL, JsonData) => {
 
             </DialogFooter>
           </Dialog>
+          {
+                isMobile? 
+                (
+                  <>
+                             {isLoading && !error && (
+            <>
+                                            <div className="flex justify-center items-center h-screen">
+                <Spinner className="h-8 w-8" color="pink" />
+              </div>
+            </>
+           )
+          }
+        {error && (
+null
+        )}
+                      <MediaRenderer src={ipfsUri}
+      onClick={() => dataUrl(renderURL, JsonData)}
+                                              style={{maxWidth:"480px", minWidth: "480px", maxHeight: "480px", minHeight: "480px", borderRadius: "10px"}}
+                                              className="mt-5 ml-2"
+                                        alt=""
+          onLoad={() => setIsLoading(false)}
+          onError={() => {
+            setIsLoading(true);
+            setError(true);
+          }} />
+    <br />
+                  </>
+                ) : null
+               }
  {itemOwner === polkadotAddress? (
             <>
             {integerPrice? (
               <>
-              <div style={{float: "right", marginTop: "50px"}}>
+              <div style={isMobile? {marginLeft: "10px", marginTop: "40px"} : {float: "right", marginTop: "50px"}}>
               <Typography variant="h4">{metadata.name}</Typography>
  <Link to={`/Polkadot%20Asset%20Hub/marketplace/${collectionId}/${selectedCollectionName}`}>
  <Typography variant="h6" color="pink">{selectedCollectionName}</Typography>
@@ -1630,7 +1678,7 @@ const dataUrl = ((renderURL, JsonData) => {
               </>
             ) : (
               <> 
-              <div style={{float: "right", marginTop: "50px"}}>
+              <div style={isMobile? {marginLeft: "10px", marginTop: "40px"} : {float: "right", marginTop: "50px"}}>
               <Typography variant="h4">{metadata.name}</Typography>
  <Link to={'/Polkadot%20Asset%20Hub/item'}>
  <Typography variant="h6" color="pink">{selectedCollectionName}</Typography>
@@ -1858,7 +1906,7 @@ const dataUrl = ((renderURL, JsonData) => {
           ) : (
             <>
 {fetchLoading? (
-  <div style={{ float: "right", marginTop: "50px" }}>
+  <div style={isMobile? {marginLeft: "10px", marginTop: "40px"}: { float: "right", marginTop: "50px" }}>
      <Typography variant="h4">{metadata.name}</Typography>
  <Link to={`/Polkadot%20Asset%20Hub/marketplace/${collectionId}/${selectedCollectionName}`}>
  <Typography variant="h6" color="pink">{selectedCollectionName}</Typography>
@@ -1941,7 +1989,7 @@ const dataUrl = ((renderURL, JsonData) => {
               }
   </div>
 ) : (
-  <div style={{ float: "right", marginTop: "50px" }}>
+  <div style={isMobile? {marginLeft: "10px", marginTop: "40px"} :{ float: "right", marginTop: "50px" }}>
      <Typography variant="h4">{metadata.name}</Typography>
  <Link to={`/Polkadot%20Asset%20Hub/marketplace/${collectionId}/${selectedCollectionName}`}>
  <Typography variant="h6" color="pink">{selectedCollectionName}</Typography>
@@ -2046,7 +2094,11 @@ const dataUrl = ((renderURL, JsonData) => {
                </div>
                <br />
     <div style={{marginLeft: "40px", marginTop: "40px"}}>
-           {isLoading && !error && (
+
+    {
+                isMobile? null : (
+                  <>
+                             {isLoading && !error && (
             <>
                                             <div className="flex justify-center items-center h-screen">
                 <Spinner className="h-8 w-8" color="pink" />
@@ -2067,7 +2119,9 @@ null
             setError(true);
           }} />
     <br />
-
+                  </>
+                )
+               }
       <Dialog open={swapSize === "xl"} size="xl" handler={swapHandleOpen}>
       <ToastContainer
         position="top-right"
@@ -2145,12 +2199,25 @@ null
               <ArrowLeftIcon strokeWidth={2} className="h-4 w-4" color="pink" /> Previous
             </Button>
             <div className="flex items-center gap-2">
-              <IconButton {...getOwnedItemProps(ownedactive)} color="pink" variant="outlined">{ownedactive}</IconButton>
+              {
+                isMobile? (
+                  <>
+                                <IconButton {...getOwnedItemProps(ownedactive)} color="pink" variant="outlined">{ownedactive}</IconButton>
+              <IconButton {...getOwnedItemProps(ownedactive + 1)} color="pink">{ownedactive + 1}</IconButton>
+              <IconButton {...getOwnedItemProps(ownedactive + 2)} color="pink">{ownedactive + 2}</IconButton>
+              <IconButton {...getOwnedItemProps(ownedactive + 3)} color="pink">{ownedactive + 3}</IconButton>
+                  </>
+                ) : (
+                  <>
+                                <IconButton {...getOwnedItemProps(ownedactive)} color="pink" variant="outlined">{ownedactive}</IconButton>
               <IconButton {...getOwnedItemProps(ownedactive + 1)} color="pink">{ownedactive + 1}</IconButton>
               <IconButton {...getOwnedItemProps(ownedactive + 2)} color="pink">{ownedactive + 2}</IconButton>
               <IconButton {...getOwnedItemProps(ownedactive + 3)} color="pink">{ownedactive + 3}</IconButton>
               <IconButton {...getOwnedItemProps(ownedactive + 4)} color="pink">{ownedactive + 4}</IconButton>
               <IconButton {...getOwnedItemProps(ownedactive + 5)} color="pink">{ownedactive + 5}</IconButton>
+                  </>
+                )
+              }
             </div>
             <Button
               variant="text"
@@ -2267,10 +2334,11 @@ null
     ) : null
   }
 </Dialog>
+</div>
 
     { isLoading? (
   null
-    ) : (<> <div style={{ marginLeft: "600px"}}>
+    ) : (<> <div style={isMobile? undefined :{ marginLeft: "600px"}}>
       <Card>
         <CardHeader>
 
@@ -2294,7 +2362,7 @@ null
                 <div>
                   <div className="traits">
                     {metadata.attributes.map((attribute, index) => (
-                      <div key={index} className="traits-item">
+                      <div key={index} className="mobile-traits-item">
                         <Card>
                           <CardBody>
                             <Typography variant="h6" color="pink" className="mb-2">
@@ -2437,7 +2505,6 @@ null
         </CardFooter>
       </Card>
     </div></>)}
-    </div>
                     </>
                 ) : (
 <div className="flex justify-center items-center h-screen">

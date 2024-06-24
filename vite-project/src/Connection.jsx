@@ -178,12 +178,11 @@ console.log(JSON.parse(localStorage.getItem("Account")))
               }
         
               const Novawallet = async () => {
-                const Novawallet = window.injectedWeb3 && window.injectedWeb3['Nova Wallet'];
+                const Novawallet = await web3Enable('remarker');
                 console.log(Novawallet);
               
                 try {
-                  const extension = await Novawallet.enable();
-                  const getAccounts = await extension.accounts.get();
+                  const getAccounts = await web3Accounts();
               
                   if (getAccounts && getAccounts.length > 0) {
                     setAccount(getAccounts)
@@ -461,26 +460,27 @@ console.log(JSON.parse(localStorage.getItem("Account")))
               {
                 currentPage === 2 && (
                   <>
-                  <Button onClick={prevPage} variant='text' color='pink'> &#x2190; Back to wallet selection</Button>
-                  <Button onClick={Disconnect} color='pink' variant='md' style={{ display: 'flex', alignItems: 'center', float: 'right' }}>Disconnect</Button>
+                  <Button onClick={prevPage} variant='text' color='pink'  size={isMobile ? 'sm' : undefined}> &#x2190; Back to wallet selection</Button>
+                  <Button onClick={Disconnect} color='pink' variant='md' style={{ display: 'flex', alignItems: 'center', float: 'right' }} size={isMobile ? 'sm' : undefined}>Disconnect</Button>
     
                   { accounts.map((account) => (
         <>
         <div key={account.address}>
-          <MenuItem className="mb-4 flex items-center justify-center gap-3 !py-4 shadow-md" onClick={() => {selectAccount(account), selectedAddress(account)}}>
+          <MenuItem className={`mb-4 flex items-center justify-center gap-3 !py-4 shadow-md ${isMobile? 'max-w-full overflow-hidden': undefined}`} onClick={() => {selectAccount(account), selectedAddress(account)}}>
           <Identicon
           value={account?.address}
-          size={32}
+          size={isMobile? 32: 20}
           theme="polkadot" className='icon' />
+            <div className={isMobile? `flex flex-col overflow-hidden max-w-full` : undefined}>
                         <Typography
-                          className={`uppercase ${theme}`}
+                          className={`uppercase ${theme} ${isMobile? 'truncate' :undefined}`}
                           color="blue-gray"
                           variant="h6"
                           key={account.name}
                         >
                           {account.name}
                           <Typography
-                        className={`lowercase text-nowrap uppercase ${theme}`}
+                        className={`lowercase text-nowrap uppercase ${isMobile? 'text-nowrap truncate' : undefined} ${theme}`}
                         color="blue-gray"
                         variant="h12"
                         key={account.address}
@@ -488,6 +488,7 @@ console.log(JSON.parse(localStorage.getItem("Account")))
                           {account.address}
                         </Typography>
                         </Typography>
+                        </div>
                       </MenuItem>
           </div>
           </>

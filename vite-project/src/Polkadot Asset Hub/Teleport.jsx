@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
     Card,
     CardBody,
@@ -42,6 +42,24 @@ export default function PAHTeleport() {
         },
     ]);
     const [amount, setAmount] = useState("");
+    const [isMobile, setIsMobile] = useState();
+
+    useEffect(() => {
+      const handleResize = () => {
+        setIsMobile(window.matchMedia('(max-width: 600px)').matches);
+      };
+  
+      // Initial check on mount
+      handleResize();
+  
+      // Listen for window resize events
+      window.addEventListener('resize', handleResize);
+  
+      // Cleanup the event listener on component unmount
+      return () => {
+        window.removeEventListener('resize', handleResize);
+      };
+    }, []);
 
     const swapChains = () => {
         setChains([chains[1], chains[0]]);
@@ -349,7 +367,8 @@ export default function PAHTeleport() {
                 Bridge DOT between Polkadot & Polkadot Asset Hub
             </Typography>
             <div style={{ marginTop: "100px" }}>
-                <Button color="pink" className="rounded-full h-50 w-100" style={{ padding: '10px 20px', marginLeft: "300px" }}>
+                <div style={{display: "flex", alignItems: "center"}}>
+                <Button color="pink" className={isMobile? "rounded-full h-25 w-50" : "rounded-full h-50 w-100"} style={isMobile? {marginRight: "20px"} :{ padding: '10px 20px', marginLeft: "300px" }}>
                     <div style={{ display: 'flex', alignItems: 'center' }}>
                         <div className="h-10 w-10 rounded-full object-cover object-center">
                             <img
@@ -364,14 +383,14 @@ export default function PAHTeleport() {
                     </div>
                 </Button>
 
-                <IconButton variant="text" style={{ padding: '10px', marginLeft: "100px" }} onClick={swapChains}>
+                <IconButton variant="text" style={isMobile?  { padding: '10px' } :{ padding: '10px', marginLeft: "100px" }} onClick={swapChains}>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6" style={{ height: '24px', width: '24px' }}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" />
                     </svg>
                 </IconButton>
 
                 <div style={{ float: "right", marginRight: "300px" }}>
-                    <Button color="black" className="rounded-full h-50 w-100" style={{ padding: '10px 20px' }}>
+                    <Button color="black" className="rounded-full h-50 w-100" style={isMobile? {marginLeft: "20px"} : { padding: '10px 20px' }}>
                         <div style={{ display: 'flex', alignItems: 'center' }}>
                             <div className="h-10 w-10 rounded-full object-cover object-center">
                                 <img
@@ -386,8 +405,9 @@ export default function PAHTeleport() {
                         </div>
                     </Button>
                 </div>
+                </div>
                 <form onSubmit={handleSubmit}>
-                    <div className="w-[32rem]" style={{ marginLeft: "300px", marginTop: "50px", marginRight: "300px" }}>
+                    <div className="w-[32rem]" style={isMobile? { marginLeft: "30px", marginTop: "50px", marginRight: "20px" } : { marginLeft: "300px", marginTop: "50px", marginRight: "300px" }}>
                     <Input 
     label="Send Amount" 
     onChange={handleInput} 
@@ -397,7 +417,7 @@ export default function PAHTeleport() {
 />
                     </div>
 
-                    <Button className="w-[32rem]" style={{ marginLeft: "550px", marginTop: "50px", marginRight: "300px", marginBottom: "100px" }} color="pink" type="submit">Confirm Teleport</Button>
+                    <Button className="w-[32rem]" style={isMobile? { marginLeft: "160px", marginTop: "50px", marginRight: "20px", marginBottom: "100px" }  : { marginLeft: "550px", marginTop: "50px", marginRight: "300px", marginBottom: "100px" }} color="pink" type="submit">Confirm Teleport</Button>
                 </form>
             </div>
         </>

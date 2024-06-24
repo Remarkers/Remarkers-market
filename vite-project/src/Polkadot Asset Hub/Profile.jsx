@@ -58,6 +58,24 @@ export default function PAHProfile( ) {
     const [api, setApi] = useState()
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(false);
+    const [isMobile, setIsMobile] = useState();
+
+    useEffect(() => {
+      const handleResize = () => {
+        setIsMobile(window.matchMedia('(max-width: 600px)').matches);
+      };
+  
+      // Initial check on mount
+      handleResize();
+  
+      // Listen for window resize events
+      window.addEventListener('resize', handleResize);
+  
+      // Cleanup the event listener on component unmount
+      return () => {
+        window.removeEventListener('resize', handleResize);
+      };
+    }, []);
 
     const owned = async() => {
         try {
@@ -226,13 +244,13 @@ export default function PAHProfile( ) {
       />
       <Identicon
           value={Account?.address}
-          size={100}
+          size={isMobile? 70 : 100}
           theme="polkadot"
           className='icon-float-center'
       />
       </div>
       <br />
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center',  fontSize: '25px'}}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center',  fontSize: '15px'}}>
       <span style={{ marginLeft: '8px', textAlign: 'center' }} className={`${theme}`}>
           {Account?.address}
       </span>
@@ -293,7 +311,7 @@ const handleReload = () => {
           localStorage.setItem('selectedCollectionName', JSON.stringify(item.collectionName));
             localStorage.setItem('selectedCollectionId', JSON.stringify(item.collectionId));
             localStorage.setItem('selectedCollectionItems', JSON.stringify(item.itemId));
-            }} className="Item-card">
+            }} className="Profile-Item-card">
                             <Link to={`/Polkadot%20Asset%20Hub/Details/${item.collectionId}/${item.itemId}`}>
           <Card      key={index}>
             <CardHeader shadow={false} floated={false} className="h-100">
@@ -343,23 +361,37 @@ const handleReload = () => {
         variant="text"
         className="flex items-center gap-2"
         onClick={prev}
+        size={isMobile? "sm" : undefined}
         disabled={active === 1}
         color="pink"
       >
         <ArrowLeftIcon strokeWidth={2} className="h-4 w-4" color="pink"/> Previous
       </Button>
       <div className="flex items-center gap-2">
-        <IconButton {...getItemProps(active)} color="pink" variant="outlined">{active}</IconButton>
+        {
+          isMobile? (
+            <>
+                    <IconButton {...getItemProps(active)} color="pink" variant="outlined">{active}</IconButton>
+        <IconButton {...getItemProps(active + 1 )} color="pink">{active + 1}</IconButton>
+        <IconButton {...getItemProps(active + 2)} color="pink">{active + 2}</IconButton>
+            </>
+          ) : (
+            <>
+                    <IconButton {...getItemProps(active)} color="pink" variant="outlined">{active}</IconButton>
         <IconButton {...getItemProps(active + 1 )} color="pink">{active + 1}</IconButton>
         <IconButton {...getItemProps(active + 2)} color="pink">{active + 2}</IconButton>
         <IconButton {...getItemProps(active + 3)} color="pink">{active + 3}</IconButton>
         <IconButton {...getItemProps(active + 4)} color="pink">{active + 4}</IconButton>
         <IconButton {...getItemProps(active + 5)} color="pink">{active + 5}</IconButton>
+            </>
+          )
+        }
       </div>
       <Button
         variant="text"
         className="flex items-center gap-2"
         onClick={next}
+        size={isMobile? "sm" : undefined}
         color="pink"
       >
         Next
@@ -389,7 +421,7 @@ const ipfsUri = `ipfs://${ipfsHash}`;
           localStorage.setItem('selectedCollectionName', JSON.stringify(item.itemData.name));
           localStorage.setItem('selectedCollectionImage', JSON.stringify(item.itemData.image));
           localStorage.setItem('selectedCollectionDescription', JSON.stringify(item.itemData.description));
-        }} className="Item-card">
+        }} className="Profile-Item-card">
           <CardHeader shadow={false} floated={false} className="h-100">
           <MediaRenderer src={ipfsUri}
                 className="h-full w-full object-cover" style={{borderRadius: "10px",  display: isLoading || error ? 'none' : 'block' }}

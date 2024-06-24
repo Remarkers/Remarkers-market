@@ -216,10 +216,24 @@ word-break: break-word;
   margin: 4px; /* Add margin between cards */
   display: inline-block; /* Ensure cards display in rows */
 }
+
+.Mobile-Item-card{
+  width: calc(51.33% - 20px); /* Set width to one-third of the container width with some margin */
+  margin: 4px; /* Add margin between cards */
+  display: inline-block; /* Ensure cards display in rows */
+}
+
+.Profile-Item-card{
+  width: calc(48.33% - 9px); /* Set width to one-third of the container width with some margin */
+  margin: 4px; /* Add margin between cards */
+  display: inline-block; /* Ensure cards display in rows */
+}
+
 .pink-tabs {
   color: #E6007A; /* Set the background color to pink */
   /* Add any additional styling as needed */
 }
+
 .traits {
   width: calc(45.33% - 0px); /* Set width to one-third of the container width with some margin */
   margin: 8px; /* Add margin between cards */
@@ -229,6 +243,12 @@ word-break: break-word;
 .traits-item {
   width: calc(45.33% - 0px); /* Set width to one-third of the container width with some margin */
   margin: 8px; /* Add margin between cards */
+  display: inline-block; /* Ensure cards display in rows */
+}
+
+.mobile-traits-item {
+  width: calc(200.33% - 0px); /* Set width to one-third of the container width with some margin */
+  margin: 4px; /* Add margin between cards */
   display: inline-block; /* Ensure cards display in rows */
 }
 

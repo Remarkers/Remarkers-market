@@ -107,6 +107,24 @@ export default function PAHItems() {
   const [selectedJsondata, setJsondata] = useState(null);
   const [swapLoading, setSwapLoading] = useState()
   const [fetchLoading, setFetchLoading] = useState()
+  const [isMobile, setIsMobile] = useState();
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.matchMedia('(max-width: 600px)').matches);
+    };
+
+    // Initial check on mount
+    handleResize();
+
+    // Listen for window resize events
+    window.addEventListener('resize', handleResize);
+
+    // Cleanup the event listener on component unmount
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
 
     const [selected, setSelected] = React.useState();
   const setSelectedItem = (value) => setSelected(value);
@@ -1601,17 +1619,133 @@ const ipfsItemUri = `ipfs://${ipfsItemHash}`;
 {error && (
 <></>
 )}
+                                       {
+                                        isMobile? (
+                                          <>
+                                          <div style={isMobile? {marginTop: "20px"} :{ marginLeft: "50px" }} className={isMobile? "overflow-hidden max-w-full text-nowrap": undefined}>
+                                          <div style={{display: "flex", alignItems: "center" }}>
             <MediaRenderer src={ipfsUri}
                                        size="xxl"
                                        variant="rounded"
-                                       style={{ width: "300px", height: "300px", marginLeft: "20px", marginTop: "20px", borderRadius: "10px" }}    onClick={() => dataUrl(renderURL, JsonData)}
+                                       style={isMobile?  { width: "100px", height: "100px", marginLeft: "10px", marginTop: "10px", borderRadius: "10px" } : { width: "300px", height: "300px", marginLeft: "20px", marginTop: "20px", borderRadius: "10px" }}    onClick={() => dataUrl(renderURL, JsonData)}
                                        onLoad={() => setIsLoading(false)}
                                        onError={() => {
                                          setIsLoading(false);
                                          setError(true);
                                        }}/>
-                <div style={{ marginLeft: "50px" }}>
-                    <Typography variant="h5">
+                                                                                    <Typography style={{marginLeft: "20px"}} variant="h5">
+                        {nameData}
+                    </Typography>
+                    </div>
+                    <div style={{marginTop: "30px", marginLeft: "10px"}}>
+                    <Typography color="blue-gray" className="font-medium" variant="h6" style={{ display: 'flex', alignItems: 'center', marginTop: "5px" }}>
+                <Typography color="blue-gray" className="font-medium" variant="h6" style={{ marginRight: '10px',  }}>
+                     by
+                </Typography>
+                <Identicon
+                    value={ownerData}
+                    size={20}
+                    theme="polkadot" className='icon-float-left' /> {    ownerData.length > 10 ? `${    ownerData.substring(0, 10)}...${    ownerData.slice(-10)}` :     ownerData}
+            </Typography>
+            </div>
+            <div style={{marginLeft: "10px"}}>
+                    <Typography variant="h9" style={{marginTop: "20px"}}>
+            {descriptionData.length > 200 ? (
+  <>
+    {`${descriptionData.substring(0, 200)}...`}
+    <Button onClick={descriptionHandleOpen} size="sm" variant="outlined" color="pink" className="lowercase">
+      Read more
+    </Button>
+  </>
+) : (
+  descriptionData
+)}
+
+
+            </Typography>
+            </div>
+            <br />
+            <br />
+            <div style={{ display: "flex", flexDirection: "row", alignItems: "center", flexWrap: "wrap" }}>
+  <div style={{ margin: "10px" }}>
+    <Typography style={{ marginTop: "30px" }} variant="h5" color="pink">
+      {volume === null ? 0 : volume} DOT
+    </Typography>
+    <Typography style={{ marginTop: "5px" }} variant="h7">
+      All volume
+    </Typography>
+  </div>
+  <div style={{ margin: "10px" }}>
+    <Typography style={{ marginTop: "30px" }} variant="h5" color="pink">
+      {floor === null ? 0 : floor} DOT
+    </Typography>
+    <Typography style={{ marginTop: "5px" }} variant="h7">
+      Floor
+    </Typography>
+  </div>
+  <div style={{ margin: "10px" }}>
+    <Typography style={{ marginTop: "30px" }} variant="h5" color="pink">
+      {distribution === null ? 0 : distribution}
+    </Typography>
+    <Typography style={{ marginTop: "5px" }} variant="h7">
+      Owners
+    </Typography>
+  </div>
+  <div style={{ margin: "10px" }}>
+    <Typography style={{ marginTop: "30px" }} variant="h5" color="pink">
+      {highestSale === null ? 0 : highestSale} DOT
+    </Typography>
+    <Typography style={{ marginTop: "5px" }} variant="h7">
+      Top Sale
+    </Typography>
+  </div>
+  <div style={{ margin: "10px" }}>
+    <Typography style={{ marginTop: "30px" }} variant="h5" color="pink">
+      {royalty === null ? 0 : royalty} %
+    </Typography>
+    <Typography style={{ marginTop: "5px" }} variant="h7">
+      Royality
+    </Typography>
+  </div>
+  <div style={{ margin: "10px" }}>
+    <Typography style={{ marginTop: "30px" }} variant="h5" color="pink">
+      { !maxSupply || maxSupply === 0 || maxSupply.length === 0 ? "Unlimited" : maxSupply }
+    </Typography>
+    <Typography style={{ marginTop: "5px" }} variant="h7">
+      Total supply
+    </Typography>
+  </div>
+  <div style={{ margin: "10px" }}>
+    <Typography style={{ marginTop: "30px" }} variant="h5" color="pink">
+      {filteredPrices.length} {nftCount ? "/" : null} {nftCount}
+    </Typography>
+    <Typography style={{ marginTop: "5px" }} variant="h7">
+      Listed / Minted
+    </Typography>
+  </div>
+</div>
+
+</div>
+                                          </>
+                                        ): (
+                                          <>
+                                                      <MediaRenderer src={ipfsUri}
+                                       size="xxl"
+                                       variant="rounded"
+                                       style={isMobile?  { width: "100px", height: "100px", marginLeft: "10px", marginTop: "10px", borderRadius: "10px" } : { width: "300px", height: "300px", marginLeft: "20px", marginTop: "20px", borderRadius: "10px" }}    onClick={() => dataUrl(renderURL, JsonData)}
+                                       onLoad={() => setIsLoading(false)}
+                                       onError={() => {
+                                         setIsLoading(false);
+                                         setError(true);
+                                       }}/>
+                                          </>
+                                        )
+                                       }
+                <div style={isMobile? {marginTop: "20px"} :{ marginLeft: "50px" }} className={isMobile? "overflow-hidden max-w-full text-nowrap": undefined}>
+                  {
+                    isMobile? null : (
+                      <>
+                                          <Typography variant={ isMobile? "h6" : "h5"}>
                         {nameData}
                     </Typography>
                     <Typography color="blue-gray" className="font-medium" variant="h6" style={{ display: 'flex', alignItems: 'center', marginTop: "5px" }}>
@@ -1697,6 +1831,9 @@ const ipfsItemUri = `ipfs://${ipfsItemHash}`;
     </Typography>
   </div>
 </div>
+</>
+                    )
+                  }
 
 
                 </div>
@@ -1862,43 +1999,15 @@ const ipfsItemUri = `ipfs://${ipfsItemHash}`;
               activeTab === "Items"? (
                 <>
                 <div style={{ display: "flex", alignItems: "center" }}>
-                <Button color="pink" size="md" style={{marginLeft: "20px"}} onClick={openDrawer}>
+                <Button color="pink" size={isMobile? "sm": "md"} style={isMobile? {marginLeft: "2px"} :{marginLeft: "20px"}} onClick={openDrawer}>
   <div style={{ display: "flex", alignItems: "center" }}>
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6" style={{ marginRight: "8px" }}>
       <path strokeLinecap="round" strokeLinejoin="round" d="M12 3c2.755 0 5.455.232 8.083.678.533.09.917.556.917 1.096v1.044a2.25 2.25 0 0 1-.659 1.591l-5.432 5.432a2.25 2.25 0 0 0-.659 1.591v2.927a2.25 2.25 0 0 1-1.244 2.013L9.75 21v-6.568a2.25 2.25 0 0 0-.659-1.591L3.659 7.409A2.25 2.25 0 0 1 3 5.818V4.774c0-.54.384-1.006.917-1.096A48.32 48.32 0 0 1 12 3Z" />
     </svg> Filter
   </div>
 </Button>
-<div className="flex items-center gap-4" style={{marginLeft: "100px"}}>
-      <Button
-        variant="text"
-        className="flex items-center gap-2"
-        onClick={prev}
-        disabled={active === 1}
-        color="pink"
-      >
-        <ArrowLeftIcon strokeWidth={2} className="h-4 w-4" color="pink"/> Previous
-      </Button>
-      <div className="flex items-center gap-2">
-        <IconButton {...getItemProps(active)} color="pink" variant="outlined">{active}</IconButton>
-        <IconButton {...getItemProps(active + 1 )} color="pink">{active + 1}</IconButton>
-        <IconButton {...getItemProps(active + 2)} color="pink">{active + 2}</IconButton>
-        <IconButton {...getItemProps(active + 3)} color="pink">{active + 3}</IconButton>
-        <IconButton {...getItemProps(active + 4)} color="pink">{active + 4}</IconButton>
-        <IconButton {...getItemProps(active + 5)} color="pink">{active + 5}</IconButton>
-      </div>
-      <Button
-        variant="text"
-        className="flex items-center gap-2"
-        onClick={next}
-        color="pink"
-      >
-        Next
-        <ArrowRightIcon strokeWidth={2} className="h-4 w-4" color="pink"/>
-      </Button>
-    </div>
-    <div style={{ marginLeft: "auto", minWidth: "200px" }}> {/* Add margin for spacing and set a minimum width */}
-    <Select label=" Sort" value={filterOption} onChange={(value) => {setFilterOption(value), getData(value), setData([])}}>
+    <div style={isMobile? { marginLeft: "auto", minWidth: "20px"} :{ marginLeft: "auto", minWidth: "200px" }}> {/* Add margin for spacing and set a minimum width */}
+    <Select label=" Sort" size={isMobile? "sm" : "md"} value={filterOption} onChange={(value) => {setFilterOption(value), getData(value), setData([])}}>
       <Option value={optionValues.RecentlyMinted}>Recently Minted</Option>
       <Option value={optionValues.EarliestMinted}>Earliest Minted</Option>
       <Option value={optionValues.PriceHighToLow}> Price High To Low</Option>
@@ -2023,7 +2132,7 @@ const ipfsItemUri = `ipfs://${ipfsItemHash}`;
       return (
       <Card
         key={index}
-        className="Item-card"
+        className={isMobile?"Mobile-Item-card": "Item-card"}
         onClick={() => {
           selectedItems(item);
           handleOpen("xl");
@@ -2088,34 +2197,49 @@ const ipfsItemUri = `ipfs://${ipfsItemHash}`;
 <br />
 <br />
 <br />
-<div className="flex items-center gap-4" style={{marginLeft: "400px"}}>
+<div className={isMobile ? "flex items-center gap-2" :"flex items-center gap-2"} style={isMobile? {marginLeft: "2px"} :{marginLeft: "100px"}}>
       <Button
         variant="text"
-        className="flex items-center gap-2"
+        className={isMobile ? "flex items-center gap-2" :"flex items-center gap-2"}
         onClick={prev}
+        size={isMobile? "md" : "md"}
         disabled={active === 1}
         color="pink"
       >
-        <ArrowLeftIcon strokeWidth={2} className="h-4 w-4" color="pink"/> Previous
+        <ArrowLeftIcon strokeWidth={2} className={isMobile? "h-4 w-4" :"h-4 w-4"} color="pink"/> Previous
       </Button>
-      <div className="flex items-center gap-2">
-        <IconButton {...getItemProps(active)} color="pink" variant="outlined">{active}</IconButton>
-        <IconButton {...getItemProps(active + 1 )} color="pink">{active + 1}</IconButton>
+      <div className={isMobile ? "flex items-center gap-2" :"flex items-center gap-2"}>
+        {
+          isMobile? (
+            <>
+                    <IconButton {...getItemProps(active)} color="pink" variant="outlined">{active}</IconButton>
+                    <IconButton {...getItemProps(active + 1 )} color="pink">{active + 1}</IconButton>
+        <IconButton {...getItemProps(active + 2)} color="pink">{active + 2}</IconButton>
+            </>
+          ) : (
+            <>
+                    <IconButton {...getItemProps(active)} color="pink" variant="outlined">{active}</IconButton>
+                    <IconButton {...getItemProps(active + 1 )} color="pink">{active + 1}</IconButton>
         <IconButton {...getItemProps(active + 2)} color="pink">{active + 2}</IconButton>
         <IconButton {...getItemProps(active + 3)} color="pink">{active + 3}</IconButton>
         <IconButton {...getItemProps(active + 4)} color="pink">{active + 4}</IconButton>
         <IconButton {...getItemProps(active + 5)} color="pink">{active + 5}</IconButton>
+            </>
+          )
+        }
       </div>
       <Button
         variant="text"
-        className="flex items-center gap-2"
+        className={isMobile ? "flex items-center gap-2" :"flex items-center gap-2"}
         onClick={next}
+        size={isMobile? "md" : "md"}
         color="pink"
       >
         Next
-        <ArrowRightIcon strokeWidth={2} className="h-4 w-4" color="pink"/>
+        <ArrowRightIcon strokeWidth={2} className={isMobile? "h-4 w-4" :"h-4 w-4"} color="pink"/>
       </Button>
     </div>
+    <br />
 
 
 
@@ -2271,6 +2395,21 @@ const ipfsItemUri = `ipfs://${ipfsItemHash}`;
         {
   itemsActiveTab ==="Overview"? (
     <>
+              {
+            isMobile? (
+              <>
+                        <Card className="w-full  max-w-lg mx-auto shadow-lg overflow-hidden">
+    <CardBody className="w-full ">
+    <MediaRenderer src={ipfsItemUri} alt=""
+                style={{ width: '100%', height: 'auto' }} />
+    </CardBody>
+    <CardFooter className="pt-0 text-center">
+      
+    </CardFooter>
+</Card>
+              </>
+            ) : null
+          }
           {item && item.currentOwner === polkadotAddress? (
             <>
             {price? (
@@ -2694,7 +2833,10 @@ const ipfsItemUri = `ipfs://${ipfsItemHash}`;
                  )}
             </>
           )}
-          <Card className="w-full  max-w-lg mx-auto shadow-lg overflow-hidden">
+          {
+            isMobile? null : (
+              <>
+                        <Card className="w-full  max-w-lg mx-auto shadow-lg overflow-hidden">
     <CardBody className="w-full ">
     <MediaRenderer src={ipfsItemUri} alt=""
                 style={{ width: '100%', height: 'auto' }} />
@@ -2703,6 +2845,9 @@ const ipfsItemUri = `ipfs://${ipfsItemHash}`;
       
     </CardFooter>
 </Card>
+              </>
+            )
+          }
 
 <Card className="mt-20 w-full   ">
         <CardBody>
@@ -2740,7 +2885,7 @@ const ipfsItemUri = `ipfs://${ipfsItemHash}`;
         <div>
           <div className="traits">
   {itemMetadata.attributes.map((attribute, index) => (
-    <div key={index} className="traits-item">
+    <div key={index} className={isMobile? "mobile-traits-item" : "traits-item"}>
       <Card>
         <CardBody>
           <Typography variant="h6" color="pink" className="mb-2">
@@ -3068,12 +3213,25 @@ const ipfsItemUri = `ipfs://${ipfsItemHash}`;
               <ArrowLeftIcon strokeWidth={2} className="h-4 w-4" color="pink" /> Previous
             </Button>
             <div className="flex items-center gap-2">
-              <IconButton {...getOwnedItemProps(ownedactive)} color="pink" variant="outlined">{ownedactive}</IconButton>
+              {
+                isMobile? (
+                  <>
+                                <IconButton {...getOwnedItemProps(ownedactive)} color="pink" variant="outlined">{ownedactive}</IconButton>
+              <IconButton {...getOwnedItemProps(ownedactive + 1)} color="pink">{ownedactive + 1}</IconButton>
+              <IconButton {...getOwnedItemProps(ownedactive + 2)} color="pink">{ownedactive + 2}</IconButton>
+              <IconButton {...getOwnedItemProps(ownedactive + 3)} color="pink">{ownedactive + 3}</IconButton>
+                  </>
+                ) : (
+                  <>
+                                <IconButton {...getOwnedItemProps(ownedactive)} color="pink" variant="outlined">{ownedactive}</IconButton>
               <IconButton {...getOwnedItemProps(ownedactive + 1)} color="pink">{ownedactive + 1}</IconButton>
               <IconButton {...getOwnedItemProps(ownedactive + 2)} color="pink">{ownedactive + 2}</IconButton>
               <IconButton {...getOwnedItemProps(ownedactive + 3)} color="pink">{ownedactive + 3}</IconButton>
               <IconButton {...getOwnedItemProps(ownedactive + 4)} color="pink">{ownedactive + 4}</IconButton>
               <IconButton {...getOwnedItemProps(ownedactive + 5)} color="pink">{ownedactive + 5}</IconButton>
+                  </>
+                )
+              }
             </div>
             <Button
               variant="text"

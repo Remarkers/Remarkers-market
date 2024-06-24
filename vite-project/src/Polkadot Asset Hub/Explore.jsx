@@ -111,7 +111,7 @@ export default function PAHExplore() {
       <br />
       <br />
       {data.length > 0 ? (
-        <Card className={isMobile ? 'mobilecatalog-card' : 'h-full w-full overflow-scroll'}>
+        <Card className={isMobile ? 'max-w-full overflow-scroll' : 'h-full w-full overflow-scroll'}>
           <table className="w-full min-w-max table-auto text-left">
             <thead>
               <tr>

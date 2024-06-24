@@ -75,6 +75,25 @@ export default function PAHCreate( ) {
       }));
     }, [addAttribute]);
 
+    const [isMobile, setIsMobile] = useState();
+
+    useEffect(() => {
+      const handleResize = () => {
+        setIsMobile(window.matchMedia('(max-width: 600px)').matches);
+      };
+  
+      // Initial check on mount
+      handleResize();
+  
+      // Listen for window resize events
+      window.addEventListener('resize', handleResize);
+  
+      // Cleanup the event listener on component unmount
+      return () => {
+        window.removeEventListener('resize', handleResize);
+      };
+    }, []);
+
     const { mutateAsync: upload, isLoading } = useStorageUpload();
  
     async function uploadData() {
@@ -700,7 +719,7 @@ export default function PAHCreate( ) {
           
     return (
         <>
-        <div style={{marginLeft: "400px", marginRight: "400px"}}>
+        <div style={isMobile? {marginLeft: "20px", marginRight: "20px"} : {marginLeft: "400px", marginRight: "400px"}}>
       <Typography variant="h3" style={{marginTop: "50px"}}>Create NFT on Polkadot</Typography>
       <ToastContainer
         position="top-right"
@@ -860,10 +879,7 @@ export default function PAHCreate( ) {
             supported file formats are : Images
 Videos
 Audio files
-3D Models
 SVGs (for onchain NFTs)
-iframes and HTML
-If none of these are appropriate, the fallback is a link to the asset
           </Typography>
         </div>
       }
@@ -1096,8 +1112,6 @@ If none of these are appropriate, the fallback is a link to the asset
     image/jpeg, image/png, image/gif, image/svg+xml, image/webp, 
     video/mp4, video/ogg, video/webm, video/quicktime, video/x-msvideo, video/x-matroska,
     audio/mpeg, audio/ogg, audio/wav, audio/webm, audio/aac,
-    model/gltf-binary, model/gltf+json, model/obj, model/stl,
-    text/html, application/xhtml+xml
   "
   type="file"
   className="hidden"
