@@ -341,8 +341,11 @@ export default function PAHTeleport() {
     const getMinValue = () => {
         if (chains[0].name === "Polkadot Asset Hub") {
             return 1.05;
+        } else {
+            if(chains[0].name === "Polkadot") {
+                return 0.02;
+            }
         }
-        return 0.02;
     };
 
 
@@ -465,7 +468,7 @@ export default function PAHTeleport() {
 />
                     </div>
 
-                    <Button className="w-[32rem]" style={isMobile? { marginLeft: "160px", marginTop: "50px", marginRight: "20px", marginBottom: "100px" }  : { marginLeft: "550px", marginTop: "50px", marginRight: "300px", marginBottom: "100px" }} color="pink" type="submit">Confirm Teleport</Button>
+                    <Button className="w-[32rem]" style={isMobile? { marginLeft: "100px", marginTop: "50px", marginRight: "0px", marginBottom: "100px" }  : { marginLeft: "550px", marginTop: "50px", marginRight: "300px", marginBottom: "100px" }} color="pink" type="submit">Confirm Teleport</Button>
                 </form>
             </div>
         </>
