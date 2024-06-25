@@ -178,7 +178,7 @@ console.log(JSON.parse(localStorage.getItem("Account")))
               }
         
               const Novawallet = async () => {
-                const Novawallet = await web3Enable('remarker');
+                const Novawallet = await window.injectedWeb3['Nova Wallet'];
                 console.log(Novawallet);
               
                 try {
