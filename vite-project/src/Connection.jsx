@@ -182,8 +182,7 @@ console.log(JSON.parse(localStorage.getItem("Account")))
                 console.log(Novawallet);
               
                 try {
-                  const extension = await Novawallet.enable();
-                  const getAccounts = await extension.accounts.get();
+                  const getAccounts = await web3Accounts();
               
                   if (getAccounts && getAccounts.length > 0) {
                     setAccount(getAccounts)
