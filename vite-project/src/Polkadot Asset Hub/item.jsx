@@ -57,6 +57,7 @@ import dotLogo from '/src/assets/statemint-native-dot.png';
 import usdtLogo from '/src/assets/logo.png';
 import usdcLogo from '/src/assets/usd-coin-usdc-logo.png';
 import dotWhiteLogo from '/src/assets/Polkadot_Token_PinkOnWhite.png';
+import { Connection } from "../Connection";
 
 export default function PAHItems() {
     const [data, setData] = useState([]); // Initialize data as an empty array
@@ -193,7 +194,7 @@ export default function PAHItems() {
       const descriptionData = JSON.parse(localStorage.getItem('selectedCollectionDescription'));
       const ownerData = JSON.parse(localStorage.getItem('selectedCollectionOwner'));
       const connectedAccount = JSON.parse(localStorage.getItem('Account'));
-      const address = connectedAccount.address
+      const address = connectedAccount? connectedAccount.address : null
       const maxSupply = JSON.parse(localStorage.getItem('maxSupply'));
       const collectionId = id;
       const ItemId = JSON.parse(localStorage.getItem('selectedCollectionItems'));
@@ -205,11 +206,14 @@ const nftCount = JSON.parse(localStorage.getItem('nftCount'));
 const createdDate = JSON.parse(localStorage.getItem('createdDate'));
 const volume = JSON.parse(localStorage.getItem('volume'));
 
-      const decodedAddress = decodeAddress(address);
+// Ensure the address is not null or empty
+const decodedAddress = address ? decodeAddress(address) : null;
 
-// Re-encode with the Polkadot prefix (e.g., 0 for Polkadot Mainnet)
-const polkadotAddress = encodeAddress(decodedAddress, 0);
-console.log("holder", itemConfig)
+// If decodedAddress is valid, re-encode it with the Polkadot prefix (e.g., 0 for Polkadot Mainnet)
+const polkadotAddress = decodedAddress ? encodeAddress(decodedAddress, 0) : null;
+
+console.log("holder", itemConfig);
+
 
 
 console.log('Polkadot Address:', polkadotAddress);
@@ -221,7 +225,7 @@ console.log('Polkadot Address:', polkadotAddress);
     const Account = (JSON.parse(localStorage.getItem("Account")))
     const owned = async() => {
       try {
-          const response = await Axios.get(`https://asset-hub-indexer.vercel.app/owned?address=${JSON.stringify(Account?.address)}&page=${ownedactive.toString()}`);
+          const response = await Axios.get(`https://asset-hub-indexer.vercel.app/owned?address=${JSON.stringify(Account && Account?.address)}&page=${ownedactive.toString()}`);
           setOwner(response.data.data.result); // Store the data directly as an array of objects
           setOwnedMetadata(response.data.data.metadata)
           setOwnedPrice(response.data.data.result.price)
@@ -365,7 +369,9 @@ console.log('Polkadot Address:', polkadotAddress);
         getData();
         // collectionActivity();
         Holders();
+        if(Account){
         owned();
+        }
     }, []); // Dependency array is empty, so this effect runs only once
 
     // Logging to see the structure of the data
@@ -429,6 +435,7 @@ const transfer = async () => {
     alert("Please enter a recipient address.");
     return;
   }
+
   try {
     toast.info(`Sending your nft` , {
       position: "top-right",
@@ -459,34 +466,57 @@ const transfer = async () => {
     const allAccounts = await web3Accounts();
 
     // Find the injector for the connected account
-    const injector = await web3FromAddress(connectedAccount.address);
-
+    const injector = await web3FromAddress(connectedAccount && connectedAccount.address);
     // Sign and send the transaction
     const send = await api.tx.nfts
       .transfer(collectionId, ItemId, recipient)
-      .signAndSend(connectedAccount.address, { signer: injector.signer }, ({ status }) => {
+      .signAndSend(connectedAccount && connectedAccount.address, { signer: injector.signer }, ({ status }) => {
         if (status.isInBlock) {
-          toast.success(`Completed at block hash #${status.asInBlock.toString()}` , {
+          // Notify that the transaction has been included in a block
+          toast.success(`Completed at block hash #${status.asInBlock.toString()}`, {
+              position: "top-right",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "colored",
+          });
+          const toastId = toast.info('Transaction in progress', {
             position: "top-right",
-            autoClose: 5000,
+            autoClose: false, // Set autoClose to false to keep the toast visible
             hideProgressBar: false,
-            closeOnClick: true,
+            closeOnClick: false,
             pauseOnHover: true,
             draggable: true,
             progress: undefined,
             theme: "colored",
+            isLoading: true, // This shows the loading indicator
+          });
+        
+          // Simulate an async action, e.g., sending an NFT
+          setTimeout(() => {
+            toast.update(toastId, {
+              render: 'successfully sent',
+              type: 'success',
+              isLoading: false,
+              autoClose: 5000, // Close the toast after 5 seconds
+              closeOnClick: true,
             });
-        } else {
-          toast.info(`Current status: ${status.type}` , {
-            position: "top-right",
-            autoClose: 25009,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "colored",
-            });
+          }, 30000); // Example delay for the async action (e.g., 25 seconds)=
+      } else {
+            toast.info(`Current status ${status.type}` , {
+              position: "top-right",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "colored",
+              });
+          
         }
     });
     
@@ -542,10 +572,10 @@ const list = async() => {
       const price = itemPrice * 10000000000
   
       // Find the injector for the connected account
-      const injector = await web3FromAddress(connectedAccount.address);
+      const injector = await web3FromAddress(connectedAccount && connectedAccount.address);
       // Sign and send the transaction
       const send = await api.tx.nfts.setPrice(collectionId, ItemId, price, whiteListAddress)
-        .signAndSend(connectedAccount.address, { signer: injector.signer }, ({ status }) => {
+        .signAndSend(connectedAccount && connectedAccount.address, { signer: injector.signer }, ({ status }) => {
           if (status.isInBlock) {
             toast.success(`Completed at block hash #${status.asInBlock.toString()}` , {
               position: "top-right",
@@ -557,6 +587,28 @@ const list = async() => {
               progress: undefined,
               theme: "colored",
               });
+              const toastId = toast.info('Transaction is processing', {
+                position: "top-right",
+                autoClose: false, // Set autoClose to false to keep the toast visible
+                hideProgressBar: false,
+                closeOnClick: false,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "colored",
+                isLoading: true, // This shows the loading indicator
+              });
+            
+              // Simulate an async action, e.g., sending an NFT
+              setTimeout(() => {
+                toast.update(toastId, {
+                  render: 'successfully listed',
+                  type: 'success',
+                  isLoading: false,
+                  autoClose: 5000, // Close the toast after 5 seconds
+                  closeOnClick: true,
+                });
+              }, 30000); // Example delay for the async action (e.g., 25 seconds)=
           } else {
             toast.info(`Current status: ${status.type}` , {
               position: "top-right",
@@ -619,11 +671,11 @@ const deList = async() => {
     const allAccounts = await web3Accounts();
 
     // Find the injector for the connected account
-    const injector = await web3FromAddress(connectedAccount.address);
+    const injector = await web3FromAddress(connectedAccount && connectedAccount.address);
     const price = null
     // Sign and send the transaction
     const send = await api.tx.nfts.setPrice(collectionId, ItemId, price, whiteListAddress)
-      .signAndSend(connectedAccount.address, { signer: injector.signer }, ({ status }) => {
+      .signAndSend(connectedAccount && connectedAccount.address, { signer: injector.signer }, ({ status }) => {
         if (status.isInBlock) {
           toast.success(`Completed at block hash #${status.asInBlock.toString()}` , {
             position: "top-right",
@@ -635,6 +687,28 @@ const deList = async() => {
             progress: undefined,
             theme: "colored",
             });
+            const toastId = toast.info('Transaction is processing', {
+              position: "top-right",
+              autoClose: false, // Set autoClose to false to keep the toast visible
+              hideProgressBar: false,
+              closeOnClick: false,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "colored",
+              isLoading: true, // This shows the loading indicator
+            });
+          
+            // Simulate an async action, e.g., sending an NFT
+            setTimeout(() => {
+              toast.update(toastId, {
+                render: 'successfully delisted',
+                type: 'success',
+                isLoading: false,
+                autoClose: 5000, // Close the toast after 5 seconds
+                closeOnClick: true,
+              });
+            }, 30000); // Example delay for the async action (e.g., 25 seconds)=
         } else {
           toast.info(`Current status: ${status.type}` , {
             position: "top-right",
@@ -711,6 +785,28 @@ const burn = async() => {
             progress: undefined,
             theme: "colored",
             });
+            const toastId = toast.info('Transaction is processing', {
+              position: "top-right",
+              autoClose: false, // Set autoClose to false to keep the toast visible
+              hideProgressBar: false,
+              closeOnClick: false,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "colored",
+              isLoading: true, // This shows the loading indicator
+            });
+          
+            // Simulate an async action, e.g., sending an NFT
+            setTimeout(() => {
+              toast.update(toastId, {
+                render: 'successfully burned',
+                type: 'success',
+                isLoading: false,
+                autoClose: 5000, // Close the toast after 5 seconds
+                closeOnClick: true,
+              });
+            }, 30000); // Example delay for the async action (e.g., 25 seconds)=
         } else {
           toast.info(`Current status: ${status.type}` , {
             position: "top-right",
@@ -807,6 +903,28 @@ const createSwap = async() => {
             progress: undefined,
             theme: "colored",
             });
+            const toastId = toast.info('Transaction is processing', {
+              position: "top-right",
+              autoClose: false, // Set autoClose to false to keep the toast visible
+              hideProgressBar: false,
+              closeOnClick: false,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "colored",
+              isLoading: true, // This shows the loading indicator
+            });
+          
+            // Simulate an async action, e.g., sending an NFT
+            setTimeout(() => {
+              toast.update(toastId, {
+                render: 'successfully created',
+                type: 'success',
+                isLoading: false,
+                autoClose: 5000, // Close the toast after 5 seconds
+                closeOnClick: true,
+              });
+            }, 30000); // Example delay for the async action (e.g., 25 seconds)=
         } else {
           toast.info(`Current status: ${status.type}` , {
             position: "top-right",
@@ -891,6 +1009,28 @@ const claimSwap = async(offeredCollection, offeredItem, desiredCollection, desir
             progress: undefined,
             theme: "colored",
             });
+            const toastId = toast.info('Transaction is processing', {
+              position: "top-right",
+              autoClose: false, // Set autoClose to false to keep the toast visible
+              hideProgressBar: false,
+              closeOnClick: false,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "colored",
+              isLoading: true, // This shows the loading indicator
+            });
+          
+            // Simulate an async action, e.g., sending an NFT
+            setTimeout(() => {
+              toast.update(toastId, {
+                render: 'successfully claimed',
+                type: 'success',
+                isLoading: false,
+                autoClose: 5000, // Close the toast after 5 seconds
+                closeOnClick: true,
+              });
+            }, 30000); // Example delay for the async action (e.g., 25 seconds)=
         } else {
           toast.info(`Current status: ${status.type}` , {
             position: "top-right",
@@ -925,7 +1065,7 @@ const claimSwap = async(offeredCollection, offeredItem, desiredCollection, desir
 
 console.log("Owner address ",item && item.owner, polkadotAddress)
 
-const SWAP_TABLE_HEAD = ["Offered Item", "Offered Price", "Desired Price", item && item.currentOwner === polkadotAddress? "Claim Swap" : null];
+const SWAP_TABLE_HEAD = ["Offered Item", "Offered Price", "Desired Price", polkadotAddress? item && item.currentOwner === polkadotAddress? "Claim Swap" : null : null];
 
 const tokens = [
   {
@@ -1113,6 +1253,28 @@ const buy = async() => {
             progress: undefined,
             theme: "colored",
             });
+            const toastId = toast.info('Transaction is processing', {
+              position: "top-right",
+              autoClose: false, // Set autoClose to false to keep the toast visible
+              hideProgressBar: false,
+              closeOnClick: false,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "colored",
+              isLoading: true, // This shows the loading indicator
+            });
+          
+            // Simulate an async action, e.g., sending an NFT
+            setTimeout(() => {
+              toast.update(toastId, {
+                render: 'successfully bought',
+                type: 'success',
+                isLoading: false,
+                autoClose: 5000, // Close the toast after 5 seconds
+                closeOnClick: true,
+              });
+            }, 30000); // Example delay for the async action (e.g., 25 seconds)=
         } else {
           toast.info(`Current status: ${status.type}` , {
             position: "top-right",
@@ -1145,6 +1307,7 @@ const buy = async() => {
 }
 const [isBalanceSufficient, setIsBalanceSufficient] = useState(false);
 
+if(connectedAccount) {
 useEffect(() => {
   const checkBalance = async () => {
     if (selectedTokenLogo && (selectedTokenLogo.symbol === "USDT" || selectedTokenLogo.symbol === "USDC")) {
@@ -1154,6 +1317,7 @@ useEffect(() => {
   };
   checkBalance();
 }, [selectedTokenLogo, polkadotAddress, tokenPrice]);
+}
 
 const assetHubBuy = async() => {
   try {
@@ -1203,6 +1367,28 @@ const assetHubBuy = async() => {
             progress: undefined,
             theme: "colored",
             });
+            const toastId = toast.info('Transaction is processing', {
+              position: "top-right",
+              autoClose: false, // Set autoClose to false to keep the toast visible
+              hideProgressBar: false,
+              closeOnClick: false,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "colored",
+              isLoading: true, // This shows the loading indicator
+            });
+          
+            // Simulate an async action, e.g., sending an NFT
+            setTimeout(() => {
+              toast.update(toastId, {
+                render: 'successfully bought',
+                type: 'success',
+                isLoading: false,
+                autoClose: 5000, // Close the toast after 5 seconds
+                closeOnClick: true,
+              });
+            }, 30000); // Example delay for the async action (e.g., 25 seconds)=
         } else {
           toast.info(`Current status: ${status.type}` , {
             position: "top-right",
@@ -1418,9 +1604,11 @@ const fetchDotBalance = async () => {
   }
 };
 
+if(connectedAccount) {
 useEffect(() => {
   fetchDotBalance();
 }, [polkadotAddress, integerPrice]);
+}
 const ipfsHashimageUrl = imageData.replace(/^(ipfs:\/\/ipfs\/|ipfs:\/\/)/, "") || "";
 const ipfsUri = `ipfs://${ipfsHashimageUrl}`;
 
@@ -2087,7 +2275,9 @@ const ipfsItemUri = `ipfs://${ipfsItemHash}`;
           </Typography>
         </label>
       </ListItem>
-      <ListItem className="p-0">
+      { connectedAccount? (
+        <>
+              <ListItem className="p-0">
         <label htmlFor="vertical-list-vue" className="flex w-full cursor-pointer items-center px-3 py-2">
           <div className="mr-3">
             <Checkbox
@@ -2105,6 +2295,9 @@ const ipfsItemUri = `ipfs://${ipfsItemHash}`;
           </Typography>
         </label>
       </ListItem>
+        </>
+      ) : null
+            }
     </List>
     </Card>
       </Collapse>
@@ -2410,7 +2603,7 @@ const ipfsItemUri = `ipfs://${ipfsItemHash}`;
               </>
             ) : null
           }
-          {item && item.currentOwner === polkadotAddress? (
+          {connectedAccount && item && item.currentOwner === polkadotAddress? (
             <>
             {price? (
               <>
@@ -2741,7 +2934,16 @@ const ipfsItemUri = `ipfs://${ipfsItemHash}`;
      <br />
     <Typography variant="h6" color="pink">  Not listed</Typography>
   </Typography>
-  <Button color="pink" size="md" variant="outlined" style={{marginTop: "20px", float: "right" }} onClick={() => {owned() , handleOpen(), swapHandleOpen("xl")}}> Make Swap</Button>
+  <Button color="pink" size="md" variant="outlined" style={{marginTop: "20px", float: "right" }} onClick={() => {if(connectedAccount){owned() , handleOpen(), swapHandleOpen("xl")}else{        toast.info(`Connect your wallet`, {
+          position: "top-right",
+          autoClose: 2500,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        })}}}> Make Swap</Button>
       </CardBody>
       <CardFooter className="pt-0">
       </CardFooter>
@@ -2824,8 +3026,38 @@ const ipfsItemUri = `ipfs://${ipfsItemHash}`;
 <br />
       </CardBody>
       <CardFooter className="pt-0">
-      <Button color="pink" onClick={() => {handleOpen(), buyOpenHandleOpen("xl")}}>Buy now</Button>
-      <Button color="pink" size="md" variant="outlined" style={{marginTop: "20px", float: "right" }} onClick={() => {owned() , handleOpen(), swapHandleOpen("xl")}}> Make Swap</Button>
+      <Button
+    color="pink"
+    onClick={() => {
+      if (connectedAccount) {
+        handleOpen();
+        buyOpenHandleOpen("xl");
+      } else {
+        toast.info(`Connect your wallet`, {
+          position: "top-right",
+          autoClose: 2500,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
+      }
+    }}
+  >
+    Buy now
+  </Button>
+      <Button color="pink" size="md" variant="outlined" style={{marginTop: "20px", float: "right" }} onClick={() => { if(connectedAccount) {owned() , handleOpen(), swapHandleOpen("xl")} else{         toast.info(`Connect your wallet`, {
+          position: "top-right",
+          autoClose: 2500,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        })}}}> Make Swap</Button>
       </CardFooter>
     </Card>)}
     </div>
@@ -3072,7 +3304,7 @@ const ipfsItemUri = `ipfs://${ipfsItemHash}`;
                   {data.swapDetails.swapData.price === null? 0 : `${data.swapDetails.swapData.price.direction === "Receive"? data.swapDetails.swapData.price.amount : 0} DOT`}
                   </Typography>
                 </td>
-                {item && item.currentOwner === polkadotAddress? (
+                {connectedAccount && item && item.currentOwner === polkadotAddress? (
                 <td className={`${classes} bg-blue-gray-50/50`}>
                   <Button color="pink"  size="sm" className="rounded-full lowercase" onClick={() => {
                     claimSwap(data.swapDetails.offeredCollection, data.swapDetails.offeredItem, data.swapDetails.swapData.desiredCollection, data.swapDetails.swapData.desiredItem, data.swapDetails.swapData.price? data.swapDetails.swapData.price : null)
@@ -3346,7 +3578,7 @@ const ipfsItemUri = `ipfs://${ipfsItemHash}`;
           </DialogFooter>
       </>
     ) : null
-  }
+      }
 </Dialog>
 
                 

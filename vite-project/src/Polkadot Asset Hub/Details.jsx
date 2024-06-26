@@ -52,6 +52,7 @@ import dotLogo from '/src/assets/statemint-native-dot.png';
 import usdtLogo from '/src/assets/logo.png';
 import usdcLogo from '/src/assets/usd-coin-usdc-logo.png';
 import dotWhiteLogo from '/src/assets/Polkadot_Token_PinkOnWhite.png';
+import { add } from "date-fns";
 
 export default function PAHDetails() {
     const [metadata, setMetadata] = useState()
@@ -138,12 +139,12 @@ const [selected, setSelected] = React.useState();
 const setSelectedItem = (value) => setSelected(value);
 
 const connectedAccount = JSON.parse(localStorage.getItem('Account'));
-const address = connectedAccount.address
+const address = connectedAccount? connectedAccount.address : null;
 
-const decodedAddress = decodeAddress(address);
+const decodedAddress = address ? decodeAddress(address) : null;
 
 // Re-encode with the Polkadot prefix (e.g., 0 for Polkadot Mainnet)
-const polkadotAddress = encodeAddress(decodedAddress, 0);
+const polkadotAddress = decodedAddress ? encodeAddress(decodedAddress, 0) : null;
 console.log("holder", itemOwner)
 
 console.log('Polkadot Address:', polkadotAddress);
@@ -256,6 +257,28 @@ const transfer = async () => {
             progress: undefined,
             theme: "colored",
             });
+            const toastId = toast.info('Transaction is processing', {
+              position: "top-right",
+              autoClose: false, // Set autoClose to false to keep the toast visible
+              hideProgressBar: false,
+              closeOnClick: false,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "colored",
+              isLoading: true, // This shows the loading indicator
+            });
+          
+            // Simulate an async action, e.g., sending an NFT
+            setTimeout(() => {
+              toast.update(toastId, {
+                render: 'successfully sent',
+                type: 'success',
+                isLoading: false,
+                autoClose: 5000, // Close the toast after 5 seconds
+                closeOnClick: true,
+              });
+            }, 30000); // Example delay for the async action (e.g., 25 seconds)=
         } else {
           toast.info(`Current status: ${status.type}` , {
             position: "top-right",
@@ -336,6 +359,28 @@ const list = async() => {
               progress: undefined,
               theme: "colored",
               });
+              const toastId = toast.info('Transaction is processing', {
+                position: "top-right",
+                autoClose: false, // Set autoClose to false to keep the toast visible
+                hideProgressBar: false,
+                closeOnClick: false,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "colored",
+                isLoading: true, // This shows the loading indicator
+              });
+            
+              // Simulate an async action, e.g., sending an NFT
+              setTimeout(() => {
+                toast.update(toastId, {
+                  render: 'successfully listed',
+                  type: 'success',
+                  isLoading: false,
+                  autoClose: 5000, // Close the toast after 5 seconds
+                  closeOnClick: true,
+                });
+              }, 30000); // Example delay for the async action (e.g., 25 seconds)=
           } else {
             toast.info(`Current status: ${status.type}` , {
               position: "top-right",
@@ -413,6 +458,28 @@ const deList = async() => {
             progress: undefined,
             theme: "colored",
             });
+            const toastId = toast.info('Transaction is processing', {
+              position: "top-right",
+              autoClose: false, // Set autoClose to false to keep the toast visible
+              hideProgressBar: false,
+              closeOnClick: false,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "colored",
+              isLoading: true, // This shows the loading indicator
+            });
+          
+            // Simulate an async action, e.g., sending an NFT
+            setTimeout(() => {
+              toast.update(toastId, {
+                render: 'successfully delisted',
+                type: 'success',
+                isLoading: false,
+                autoClose: 5000, // Close the toast after 5 seconds
+                closeOnClick: true,
+              });
+            }, 30000); // Example delay for the async action (e.g., 25 seconds)=
         } else {
           toast.info(`Current status: ${status.type}` , {
             position: "top-right",
@@ -489,6 +556,28 @@ const burn = async() => {
             progress: undefined,
             theme: "colored",
             });
+            const toastId = toast.info('Transaction is processing', {
+              position: "top-right",
+              autoClose: false, // Set autoClose to false to keep the toast visible
+              hideProgressBar: false,
+              closeOnClick: false,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "colored",
+              isLoading: true, // This shows the loading indicator
+            });
+          
+            // Simulate an async action, e.g., sending an NFT
+            setTimeout(() => {
+              toast.update(toastId, {
+                render: 'successfully burned',
+                type: 'success',
+                isLoading: false,
+                autoClose: 5000, // Close the toast after 5 seconds
+                closeOnClick: true,
+              });
+            }, 30000); // Example delay for the async action (e.g., 25 seconds)=
         } else {
           toast.info(`Current status: ${status.type}` , {
             position: "top-right",
@@ -567,6 +656,28 @@ const assetHubBuy = async() => {
             progress: undefined,
             theme: "colored",
             });
+            const toastId = toast.info('Transaction is processing', {
+              position: "top-right",
+              autoClose: false, // Set autoClose to false to keep the toast visible
+              hideProgressBar: false,
+              closeOnClick: false,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "colored",
+              isLoading: true, // This shows the loading indicator
+            });
+          
+            // Simulate an async action, e.g., sending an NFT
+            setTimeout(() => {
+              toast.update(toastId, {
+                render: 'successfully bought',
+                type: 'success',
+                isLoading: false,
+                autoClose: 5000, // Close the toast after 5 seconds
+                closeOnClick: true,
+              });
+            }, 30000); // Example delay for the async action (e.g., 25 seconds)=
         } else {
           toast.info(`Current status: ${status.type}` , {
             position: "top-right",
@@ -689,6 +800,28 @@ const buy = async() => {
             progress: undefined,
             theme: "colored",
             });
+            const toastId = toast.info('Transaction is processing', {
+              position: "top-right",
+              autoClose: false, // Set autoClose to false to keep the toast visible
+              hideProgressBar: false,
+              closeOnClick: false,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "colored",
+              isLoading: true, // This shows the loading indicator
+            });
+          
+            // Simulate an async action, e.g., sending an NFT
+            setTimeout(() => {
+              toast.update(toastId, {
+                render: 'successfully bought',
+                type: 'success',
+                isLoading: false,
+                autoClose: 5000, // Close the toast after 5 seconds
+                closeOnClick: true,
+              });
+            }, 30000); // Example delay for the async action (e.g., 25 seconds)=
         } else {
           toast.info(`Current status: ${status.type}` , {
             position: "top-right",
@@ -825,6 +958,28 @@ const createSwap = async() => {
             progress: undefined,
             theme: "colored",
             });
+            const toastId = toast.info('Transaction is processing', {
+              position: "top-right",
+              autoClose: false, // Set autoClose to false to keep the toast visible
+              hideProgressBar: false,
+              closeOnClick: false,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "colored",
+              isLoading: true, // This shows the loading indicator
+            });
+          
+            // Simulate an async action, e.g., sending an NFT
+            setTimeout(() => {
+              toast.update(toastId, {
+                render: 'successfully created',
+                type: 'success',
+                isLoading: false,
+                autoClose: 5000, // Close the toast after 5 seconds
+                closeOnClick: true,
+              });
+            }, 30000); // Example delay for the async action (e.g., 25 seconds)=
         } else {
           toast.info(`Current status: ${status.type}` , {
             position: "top-right",
@@ -1014,6 +1169,28 @@ const claimSwap = async(offeredCollection, offeredItem, desiredCollection, desir
             progress: undefined,
             theme: "colored",
             });
+            const toastId = toast.info('Transaction is processing', {
+              position: "top-right",
+              autoClose: false, // Set autoClose to false to keep the toast visible
+              hideProgressBar: false,
+              closeOnClick: false,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "colored",
+              isLoading: true, // This shows the loading indicator
+            });
+          
+            // Simulate an async action, e.g., sending an NFT
+            setTimeout(() => {
+              toast.update(toastId, {
+                render: 'successfully claimed',
+                type: 'success',
+                isLoading: false,
+                autoClose: 5000, // Close the toast after 5 seconds
+                closeOnClick: true,
+              });
+            }, 30000); // Example delay for the async action (e.g., 25 seconds)=
         } else {
           toast.info(`Current status: ${status.type}` , {
             position: "top-right",
@@ -1980,8 +2157,26 @@ null
         <br />
       </CardBody>
       <CardFooter className="pt-0">
-        <Button color="pink" onClick={() => {buyOpenHandleOpen("xl")}}>Buy now</Button>
-        <Button color="pink" size="md" variant="outlined" style={{ marginTop: "20px", float: "right" }} onClick={() => { ownedNft(); swapHandleOpen("xl") }}>Make Swap</Button>
+        <Button color="pink" onClick={() => {if(connectedAccount){buyOpenHandleOpen("xl")}else{        toast.info(`Connect your wallet`, {
+            position: "top-right",
+            autoClose: 2500,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+          })}}}>Buy now</Button>
+        <Button color="pink" size="md" variant="outlined" style={{ marginTop: "20px", float: "right" }} onClick={() => { if(connectedAccount){ ownedNft(); swapHandleOpen("xl") } else{        toast.info(`Connect your wallet`, {
+            position: "top-right",
+            autoClose: 2500,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+          })}}}>Make Swap</Button>
       </CardFooter>
     </Card>
     </>
@@ -2065,8 +2260,26 @@ null
         <br />
       </CardBody>
       <CardFooter className="pt-0">
-        <Button color="pink" onClick={() => {buyOpenHandleOpen("xl")}}>Buy now</Button>
-        <Button color="pink" size="md" variant="outlined" style={{ marginTop: "20px", float: "right" }} onClick={() => { ownedNft(); swapHandleOpen("xl") }}>Make Swap</Button>
+        <Button color="pink" onClick={() => {if(connectedAccount){buyOpenHandleOpen("xl")}else{        toast.info(`Connect your wallet`, {
+            position: "top-right",
+            autoClose: 2500,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+          })}}}>Buy now</Button>
+        <Button color="pink" size="md" variant="outlined" style={{ marginTop: "20px", float: "right" }} onClick={() => { if(connectedAccount){ ownedNft(); swapHandleOpen("xl")}else {        toast.info(`Connect your wallet`, {
+            position: "top-right",
+            autoClose: 2500,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+          })} }}>Make Swap</Button>
       </CardFooter>
     </Card>
                     </>

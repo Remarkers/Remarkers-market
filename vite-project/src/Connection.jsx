@@ -18,7 +18,7 @@ import {
   Select,
   Option,
 } from "@material-tailwind/react";
-import {decodeAddress} from  '@polkadot/util-crypto';
+import {decodeAddress, encodeAddress} from  '@polkadot/util-crypto';
 import { stringToHex, u8aToHex } from "@polkadot/util";
 import { ToastContainer, toast } from 'react-toastify';
 import subwalletImg from '/src/assets/download.jpeg';
@@ -346,11 +346,13 @@ console.log(JSON.parse(localStorage.getItem("Account")))
         accounts,
         selectAccount,
       } = Connections();
-      const walletConnected = JSON.parse(localStorage.getItem("walletConnected"))
+      const walletConnected = () => {
+        return JSON.parse(localStorage.getItem("walletConnected"))
+      }
       const theme = JSON.parse(localStorage.getItem("theme"))
       return (
         <>
-         {walletConnected ? (
+         {walletConnected() && selectedAccount ? (
         <Button variant="text" style={{ display: 'flex', alignItems: 'center' }} onClick={handleOpen} ><Identicon
           value={selectedAccount?.address}
           size={32}
@@ -469,7 +471,7 @@ console.log(JSON.parse(localStorage.getItem("Account")))
           <MenuItem className={`mb-4 flex items-center justify-center gap-3 !py-4 shadow-md ${isMobile? 'max-w-full overflow-hidden': undefined}`} onClick={() => {selectAccount(account), selectedAddress(account)}}>
           <Identicon
           value={account?.address}
-          size={isMobile? 32: 20}
+          size={isMobile? 32: 40}
           theme="polkadot" className='icon' />
             <div className={isMobile? `flex flex-col overflow-hidden max-w-full` : undefined}>
                         <Typography

@@ -44,6 +44,9 @@ import { ApiPromise, WsProvider } from '@polkadot/api';
 import { web3Enable, web3Accounts, web3FromAddress } from '@polkadot/extension-dapp';
 import { ToastContainer, toast } from 'react-toastify';
 import { MediaRenderer } from "@thirdweb-dev/react";
+import subscan from '/src/assets/subscan.png'
+import {encodeAddress, decodeAddress} from '@polkadot/util-crypto'
+import { Connection } from "../Connection";
 
 
 export default function PAHProfile( ) {
@@ -193,6 +196,28 @@ export default function PAHProfile( ) {
                 progress: undefined,
                 theme: "colored",
                 });
+                const toastId = toast.info('Transaction is processing', {
+                  position: "top-right",
+                  autoClose: false, // Set autoClose to false to keep the toast visible
+                  hideProgressBar: false,
+                  closeOnClick: false,
+                  pauseOnHover: true,
+                  draggable: true,
+                  progress: undefined,
+                  theme: "colored",
+                  isLoading: true, // This shows the loading indicator
+                });
+              
+                // Simulate an async action, e.g., sending an NFT
+                setTimeout(() => {
+                  toast.update(toastId, {
+                    render: 'successfully cancelled',
+                    type: 'success',
+                    isLoading: false,
+                    autoClose: 5000, // Close the toast after 5 seconds
+                    closeOnClick: true,
+                  });
+                }, 30000); // Example delay for the async action (e.g., 25 seconds)=
                 owned()
             } else {
               toast.info(`Current status: ${status.type}` , {
@@ -227,6 +252,8 @@ export default function PAHProfile( ) {
     
       return (
           <>
+          { Account? (
+            <>
           <br />
           <br />
   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -243,7 +270,7 @@ export default function PAHProfile( ) {
         style={{ width: '500px', maxHeight: '10px' }} 
       />
       <Identicon
-          value={Account?.address}
+          value={encodeAddress(Account?.address, 0)}
           size={isMobile? 70 : 100}
           theme="polkadot"
           className='icon-float-center'
@@ -255,16 +282,80 @@ export default function PAHProfile( ) {
         {
           isMobile? (
             <>
-                  {    Account && Account?.address &&     Account && Account?.address.length > 10 ? `${    Account && Account?.address.substring(0, 11)}...${    Account && Account?.address.slice(-11)}` :     Account && Account?.address}
+                  {    Account && encodeAddress(Account?.address, 0) &&     Account && encodeAddress(Account?.address, 0).length > 10 ? `${    Account && encodeAddress(Account?.address, 0).substring(0, 11)}...${    Account && encodeAddress(Account?.address, 0).slice(-11)}` :     Account && encodeAddress(Account?.address, 0)}
             </>
           ) : (
             <>
-            {Account?.address}
+            {encodeAddress(Account?.address, 0)}
             </>
           )
         }
       </span>
+      {
+        isMobile? (
+          <>
+                              <IconButton variant="text" onClick={() => {navigator.clipboard.writeText(encodeAddress(Account?.address, 0)), toast.info(`Address copied` , {
+                position: "top-right",
+                autoClose: 25009,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "colored",
+                });}}>
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6" width={20}>
+  <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 0 1-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H9.75" />
+</svg>
+
+          </IconButton>
+          </>
+        ) : (
+          <>
+                    <IconButton variant="text" onClick={() => {navigator.clipboard.writeText(encodeAddress(Account?.address, 0)), toast.info(`Address copied` , {
+                position: "top-right",
+                autoClose: 25009,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "colored",
+                });}}>
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6" width={20}>
+  <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 0 1-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H9.75" />
+</svg>
+
+          </IconButton>
+          </>
+        )
+      }
   </div>
+  {
+    isMobile? (
+      <>
+            <div style={{display: "flex", alignItems: "center"}}>
+        <a href={`https://assethub-polkadot.subscan.io/account/${encodeAddress(Account?.address, 0)}`}>
+      <Button variant="filled" color="white" className="rounded-full" style={{marginLeft: "70px"}}><img src={subscan} style={{width: "50px"}}/></Button>
+      </a>
+      <a href={`https://statemint.statescan.io/#/accounts/${encodeAddress(Account?.address, 0)}`}>
+      <Button variant="filled" color="white" className="rounded-full lowercase" style={{marginLeft: "10px", width: "110px"}}> Statescan</Button>
+      </a>
+      </div>
+      </>
+    ) : (
+      <>
+      <div style={{display: "flex", alignItems: "center"}}>
+        <a href={`https://assethub-polkadot.subscan.io/account/${encodeAddress(Account?.address, 0)}`}>
+      <Button variant="filled" color="white" className="rounded-full" style={{marginLeft: "600px"}}><img src={subscan} style={{width: "50px"}}/></Button>
+      </a>
+      <a href={`https://statemint.statescan.io/#/accounts/${encodeAddress(Account?.address, 0)}`}>
+      <Button variant="filled" color="white" className="rounded-full lowercase" style={{marginLeft: "10px", width: "110px"}}> Statescan</Button>
+      </a>
+      </div>
+      </>
+    )
+  }
   <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: '20px', marginRight: "20px" }}>
   {/* Activity and Analitics ICON Button */}
             {/* <IconButton color="pink" >
@@ -594,7 +685,47 @@ const ipfsUri = `ipfs://${ipfsHash}`;
       </>
     )
 }
-
+</>
+          ) : (
+            <>
+            <div className="flex items-center justify-center mt-40 ">
+            <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        style={{ width: '500px', maxHeight: '10px' }} 
+      />
+              <Typography variant="h3" color="gray">
+                Connect wallet
+              </Typography>
+            </div>
+            <div className="flex items-center justify-center mt-10 mb-40 ">
+              <Button variant="filled" color="pink" style={{width: "100px"}} onClick={() => {
+                toast.info(`Connect your wallet`, {
+                  position: "top-right",
+                  autoClose: 2500,
+                  hideProgressBar: false,
+                  closeOnClick: true,
+                  pauseOnHover: true,
+                  draggable: true,
+                  progress: undefined,
+                  theme: "colored",
+                })
+              }}>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6" >
+  <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a2.25 2.25 0 0 0-2.25-2.25H15a3 3 0 1 1-6 0H5.25A2.25 2.25 0 0 0 3 12m18 0v6a2.25 2.25 0 0 1-2.25 2.25H5.25A2.25 2.25 0 0 1 3 18v-6m18 0V9M3 12V9m18 0a2.25 2.25 0 0 0-2.25-2.25H5.25A2.25 2.25 0 0 0 3 9m18 0V6a2.25 2.25 0 0 0-2.25-2.25H5.25A2.25 2.25 0 0 0 3 6v3" />
+</svg>
+</Button>
+            </div>
+            </>
+          )
+}
           </>
       )
 }

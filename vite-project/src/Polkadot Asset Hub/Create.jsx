@@ -199,7 +199,7 @@ export default function PAHCreate( ) {
       const handleCollectionFileChange = async (event) => {
         const file = event.target.files[0];
         if (file) {
-          setCollectionLogo(file);
+          setCollectionLogo(URL.createObjectURL(file));
           try {
             const fileData = new FormData();
             fileData.append("file", file);
@@ -244,6 +244,9 @@ export default function PAHCreate( ) {
         
       
         const createCollection = async () => {
+          const connectedAccount = JSON.parse(localStorage.getItem('Account'));
+          if(connectedAccount){
+
           if (!formData.collectionFile) {
             toast.warning("Collection image is required", {
               position: "top-right",
@@ -370,7 +373,6 @@ export default function PAHCreate( ) {
             progress: undefined,
             theme: "colored",
         });
-          const connectedAccount = JSON.parse(localStorage.getItem('Account'));
           const endpoint = "wss://polkadot-asset-hub-rpc.polkadot.io";
           const wsProvider = new WsProvider(endpoint);
           const api = await ApiPromise.create({ provider: wsProvider });
@@ -415,6 +417,28 @@ export default function PAHCreate( ) {
                           progress: undefined,
                           theme: "colored",
                       });
+                      const toastId = toast.info('Transaction is processing', {
+                        position: "top-right",
+                        autoClose: false, // Set autoClose to false to keep the toast visible
+                        hideProgressBar: false,
+                        closeOnClick: false,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                        theme: "colored",
+                        isLoading: true, // This shows the loading indicator
+                      });
+                    
+                      // Simulate an async action, e.g., sending an NFT
+                      setTimeout(() => {
+                        toast.update(toastId, {
+                          render: 'successfully created',
+                          type: 'success',
+                          isLoading: false,
+                          autoClose: 5000, // Close the toast after 5 seconds
+                          closeOnClick: true,
+                        });
+                      }, 30000); // Example delay for the async action (e.g., 25 seconds)=
                   } else {
                       toast.info(`Current status: ${status.type}`, {
                           position: "top-right",
@@ -442,9 +466,23 @@ export default function PAHCreate( ) {
           } catch (error) {
               console.error('Operation failed:', error);
           }
+        }else{
+          toast.info(`Connect your wallet`, {
+            position: "top-right",
+            autoClose: 2500,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+          })
+        }
       };
 
       const createNft = async() => {
+        const connectedAccount = JSON.parse(localStorage.getItem('Account'));
+        if(connectedAccount){
         if (!selectedCollection) {
           toast.warning("Collection is required", {
             position: "top-right",
@@ -586,8 +624,6 @@ export default function PAHCreate( ) {
           progress: undefined,
           theme: "colored",
       });
-
-        const connectedAccount = JSON.parse(localStorage.getItem('Account'));
           const endpoint = "wss://polkadot-asset-hub-rpc.polkadot.io";
           const wsProvider = new WsProvider(endpoint);
           const api = await ApiPromise.create({ provider: wsProvider });
@@ -658,6 +694,28 @@ export default function PAHCreate( ) {
                           progress: undefined,
                           theme: "colored",
                       });
+                      const toastId = toast.info('Transaction is processing', {
+                        position: "top-right",
+                        autoClose: false, // Set autoClose to false to keep the toast visible
+                        hideProgressBar: false,
+                        closeOnClick: false,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                        theme: "colored",
+                        isLoading: true, // This shows the loading indicator
+                      });
+                    
+                      // Simulate an async action, e.g., sending an NFT
+                      setTimeout(() => {
+                        toast.update(toastId, {
+                          render: 'successfully created',
+                          type: 'success',
+                          isLoading: false,
+                          autoClose: 5000, // Close the toast after 5 seconds
+                          closeOnClick: true,
+                        });
+                      }, 30000); // Example delay for the async action (e.g., 25 seconds)=
                   } else {
                       toast.info(`Current status: ${status.type}`, {
                           position: "top-right",
@@ -686,6 +744,18 @@ export default function PAHCreate( ) {
           } catch (error) {
               console.error('Operation failed:', error);
           }
+        }
+        }else{
+          toast.info(`Connect your wallet`, {
+            position: "top-right",
+            autoClose: 2500,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+          })
         }
         }
 
@@ -948,31 +1018,11 @@ SVGs (for onchain NFTs)
 <div className="flex items-center justify-center w-full">
           {collectionLogo ? (
             <div className="relative mt-4 text-center">
-               {selectedFile && (
-        <div>
-          {fileType.startsWith('image/') && (
-            <img
-              src={selectedFile}
-              alt="Preview"
-              style={{ maxHeight: '20rem', maxWidth: '5rem', borderRadius: '0.5rem' }}
-            />
-          )}
-          {fileType.startsWith('video/') && (
-            <video
-              controls
-              src={selectedFile}
-              style={{ maxHeight: '20rem', maxWidth: '5rem', borderRadius: '0.5rem' }}
-            />
-          )}
-          {fileType.startsWith('audio/') && (
-            <audio controls src={selectedFile} />
-          )}
-          {fileType === 'text/html' || fileType === 'application/xhtml+xml' ? (
-            <iframe src={selectedFile} style={{ maxHeight: '20rem', maxWidth: '5rem', borderRadius: '0.5rem' }} />
-          ) : null}
-          {/* Handle 3D models preview using an appropriate viewer if needed */}
-        </div>
-      )}
+                            <img
+                            src={collectionLogo}
+                            alt="Preview"
+                            style={{ maxHeight: '50rem', maxWidth: '30rem', borderRadius: '0.5rem' }}
+                          />
 
     {/* SVG icon */}
     <Chip variant="ghost" value={collectionLogo.name} className="absolute top-0 left-0 z-10 w-100 h-100 p-1 text-sm text-gray-100 dark:text-white" />
@@ -995,7 +1045,7 @@ SVGs (for onchain NFTs)
               </label>
             </>
           )}
-          <input  id="collection-file" accept="image/jpeg, image/png, image/gif" type="file" className="hidden" onChange={handleCollectionFileChange} onClick={uploadData} required minLength={submitted && formData.collectionFile} />
+          <input  id="collection-file" accept="image/jpeg, image/png, image/gif" type="file" className="hidden" onChange={()  => {handleCollectionFileChange}} onClick={uploadData} required minLength={submitted && formData.collectionFile} />
         </div>
     <br />
     <Typography variant="h6" color="gray"> Name </Typography>
@@ -1081,7 +1131,26 @@ SVGs (for onchain NFTs)
       
           {file ? (
             <div className="relative mt-4 text-center">
-    <img src={URL.createObjectURL(file)} alt="Preview" className="max-h-80-w-20 rounded-lg" />
+              {fileType.startsWith('image/') && (
+            <img
+              src={selectedFile}
+              alt="Preview"
+              style={{ maxHeight: '50rem', maxWidth: '20rem', borderRadius: '0.5rem' }}
+            />
+          )}
+          {fileType.startsWith('video/') && (
+            <video
+              controls
+              src={selectedFile}
+              style={{ maxHeight: '50rem', maxWidth: '20rem', borderRadius: '0.5rem' }}
+            />
+          )}
+          {fileType.startsWith('audio/') && (
+            <audio controls src={selectedFile} />
+          )}
+          {fileType === 'text/html' || fileType === 'application/xhtml+xml' ? (
+            <iframe src={selectedFile} style={{ maxHeight: '50rem', maxWidth: '20rem', borderRadius: '0.5rem' }} />
+          ) : null}
 
     {/* SVG icon */}
     <Chip variant="ghost" value={file.name} className="absolute top-0 left-0 z-10 w-100 h-100 p-1 text-sm text-gray-100 dark:text-white" />

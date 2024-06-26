@@ -351,49 +351,9 @@ function App() {
 
   const openDrawerRight = () => setOpenRight(true);
   const closeDrawerRight = () => setOpenRight(false);
-  const [open, setOpen] = React.useState(false);
- 
-  const handleOpen = () => setOpen(!open);
-  const walletConnected  = JSON.parse(localStorage.getItem("walletConnected"))
-  console.log(walletConnected)
   
-  useEffect(() => {
-    walletConnected? null : handleOpen()
-  }, [])
-  handleOpen === true && walletConnected === true ? handleOpen() : null
   return (
     <React.Fragment>
-       <Dialog open={open} handler={handleOpen}>
-        <DialogHeader className="justify-between">Connect your wallet <IconButton
-                color="blue-gray"
-                size="sm"
-                variant="text"
-                onClick={handleOpen}
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                  className="h-5 w-5"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
-              </IconButton></DialogHeader>
-        <DialogBody>
-         <Typography variant='h6' color='pink'>
-          Connect your wallet to Continue
-         </Typography>
-        </DialogBody>
-        <DialogFooter>
-        <Connection/>
-        </DialogFooter>
-      </Dialog>
       <ThirdwebProvider clientId="019cf278511f800d2a474ef346ebc669">
       <div className={theme}>
       <Navbar className={`sticky top-0 z-10 h-max max-w-full rounded-none px-4 py-2 lg:px-8 lg:py-4 ${

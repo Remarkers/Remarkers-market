@@ -70,9 +70,9 @@ export default function PAHTeleport() {
     };
 
     const connectedAccount = JSON.parse(localStorage.getItem('Account'));
-    const address = connectedAccount.address;
-    const decodedAddress = decodeAddress(address);
-    const polkadotAddress = encodeAddress(decodedAddress, 0);
+    const address = connectedAccount? connectedAccount.address : null;
+    const decodedAddress = address ? decodeAddress(address) : null;
+    const polkadotAddress = decodedAddress? encodeAddress(decodedAddress, 0) : null;
 
     const teleport = async () => {
         const args = {
@@ -125,6 +125,16 @@ export default function PAHTeleport() {
         console.log('API initialized successfully');
 
         try {
+            toast.info(`Teleporting`, {
+                position: "top-right",
+                autoClose: 2500,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "colored",
+            });
             // Enable the extension
             await web3Enable('remarker');
 
@@ -147,6 +157,28 @@ export default function PAHTeleport() {
                             progress: undefined,
                             theme: "colored",
                         });
+                        const toastId = toast.info('Transaction is processing', {
+                            position: "top-right",
+                            autoClose: false, // Set autoClose to false to keep the toast visible
+                            hideProgressBar: false,
+                            closeOnClick: false,
+                            pauseOnHover: true,
+                            draggable: true,
+                            progress: undefined,
+                            theme: "colored",
+                            isLoading: true, // This shows the loading indicator
+                          });
+                        
+                          // Simulate an async action, e.g., sending an NFT
+                          setTimeout(() => {
+                            toast.update(toastId, {
+                              render: 'successfully teleported',
+                              type: 'success',
+                              isLoading: false,
+                              autoClose: 5000, // Close the toast after 5 seconds
+                              closeOnClick: true,
+                            });
+                          }, 30000); // Example delay for the async action (e.g., 25 seconds)=
                     } else {
                         toast.info(`Current status: ${status.type}`, {
                             position: "top-right",
@@ -237,6 +269,16 @@ export default function PAHTeleport() {
         console.log('API initialized successfully');
 
         try {
+            toast.info(`Teleporting`, {
+                position: "top-right",
+                autoClose: 2500,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "colored",
+            });
             // Enable the extension
             await web3Enable('remarker');
 
@@ -263,6 +305,28 @@ export default function PAHTeleport() {
                                 progress: undefined,
                                 theme: "colored",
                             });
+                            const toastId = toast.info('Transaction is processing', {
+                                position: "top-right",
+                                autoClose: false, // Set autoClose to false to keep the toast visible
+                                hideProgressBar: false,
+                                closeOnClick: false,
+                                pauseOnHover: true,
+                                draggable: true,
+                                progress: undefined,
+                                theme: "colored",
+                                isLoading: true, // This shows the loading indicator
+                              });
+                            
+                              // Simulate an async action, e.g., sending an NFT
+                              setTimeout(() => {
+                                toast.update(toastId, {
+                                  render: 'successfully teleported',
+                                  type: 'success',
+                                  isLoading: false,
+                                  autoClose: 5000, // Close the toast after 5 seconds
+                                  closeOnClick: true,
+                                });
+                              }, 30000); // Example delay for the async action (e.g., 25 seconds)=
                         } else {
                             toast.info(`Current status: ${status.type}`, {
                                 position: "top-right",
@@ -318,6 +382,7 @@ export default function PAHTeleport() {
 
     const handleSubmit = (event) => {
         event.preventDefault();
+        if(connectedAccount) {
         if (chains[0].name === "Polkadot") {
             teleport();
         } else {
@@ -336,16 +401,18 @@ export default function PAHTeleport() {
             });
            }
         }
-    };
-
-    const getMinValue = () => {
-        if (chains[0].name === "Polkadot Asset Hub") {
-            return 1.05;
-        } else {
-            if(chains[0].name === "Polkadot") {
-                return 0.02;
-            }
-        }
+    }else{
+        toast.info(`Connect your wallet`, {
+            position: "top-right",
+            autoClose: 2500,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+          })
+    }
     };
 
 
@@ -463,8 +530,6 @@ export default function PAHTeleport() {
     label="Send Amount" 
     onChange={handleInput} 
     type="number" 
-    min={getMinValue()} 
-    required
 />
                     </div>
 
