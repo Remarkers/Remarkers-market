@@ -468,7 +468,8 @@ console.log(JSON.parse(localStorage.getItem("Account")))
                   { accounts.map((account) => (
         <>
         <div key={account.address}>
-          <MenuItem className={`mb-4 flex items-center justify-center gap-3 !py-4 shadow-md ${isMobile? 'max-w-full overflow-hidden': undefined}`} onClick={() => {selectAccount(account), selectedAddress(account)}}>
+          <MenuItem className={`mb-4 flex items-center justify-center gap-3 !py-4 shadow-md ${isMobile? 'max-w-full overflow-hidden': undefined}`} onClick={() => {selectAccount(account), selectedAddress(account), // Reload the current page
+window.location.reload()}}>
           <Identicon
           value={account?.address}
           size={isMobile? 32: 40}

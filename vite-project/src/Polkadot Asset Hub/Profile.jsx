@@ -63,6 +63,10 @@ export default function PAHProfile( ) {
     const [error, setError] = useState(false);
     const [isMobile, setIsMobile] = useState();
 
+    const walletConnected = () => {
+      return JSON.parse(localStorage.getItem("walletConnected"))
+    }
+
     useEffect(() => {
       const handleResize = () => {
         setIsMobile(window.matchMedia('(max-width: 600px)').matches);
@@ -252,7 +256,7 @@ export default function PAHProfile( ) {
     
       return (
           <>
-          { Account? (
+          { walletConnected() && Account? (
             <>
           <br />
           <br />
@@ -701,12 +705,11 @@ const ipfsUri = `ipfs://${ipfsHash}`;
         pauseOnHover
         style={{ width: '500px', maxHeight: '10px' }} 
       />
-              <Typography variant="h3" color="gray">
+              <Typography variant="h3" color="gray" className="mb-40">
                 Connect wallet
               </Typography>
             </div>
-            <div className="flex items-center justify-center mt-10 mb-40 ">
-              <Button variant="filled" color="pink" style={{width: "100px"}} onClick={() => {
+            {/* <div className="flex items-center justify-center mt-10 mb-40 " onClick={() => {walletConnected(),
                 toast.info(`Connect your wallet`, {
                   position: "top-right",
                   autoClose: 2500,
@@ -718,11 +721,8 @@ const ipfsUri = `ipfs://${ipfsHash}`;
                   theme: "colored",
                 })
               }}>
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6" >
-  <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a2.25 2.25 0 0 0-2.25-2.25H15a3 3 0 1 1-6 0H5.25A2.25 2.25 0 0 0 3 12m18 0v6a2.25 2.25 0 0 1-2.25 2.25H5.25A2.25 2.25 0 0 1 3 18v-6m18 0V9M3 12V9m18 0a2.25 2.25 0 0 0-2.25-2.25H5.25A2.25 2.25 0 0 0 3 9m18 0V6a2.25 2.25 0 0 0-2.25-2.25H5.25A2.25 2.25 0 0 0 3 6v3" />
-</svg>
-</Button>
-            </div>
+              <Connection/>
+            </div> */}
             </>
           )
 }
