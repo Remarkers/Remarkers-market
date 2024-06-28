@@ -52,7 +52,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import { symbol } from "zod";
 import { u8aToHex, stringToHex, stringToU8a } from '@polkadot/util'
 import { MediaRenderer } from "@thirdweb-dev/react";
-import { useParams } from 'react-router-dom';
+import { useParams, useLocation } from 'react-router-dom';
 import dotLogo from '/src/assets/statemint-native-dot.png';
 import usdtLogo from '/src/assets/logo.png';
 import usdcLogo from '/src/assets/usd-coin-usdc-logo.png';
@@ -190,21 +190,15 @@ export default function PAHItems() {
       // Assuming additional data is stored and used similarly
       const { id, name } = useParams();
       const nameData = name;
-      const imageData = JSON.parse(localStorage.getItem('selectedCollectionImage'));
-      const descriptionData = JSON.parse(localStorage.getItem('selectedCollectionDescription'));
-      const ownerData = JSON.parse(localStorage.getItem('selectedCollectionOwner'));
+      const location = useLocation();
+      const { state } = location;
+    
+      const { description, imageData, ownerData, maxSupply, distribution, floor, highestSale, royalty, nftCount, createdDate, volume } = state;
+      const descriptionData = description;
       const connectedAccount = JSON.parse(localStorage.getItem('Account'));
       const address = connectedAccount? connectedAccount.address : null
-      const maxSupply = JSON.parse(localStorage.getItem('maxSupply'));
       const collectionId = id;
       const ItemId = JSON.parse(localStorage.getItem('selectedCollectionItems'));
-      const distribution = JSON.parse(localStorage.getItem('Holders'));
-const floor = JSON.parse(localStorage.getItem('floor'));
-const highestSale = JSON.parse(localStorage.getItem('highestSale'));
-const royalty = JSON.parse(localStorage.getItem('royalty'));
-const nftCount = JSON.parse(localStorage.getItem('nftCount'));
-const createdDate = JSON.parse(localStorage.getItem('createdDate'));
-const volume = JSON.parse(localStorage.getItem('volume'));
 
 // Ensure the address is not null or empty
 const decodedAddress = address ? decodeAddress(address) : null;
@@ -1616,6 +1610,7 @@ const ipfsItemHash = item && item.image && item.image?.replace(/^(ipfs:\/\/ipfs\
 const ipfsItemUri = `ipfs://${ipfsItemHash}`;
 
 
+
     return (
         <div>
           <Dialog size="l" open={buyOpen} handler={buyOpenHandleOpen} className="h-full w-full overflow-scroll">
@@ -2312,9 +2307,12 @@ const ipfsItemUri = `ipfs://${ipfsItemHash}`;
             {
               data.length < 1 ? (
                 <>
-                     <div className="flex justify-center items-center h-screen">
-        <Spinner className="h-8 w-8" color="pink" />
-      </div>
+<div className="flex justify-center items-start h-screen">
+  <div className="flex justify-center items-center w-full mt-20"> {/* Adjust mt-20 to your desired margin */}
+    <Spinner className="h-8 w-8" color="pink" />
+  </div>
+</div>
+
                 </>
               ) :
             ( <>{

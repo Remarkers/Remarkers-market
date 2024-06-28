@@ -508,9 +508,12 @@ const handleReload = () => {
     </div>
   </>) : (
     <>
-    <div className="flex justify-center items-center h-screen">
-      <Spinner className="h-8 w-8" color="pink" />
-    </div>
+<div className="flex justify-center items-start h-screen">
+  <div className="flex justify-center items-center w-full mt-20"> {/* Adjust mt-20 to your desired margin */}
+    <Spinner className="h-8 w-8" color="pink" />
+  </div>
+</div>
+
     </>
   )}
   </>
@@ -555,9 +558,12 @@ const ipfsUri = `ipfs://${ipfsHash}`;
     )})}
   </div>): (
     <>
-    <div className="flex justify-center items-center h-screen">
-      <Spinner className="h-8 w-8" color="pink" />
-    </div>
+<div className="flex justify-center items-start h-screen">
+  <div className="flex justify-center items-center w-full mt-20"> {/* Adjust mt-20 to your desired margin */}
+    <Spinner className="h-8 w-8" color="pink" />
+  </div>
+</div>
+
     </>
   )}
   </>
@@ -681,9 +687,12 @@ const ipfsUri = `ipfs://${ipfsHash}`;
     </Card>
       </div>): (
         <>
-        <div className="flex justify-center items-center h-screen">
-      <Spinner className="h-8 w-8" color="pink" />
-    </div>
+<div className="flex justify-center items-start h-screen">
+  <div className="flex justify-center items-center w-full mt-20"> {/* Adjust mt-20 to your desired margin */}
+    <Spinner className="h-8 w-8" color="pink" />
+  </div>
+</div>
+
         </>
       )}
       </>

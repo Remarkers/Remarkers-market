@@ -6,10 +6,14 @@ import {
   Typography,
   Spinner,
   IconButton,
+  Carousel,
 } from "@material-tailwind/react";
 import { Link } from "react-router-dom";
 import { MediaRenderer } from "@thirdweb-dev/react";
 import { ArrowUpIcon, ArrowDownIcon } from "@heroicons/react/24/outline";
+import polkadotpunks from '/src/assets/Polkadot Punks.gif'
+import biodiversity from '/src/assets/Polkadot Punks.png'
+import lunarpunks from '/src/assets/Polkadot Punks (1).gif'
 
 export default function PAHExplore() {
   const [data, setData] = useState([]);
@@ -21,7 +25,7 @@ export default function PAHExplore() {
 
   const handleInputChange = (e) => {
     setSearchTerm(e.target.value);
-  };
+  };  
 
   const getData = async () => {
     const response = await Axios.get("https://asset-hub-indexer.vercel.app/getData");
@@ -58,11 +62,17 @@ export default function PAHExplore() {
       sortableData.sort((a, b) => {
         let valA = a[sortConfig.key];
         let valB = b[sortConfig.key];
-
-        // Handling non-numeric fields
+  
+        // Handle non-numeric fields
         if (typeof valA === 'string') valA = valA.toLowerCase();
         if (typeof valB === 'string') valB = valB.toLowerCase();
-
+  
+        // Numeric comparison for specific keys
+        if (sortConfig.key === 'volume' || sortConfig.key === 'floor' || sortConfig.key === 'highestSale' || sortConfig.key === 'maxSupply' || sortConfig.key === 'nftCount' || sortConfig.key === 'distribution') {
+          valA = parseFloat(valA);
+          valB = parseFloat(valB);
+        }
+  
         if (valA < valB) {
           return sortConfig.direction === 'ascending' ? -1 : 1;
         }
@@ -74,6 +84,7 @@ export default function PAHExplore() {
     }
     return sortableData;
   }, [data, sortConfig]);
+  
 
   const handleSort = (key) => {
     let direction = 'ascending';
@@ -82,6 +93,7 @@ export default function PAHExplore() {
     }
     setSortConfig({ key, direction });
   };
+  
 
   const handleReload = () => {
     setIsLoading(true);
@@ -92,7 +104,28 @@ export default function PAHExplore() {
   return (
     <>
       <br />
+      <Typography variant="h2" color="black" style={{marginLeft: "20px"}}>
+        Trending
+      </Typography>
       <br />
+       <Carousel loop={true} autoplay={true} className="rounded-xl">
+      <img
+        src={polkadotpunks}
+        alt="image 1"
+        className="h-200 w-full object-cover object-center"
+      />
+      <img
+        src={biodiversity}
+        alt="image 2"
+        className="h-200 w-full object-cover object-center"
+      />
+      <img
+        src={lunarpunks}
+        alt="image 3"
+        className="h-200 w-full object-cover object-center"
+      />
+    </Carousel>
+    <br />
       <div className="relative w-full md:w-1/2">
         <span className="absolute inset-y-0 left-0 flex items-center pl-3">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="h-6 w-6 text-gray-500">
@@ -170,7 +203,11 @@ export default function PAHExplore() {
                   return name && description && image ? (
                     <tr className="even:bg-blue-gray-50/50 hover:bg-blue-gray-50" key={id}>
                       <td className="p-4">
-                        <Link to={`/Polkadot%20Asset%20Hub/marketplace/${id}/${name}`} onClick={() => handleCardClick()}>
+                      <Link
+      to={`/Polkadot%20Asset%20Hub/marketplace/${id}/${name}`}
+      state={{ description, imageData: image, ownerData: owner, maxSupply, distribution, floor, highestSale, royalty, nftCount, createdDate, volume }}
+      onClick={handleCardClick}
+    >
                           <div className="card-content-container">
                             <div className="image-container">
                               {isLoading && !error && <Spinner color="pink" />}
