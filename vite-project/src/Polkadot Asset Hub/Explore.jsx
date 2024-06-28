@@ -109,27 +109,21 @@ export default function PAHExplore() {
       </Typography>
       <br />
        <Carousel loop={true} autoplay={true} className="rounded-xl">
-        <a href="https://remarkers-market.vercel.app/Polkadot%20Asset%20Hub/marketplace/7/Polkadot%20Punks">
       <img
         src={polkadotpunks}
         alt="image 1"
         className="h-200 w-full object-cover object-center"
       />
-      </a>
-      <a href="https://remarkers-market.vercel.app/Polkadot%20Asset%20Hub/marketplace/13/The%20sub0%202023%20Biodiversity%20Collection">
       <img
         src={biodiversity}
         alt="image 2"
         className="h-200 w-full object-cover object-center"
       />
-      </a>
-      <a href="https://remarkers-market.vercel.app/Polkadot%20Asset%20Hub/marketplace/155/Lunar%20Punks">
       <img
         src={lunarpunks}
         alt="image 3"
         className="h-200 w-full object-cover object-center"
       />
-      </a>
     </Carousel>
     <br />
       <div className="relative w-full md:w-1/2">
