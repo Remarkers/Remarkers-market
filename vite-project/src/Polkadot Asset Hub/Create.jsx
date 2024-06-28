@@ -127,7 +127,7 @@ export default function PAHCreate( ) {
     const handleFileChange = async(event) => {
       const file = event.target.files[0];
       if (file) {
-        setFile(file);
+        setFile(URL.createObjectURL(file));
         setSelectedFile(URL.createObjectURL(file));
       setFileType(file.type);
           try {
@@ -1045,7 +1045,7 @@ SVGs (for onchain NFTs)
               </label>
             </>
           )}
-          <input  id="collection-file" accept="image/jpeg, image/png, image/gif" type="file" className="hidden" onChange={()  => {handleCollectionFileChange}} onClick={uploadData} required minLength={submitted && formData.collectionFile} />
+          <input  id="collection-file" accept="image/jpeg, image/png, image/gif" type="file" className="hidden" onChange={handleCollectionFileChange} onClick={uploadData} />
         </div>
     <br />
     <Typography variant="h6" color="gray"> Name </Typography>
@@ -1057,13 +1057,14 @@ SVGs (for onchain NFTs)
           onChange={handleInputChange}
           required
           minLength={submitted && formData.collectionName.length < 1}
+          value={formData.collectionName}
         />
       </div>
     <br />
     <Typography variant="h6" color="gray"> Description </Typography>
     <br />
     <div className="w-96">
-      <Input label="Collection Description" name="collectionDescription" size="lg" onChange={handleInputChange} required minLength={submitted && formData.collectionDescription.length < 1} />
+      <Input label="Collection Description" name="collectionDescription" size="lg" onChange={handleInputChange} required minLength={submitted && formData.collectionDescription.length < 1} value={formData.collectionDescription} />
     </div>
     <br />
     <Typography variant="h6">
@@ -1104,19 +1105,19 @@ SVGs (for onchain NFTs)
     <Typography variant="h6" color="gray"> Twitter (Optional) </Typography>
     <br />
     <div className="w-96">
-      <Input label="Collection Twitter" name="collectionTwitter" size="lg" onChange={handleInputChange} />
+      <Input label="Collection Twitter" name="collectionTwitter" size="lg" onChange={handleInputChange} value={formData.collectionTwitter} />
     </div>
     <br />
     <Typography variant="h6" color="gray"> Discord (Optional) </Typography>
     <br />
     <div className="w-96">
-      <Input label="Collection Discord" name="collectionDiscord" size="lg" onChange={handleInputChange} />
+      <Input label="Collection Discord" name="collectionDiscord" size="lg" onChange={handleInputChange} value={formData.collectionDiscord} />
     </div>
     <br />
     <Typography variant="h6" color="gray"> External link (website)  </Typography>
     <br />
     <div className="w-96">
-      <Input label="Collection External link" name="collectionExternalLink" size="lg" onChange={handleInputChange}/>
+      <Input label="Collection External link" name="collectionExternalLink" size="lg" onChange={handleInputChange} value={formData.collectionExternalLink}/>
     </div>
     <br />
     <br />
@@ -1193,14 +1194,14 @@ SVGs (for onchain NFTs)
     <br />
     <div className={isMobile? "w-80" : "w-96"}>
       <Input label=" Name" name="itemName"
-          onChange={handleInputCreateNftChange}  />
+          onChange={handleInputCreateNftChange} value={nftformData.itemName}  />
     </div>
     <br />
     <Typography variant="h6" color="gray"> Description </Typography>
     <br />
     <div className={isMobile? "w-80" : "w-96"}>
       <Input label=" Description"  size="lg" name="itemDescription"
-          onChange={handleInputCreateNftChange}/>
+          onChange={handleInputCreateNftChange} value={nftformData.itemDescription}/>
     </div>
     <br />
     <Typography variant="h6" color="gray"> Attributes (optional) </Typography>

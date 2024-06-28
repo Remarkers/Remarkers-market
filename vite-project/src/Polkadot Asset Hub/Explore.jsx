@@ -109,21 +109,27 @@ export default function PAHExplore() {
       </Typography>
       <br />
        <Carousel loop={true} autoplay={true} className="rounded-xl">
+        <a href="https://remarkers-market.vercel.app/Polkadot%20Asset%20Hub/marketplace/7/Polkadot%20Punks">
       <img
         src={polkadotpunks}
         alt="image 1"
         className="h-200 w-full object-cover object-center"
       />
+      </a>
+      <a href="https://remarkers-market.vercel.app/Polkadot%20Asset%20Hub/marketplace/13/The%20sub0%202023%20Biodiversity%20Collection">
       <img
         src={biodiversity}
         alt="image 2"
         className="h-200 w-full object-cover object-center"
       />
+      </a>
+      <a href="https://remarkers-market.vercel.app/Polkadot%20Asset%20Hub/marketplace/155/Lunar%20Punks">
       <img
         src={lunarpunks}
         alt="image 3"
         className="h-200 w-full object-cover object-center"
       />
+      </a>
     </Carousel>
     <br />
       <div className="relative w-full md:w-1/2">
@@ -184,29 +190,11 @@ export default function PAHExplore() {
                   const ipfsHash = image?.replace(/^(ipfs:\/\/ipfs\/|ipfs:\/\/)/, '') || '';
                   const ipfsUri = `ipfs://${ipfsHash}`;
 
-                  const handleCardClick = () => {
-                    localStorage.setItem('selectedCollectionId', JSON.stringify(id));
-                    localStorage.setItem('selectedCollectionImage', JSON.stringify(image));
-                    localStorage.setItem('selectedCollectionDescription', JSON.stringify(description));
-                    localStorage.setItem('selectedCollectionOwner', JSON.stringify(owner));
-                    localStorage.setItem('maxSupply', JSON.stringify(maxSupply));
-                    localStorage.setItem('image', JSON.stringify(image));
-                    localStorage.setItem('Holders', JSON.stringify(distribution));
-                    localStorage.setItem('floor', JSON.stringify(floor));
-                    localStorage.setItem('highestSale', JSON.stringify(highestSale));
-                    localStorage.setItem('royalty', JSON.stringify(royalty));
-                    localStorage.setItem('nftCount', JSON.stringify(nftCount));
-                    localStorage.setItem('createdDate', JSON.stringify(createdDate));
-                    localStorage.setItem('volume', JSON.stringify(volume));
-                  };
-
                   return name && description && image ? (
                     <tr className="even:bg-blue-gray-50/50 hover:bg-blue-gray-50" key={id}>
                       <td className="p-4">
                       <Link
       to={`/Polkadot%20Asset%20Hub/marketplace/${id}/${name}`}
-      state={{ description, imageData: image, ownerData: owner, maxSupply, distribution, floor, highestSale, royalty, nftCount, createdDate, volume }}
-      onClick={handleCardClick}
     >
                           <div className="card-content-container">
                             <div className="image-container">
@@ -255,7 +243,7 @@ export default function PAHExplore() {
                       </td>
                       <td className="p-4">
                         <Typography variant="h7" color="gray" className="font-normal">
-                          {volume}
+                          {volume} DOT
                         </Typography>
                       </td>
                       <td className="p-4">

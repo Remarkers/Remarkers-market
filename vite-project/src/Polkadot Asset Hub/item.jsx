@@ -109,6 +109,8 @@ export default function PAHItems() {
   const [swapLoading, setSwapLoading] = useState()
   const [fetchLoading, setFetchLoading] = useState()
   const [isMobile, setIsMobile] = useState();
+  const [selectedCollectionMetadata, setSelectedCollectionMetadata] = useState(null)
+  const [collectionDataboolean, setCollectionDataboolean] = useState(false)
 
   useEffect(() => {
     const handleResize = () => {
@@ -190,15 +192,34 @@ export default function PAHItems() {
       // Assuming additional data is stored and used similarly
       const { id, name } = useParams();
       const nameData = name;
-      const location = useLocation();
-      const { state } = location;
-    
-      const { description, imageData, ownerData, maxSupply, distribution, floor, highestSale, royalty, nftCount, createdDate, volume } = state;
-      const descriptionData = description;
+      const colletionMetadata = async () => {
+        try {
+            const response = await Axios.get(`https://asset-hub-indexer.onrender.com/colletionMetadata?data=${IdData}`);
+            setSelectedCollectionMetadata(response.data.data); // Store the data directly as an array of objects
+            setCollectionDataboolean(true)
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    };
+    useEffect(() => {
+      colletionMetadata();
+    }, [])
+    console.log("image", selectedCollectionMetadata && selectedCollectionMetadata.meta.image)
+      const imageData = selectedCollectionMetadata && selectedCollectionMetadata.meta.image? selectedCollectionMetadata && selectedCollectionMetadata.meta.image : "ipfs://QmVyn3qDGJg4JxV2QbUW4tgiMfV5ho84DbwELFaoyVLtDZ";
+      const descriptionData = selectedCollectionMetadata && selectedCollectionMetadata.meta.description? selectedCollectionMetadata && selectedCollectionMetadata.meta.description : <>&nbsp;</>;
+      const ownerData = selectedCollectionMetadata && selectedCollectionMetadata.currentOwner? selectedCollectionMetadata && selectedCollectionMetadata.currentOwner : <>&nbsp;</>;
       const connectedAccount = JSON.parse(localStorage.getItem('Account'));
       const address = connectedAccount? connectedAccount.address : null
+      const maxSupply = selectedCollectionMetadata && selectedCollectionMetadata.max? selectedCollectionMetadata && selectedCollectionMetadata.max : <>&nbsp;</>;
       const collectionId = id;
       const ItemId = JSON.parse(localStorage.getItem('selectedCollectionItems'));
+      const distribution = selectedCollectionMetadata && selectedCollectionMetadata.distribution? selectedCollectionMetadata && selectedCollectionMetadata.distribution : <>&nbsp;</>;
+const floor = selectedCollectionMetadata && selectedCollectionMetadata.floor? selectedCollectionMetadata && selectedCollectionMetadata.floor : <>&nbsp;</>;
+const highestSale = selectedCollectionMetadata && selectedCollectionMetadata.highestSale? selectedCollectionMetadata && selectedCollectionMetadata.highestSale : <>&nbsp;</>;
+const royalty = selectedCollectionMetadata && selectedCollectionMetadata.royalty? selectedCollectionMetadata && selectedCollectionMetadata.royalty : 0;
+const nftCount = selectedCollectionMetadata && selectedCollectionMetadata.supply? selectedCollectionMetadata && selectedCollectionMetadata.supply : <>&nbsp;</>;
+// const createdDate = JSON.parse(localStorage.getItem('createdDate'));
+const volume = selectedCollectionMetadata && selectedCollectionMetadata.volume? selectedCollectionMetadata && selectedCollectionMetadata.volume : <>&nbsp;</>;
 
 // Ensure the address is not null or empty
 const decodedAddress = address ? decodeAddress(address) : null;
@@ -214,8 +235,7 @@ console.log('Polkadot Address:', polkadotAddress);
   
       const imageUrl = imageData ? `https://cloudflare-ipfs.com/ipfs/${imageData.replace(/ipfs:\/\/ipfs|ipfs:\/\//, "")}` : null;
 
-    const IdData = JSON.parse(localStorage.getItem('selectedCollectionId'));
-    const image = JSON.parse(localStorage.getItem('image'));
+    const IdData = id;
     const Account = (JSON.parse(localStorage.getItem("Account")))
     const owned = async() => {
       try {
@@ -244,7 +264,7 @@ console.log('Polkadot Address:', polkadotAddress);
 
     const getData = async (value) => {
         try {
-            const response = await Axios.get(`https://asset-hub-indexer.onrender.com/itemData?data=${IdData}&image=${image}&page=${active.toString()}&orderBy=${value === "Recently Minted"? "blockNumber_DESC": value === "Earliest Minted"? "blockNumber_ASC": value === "Price Low To High"? "price_ASC" : value === "Price High To Low"? "price_DESC" : "blockNumber_DESC"}`);
+            const response = await Axios.get(`https://asset-hub-indexer.onrender.com/itemData?data=${IdData}&image=${imageData}&page=${active.toString()}&orderBy=${value === "Recently Minted"? "blockNumber_DESC": value === "Earliest Minted"? "blockNumber_ASC": value === "Price Low To High"? "price_ASC" : value === "Price High To Low"? "price_DESC" : "blockNumber_DESC"}`);
             setData(response.data.data); // Store the data directly as an array of objects
         } catch (error) {
             console.error('Error fetching data:', error);
@@ -360,13 +380,14 @@ console.log('Polkadot Address:', polkadotAddress);
     };
 
     useEffect(() => {
+      if (selectedCollectionMetadata) {
         getData();
-        // collectionActivity();
         Holders();
-        if(Account){
-        owned();
+        if (Account) {
+          owned();
         }
-    }, []); // Dependency array is empty, so this effect runs only once
+      }
+    }, [selectedCollectionMetadata, Account]);// Dependency array is empty, so this effect runs only once
 
     // Logging to see the structure of the data
     console.log(data);
@@ -376,6 +397,7 @@ console.log('Polkadot Address:', polkadotAddress);
     console.log(item);
     console.log("Swap DATA", swapData);
     console.log("price", price)
+    console.log("Collection Metadata", selectedCollectionMetadata)
 
 function timeSince(date) {
   return formatDistanceToNow(date, { addSuffix: true });
