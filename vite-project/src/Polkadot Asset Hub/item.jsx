@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import {
     Card,
     CardHeader,
@@ -112,6 +112,7 @@ export default function PAHItems() {
   const [selectedCollectionMetadata, setSelectedCollectionMetadata] = useState(null)
   const [collectionDataboolean, setCollectionDataboolean] = useState(false)
   const [isFilterOptionSet, setIsFilterOptionSet] = useState(false);
+  const runCount = useRef(0);
 
   useEffect(() => {
     const handleResize = () => {
@@ -211,7 +212,7 @@ export default function PAHItems() {
       const ownerData = selectedCollectionMetadata && selectedCollectionMetadata.currentOwner? selectedCollectionMetadata && selectedCollectionMetadata.currentOwner : <>&nbsp;</>;
       const connectedAccount = JSON.parse(localStorage.getItem('Account'));
       const address = connectedAccount? connectedAccount.address : null
-      const maxSupply = selectedCollectionMetadata && selectedCollectionMetadata.max? selectedCollectionMetadata && selectedCollectionMetadata.max : <>&nbsp;</>;
+      const maxSupply = selectedCollectionMetadata && selectedCollectionMetadata.max === null? 0 : selectedCollectionMetadata && selectedCollectionMetadata.max;
       const collectionId = id;
       const ItemId = JSON.parse(localStorage.getItem('selectedCollectionItems'));
       const distribution = selectedCollectionMetadata && selectedCollectionMetadata.distribution? selectedCollectionMetadata && selectedCollectionMetadata.distribution : <>&nbsp;</>;
@@ -381,16 +382,17 @@ console.log('Polkadot Address:', polkadotAddress);
     };
 
     useEffect(() => {
-      if (selectedCollectionMetadata) {
-        if (!isFilterOptionSet) {
-          getData(); // Call getData without value
-        }
-        Holders();
-        if (Account) {
-          owned();
-        }
+      if (selectedCollectionMetadata && runCount.current < 2) {
+          if (!isFilterOptionSet) {
+              getData(); // Call getData without value
+          }
+          Holders();
+          if (Account) {
+              owned();
+          }
+          runCount.current += 1; // Increment the run count
       }
-    }, [selectedCollectionMetadata, Account, isFilterOptionSet]);
+  }, [selectedCollectionMetadata, Account, isFilterOptionSet]);
     
     const handleSelectChange = (value) => {
       setFilterOption(value);
@@ -2525,6 +2527,8 @@ const ipfsItemUri = `ipfs://${ipfsItemHash}`;
       </table>
     </Card>
       </>
+      <br />
+      <br />
       <div className={isMobile ? "flex items-center gap-2" :"flex items-center gap-2"} style={isMobile? {marginLeft: "2px"} :{marginLeft: "100px"}}>
       <Button
         variant="text"
