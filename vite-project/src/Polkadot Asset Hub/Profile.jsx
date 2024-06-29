@@ -86,7 +86,7 @@ export default function PAHProfile( ) {
 
     const owned = async() => {
         try {
-            const response = await Axios.get(`https://asset-hub-indexer.onrender.com/owned?address=${JSON.stringify(Account?.address)}&page=${active.toString()}`);
+            const response = await Axios.get(`http://localhost:3001/owned?address=${JSON.stringify(Account?.address)}&page=${active.toString()}`);
             setOwner(response.data.data.result); // Store the data directly as an array of objects
             setItemMetadata(response.data.data.metadata)
             setPrice(response.data.data.result.price)
@@ -98,7 +98,7 @@ export default function PAHProfile( ) {
 
       const created = async() => {
         try {
-            const response = await Axios.get(`https://asset-hub-indexer.onrender.com/created?address=${JSON.stringify(Account?.address)}`);
+            const response = await Axios.get(`http://localhost:3001/created?address=${JSON.stringify(Account?.address)}`);
             setCreatedCollection(response.data.data); // Store the data directly as an array of objects
       } catch (error) {
           console.error('Error fetching data:', error);

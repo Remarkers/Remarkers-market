@@ -107,7 +107,7 @@ export default function PAHCreate( ) {
     const created = async() => {
         try {
           setCreatedLoading(true)
-            const response = await Axios.get(`https://asset-hub-indexer.onrender.com/created?address=${JSON.stringify(Account?.address)}`);
+            const response = await Axios.get(`http://localhost:3001/created?address=${JSON.stringify(Account?.address)}`);
             setCreatedCollection(response.data.data); // Store the data directly as an array of objects
             setCreatedLoading(false)
       } catch (error) {
@@ -131,6 +131,18 @@ export default function PAHCreate( ) {
         setSelectedFile(URL.createObjectURL(file));
       setFileType(file.type);
           try {
+            const toastId = toast.info('Uploading Content to IPFS', {
+              position: "top-right",
+              autoClose: false, // Set autoClose to false to keep the toast visible
+              hideProgressBar: false,
+              closeOnClick: false,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "colored",
+              isLoading: true, // This shows the loading indicator
+            });
+        
             const fileData = new FormData();
             fileData.append("file", file);
       
@@ -147,7 +159,17 @@ export default function PAHCreate( ) {
       
             const fileUrl = "https://gateway.pinata.cloud/ipfs/" + responseData.data.IpfsHash;
             console.log(fileUrl);
-            setNftFormData({ ...nftformData, itemFile: responseData.data.IpfsHash  });
+            toast.update(toastId, {
+              render: 'successfully uploaded',
+              type: 'success',
+              isLoading: false,
+              autoClose: 5000, // Close the toast after 5 seconds
+              closeOnClick: true,
+            });
+            setNftFormData((prevFormData) => ({
+              ...prevFormData,
+              itemFile: responseData.data.IpfsHash
+            }));
           } catch (e) {
             if (e.response) {
               // Server responded with a status other than 2xx
@@ -180,18 +202,23 @@ export default function PAHCreate( ) {
 
       const handleInputChange = (event) => {
         const { name, value } = event.target;
-        setFormData({ ...formData, [name]: value });
+        setFormData((prevFormData) => ({
+          ...prevFormData,
+          [name]: value,
+        }));
       };
 
       const handleInputCreateNftChange = (event) => {
         const { name, value } = event.target;
-        setNftFormData({ ...nftformData, [name]: value });
+        setNftFormData((prevFormData) => ({
+          ...prevFormData,
+          [name]: value,
+        }));
       };
     
       const handleSubmit = (event) => {
         event.preventDefault();
         setSubmitted(true);
-        handleCollectionFileChange();
         // Your form submission logic here
         console.log('Form data submitted:', formData);
       };
@@ -201,6 +228,17 @@ export default function PAHCreate( ) {
         if (file) {
           setCollectionLogo(URL.createObjectURL(file));
           try {
+            const toastId = toast.info('Uploading Content to IPFS', {
+              position: "top-right",
+              autoClose: false, // Set autoClose to false to keep the toast visible
+              hideProgressBar: false,
+              closeOnClick: false,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "colored",
+              isLoading: true, // This shows the loading indicator
+            });
             const fileData = new FormData();
             fileData.append("file", file);
       
@@ -217,7 +255,17 @@ export default function PAHCreate( ) {
       
             const fileUrl = "https://gateway.pinata.cloud/ipfs/" + responseData.data.IpfsHash;
             console.log(fileUrl);
-            setFormData({ ...formData, collectionFile: responseData.data.IpfsHash  });
+            toast.update(toastId, {
+              render: 'successfully uploaded',
+              type: 'success',
+              isLoading: false,
+              autoClose: 5000, // Close the toast after 5 seconds
+              closeOnClick: true,
+            });
+            setFormData((prevFormData) => ({
+              ...prevFormData,
+              collectionFile: responseData.data.IpfsHash
+            }));
           } catch (e) {
             if (e.response) {
               // Server responded with a status other than 2xx
@@ -1057,14 +1105,13 @@ SVGs (for onchain NFTs)
           onChange={handleInputChange}
           required
           minLength={submitted && formData.collectionName.length < 1}
-          value={formData.collectionName}
         />
       </div>
     <br />
     <Typography variant="h6" color="gray"> Description </Typography>
     <br />
     <div className="w-96">
-      <Input label="Collection Description" name="collectionDescription" size="lg" onChange={handleInputChange} required minLength={submitted && formData.collectionDescription.length < 1} value={formData.collectionDescription} />
+      <Input label="Collection Description" name="collectionDescription" size="lg" onChange={handleInputChange} required minLength={submitted && formData.collectionDescription.length < 1} />
     </div>
     <br />
     <Typography variant="h6">
@@ -1090,13 +1137,6 @@ SVGs (for onchain NFTs)
                 <br />
                 <div className="w-96">
                   <Input label="Collection Supply" name="collectionSupply" type="number" onChange={handleInputChange} error={submitted && formData.collectionSupply.length < 1} />
-                  {
-        submitted && formData.collectionSupply.length < 1 && (
-          <Typography variant="caption" style={{fontSize: "13px"}} color="error">
-            Collection Supply is required.
-          </Typography>
-        )
-      }
                 </div>
               </>
             )}
@@ -1105,19 +1145,19 @@ SVGs (for onchain NFTs)
     <Typography variant="h6" color="gray"> Twitter (Optional) </Typography>
     <br />
     <div className="w-96">
-      <Input label="Collection Twitter" name="collectionTwitter" size="lg" onChange={handleInputChange} value={formData.collectionTwitter} />
+      <Input label="Collection Twitter" name="collectionTwitter" size="lg" onChange={handleInputChange} />
     </div>
     <br />
     <Typography variant="h6" color="gray"> Discord (Optional) </Typography>
     <br />
     <div className="w-96">
-      <Input label="Collection Discord" name="collectionDiscord" size="lg" onChange={handleInputChange} value={formData.collectionDiscord} />
+      <Input label="Collection Discord" name="collectionDiscord" size="lg" onChange={handleInputChange} />
     </div>
     <br />
     <Typography variant="h6" color="gray"> External link (website)  </Typography>
     <br />
     <div className="w-96">
-      <Input label="Collection External link" name="collectionExternalLink" size="lg" onChange={handleInputChange} value={formData.collectionExternalLink}/>
+      <Input label="Collection External link" name="collectionExternalLink" size="lg" onChange={handleInputChange}/>
     </div>
     <br />
     <br />
@@ -1194,14 +1234,16 @@ SVGs (for onchain NFTs)
     <br />
     <div className={isMobile? "w-80" : "w-96"}>
       <Input label=" Name" name="itemName"
-          onChange={handleInputCreateNftChange} value={nftformData.itemName}  />
+          onChange={handleInputCreateNftChange}       required
+          minLength={nftformData && nftformData.itemName.length < 1} />
     </div>
     <br />
     <Typography variant="h6" color="gray"> Description </Typography>
     <br />
     <div className={isMobile? "w-80" : "w-96"}>
       <Input label=" Description"  size="lg" name="itemDescription"
-          onChange={handleInputCreateNftChange} value={nftformData.itemDescription}/>
+          onChange={handleInputCreateNftChange}       required
+          minLength={nftformData && nftformData.itemDescription.length < 1}/>
     </div>
     <br />
     <Typography variant="h6" color="gray"> Attributes (optional) </Typography>

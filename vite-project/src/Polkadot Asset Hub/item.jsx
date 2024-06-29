@@ -111,6 +111,7 @@ export default function PAHItems() {
   const [isMobile, setIsMobile] = useState();
   const [selectedCollectionMetadata, setSelectedCollectionMetadata] = useState(null)
   const [collectionDataboolean, setCollectionDataboolean] = useState(false)
+  const [isFilterOptionSet, setIsFilterOptionSet] = useState(false);
 
   useEffect(() => {
     const handleResize = () => {
@@ -194,7 +195,7 @@ export default function PAHItems() {
       const nameData = name;
       const colletionMetadata = async () => {
         try {
-            const response = await Axios.get(`https://asset-hub-indexer.onrender.com/colletionMetadata?data=${IdData}`);
+            const response = await Axios.get(`https://asset-hub-indexer.onrender.com/colletionMetadata?data=${id}`);
             setSelectedCollectionMetadata(response.data.data); // Store the data directly as an array of objects
             setCollectionDataboolean(true)
         } catch (error) {
@@ -203,7 +204,7 @@ export default function PAHItems() {
     };
     useEffect(() => {
       colletionMetadata();
-    }, [])
+    }, [id])
     console.log("image", selectedCollectionMetadata && selectedCollectionMetadata.meta.image)
       const imageData = selectedCollectionMetadata && selectedCollectionMetadata.meta.image? selectedCollectionMetadata && selectedCollectionMetadata.meta.image : "ipfs://QmVyn3qDGJg4JxV2QbUW4tgiMfV5ho84DbwELFaoyVLtDZ";
       const descriptionData = selectedCollectionMetadata && selectedCollectionMetadata.meta.description? selectedCollectionMetadata && selectedCollectionMetadata.meta.description : <>&nbsp;</>;
@@ -264,7 +265,7 @@ console.log('Polkadot Address:', polkadotAddress);
 
     const getData = async (value) => {
         try {
-            const response = await Axios.get(`https://asset-hub-indexer.onrender.com/itemData?data=${IdData}&image=${imageData}&page=${active.toString()}&orderBy=${value === "Recently Minted"? "blockNumber_DESC": value === "Earliest Minted"? "blockNumber_ASC": value === "Price Low To High"? "price_ASC" : value === "Price High To Low"? "price_DESC" : "blockNumber_DESC"}`);
+            const response = await Axios.get(`http://localhost:3001/itemData?data=${IdData}&image=${imageData}&page=${active.toString()}&orderBy=${value === "Recently Minted"? "blockNumber_DESC": value === "Earliest Minted"? "blockNumber_ASC": value === "Price Low To High"? "price_ASC" : value === "Price High To Low"? "price_DESC" : "blockNumber_DESC"}`);
             setData(response.data.data); // Store the data directly as an array of objects
         } catch (error) {
             console.error('Error fetching data:', error);
@@ -381,13 +382,22 @@ console.log('Polkadot Address:', polkadotAddress);
 
     useEffect(() => {
       if (selectedCollectionMetadata) {
-        getData();
+        if (!isFilterOptionSet) {
+          getData(); // Call getData without value
+        }
         Holders();
         if (Account) {
           owned();
         }
       }
-    }, [selectedCollectionMetadata, Account]);// Dependency array is empty, so this effect runs only once
+    }, [selectedCollectionMetadata, Account, isFilterOptionSet]);
+    
+    const handleSelectChange = (value) => {
+      setFilterOption(value);
+      setIsFilterOptionSet(true); // Indicate that filter option is set
+      getData(value); // Call getData with the selected value
+      setData([]); // Reset data
+    };
 
     // Logging to see the structure of the data
     console.log(data);
@@ -2212,7 +2222,7 @@ const ipfsItemUri = `ipfs://${ipfsItemHash}`;
   </div>
 </Button>
     <div style={isMobile? { marginLeft: "auto", minWidth: "20px"} :{ marginLeft: "auto", minWidth: "200px" }}> {/* Add margin for spacing and set a minimum width */}
-    <Select label=" Sort" size={isMobile? "sm" : "md"} value={filterOption} onChange={(value) => {setFilterOption(value), getData(value), setData([])}}>
+    <Select label=" Sort" size={isMobile? "sm" : "md"} value={filterOption} onChange={(value) => handleSelectChange(value)}>
       <Option value={optionValues.RecentlyMinted}>Recently Minted</Option>
       <Option value={optionValues.EarliestMinted}>Earliest Minted</Option>
       <Option value={optionValues.PriceHighToLow}> Price High To Low</Option>
@@ -2515,32 +2525,46 @@ const ipfsItemUri = `ipfs://${ipfsItemHash}`;
       </table>
     </Card>
       </>
-    <div className="flex items-center gap-4" style={{ float: "right", marginRight: "209px", marginTop: "30px"}}>
+      <div className={isMobile ? "flex items-center gap-2" :"flex items-center gap-2"} style={isMobile? {marginLeft: "2px"} :{marginLeft: "100px"}}>
       <Button
         variant="text"
-        className="flex items-center gap-2"
+        className={isMobile ? "flex items-center gap-2" :"flex items-center gap-2"}
         onClick={prevPage}
+        size={isMobile? "sm" : "md"}
         disabled={subscanPage === 1}
         color="pink"
       >
-        <ArrowLeftIcon strokeWidth={2} className="h-4 w-4" color="pink"/> Previous
+        <ArrowLeftIcon strokeWidth={2} className={isMobile? "h-2 w-2" :"h-4 w-4"} color="pink"/> Previous
       </Button>
       <div className="flex items-center gap-2">
-        <IconButton {...getPage(subscanPage)} color="pink" variant="outlined">{subscanPage}</IconButton>
-        <IconButton {...getPage(subscanPage + 1 )} color="pink">{subscanPage + 1}</IconButton>
+        {
+          isMobile? (
+            <>
+                    <IconButton {...getPage(subscanPage)} color="pink" variant="outlined" size="sm">{subscanPage}</IconButton>
+                    <IconButton {...getPage(subscanPage + 1 )} color="pink" size="sm">{subscanPage + 1}</IconButton>
+        <IconButton {...getPage(subscanPage + 2)} color="pink" size="sm">{active + 2}</IconButton>
+            </>
+          ) : (
+            <>
+                    <IconButton {...getPage(subscanPage)} color="pink" variant="outlined">{subscanPage}</IconButton>
+                    <IconButton {...getPage(subscanPage + 1 )} color="pink">{subscanPage + 1}</IconButton>
         <IconButton {...getPage(subscanPage + 2)} color="pink">{subscanPage + 2}</IconButton>
         <IconButton {...getPage(subscanPage + 3)} color="pink">{subscanPage + 3}</IconButton>
         <IconButton {...getPage(subscanPage + 4)} color="pink">{subscanPage + 4}</IconButton>
         <IconButton {...getPage(subscanPage + 5)} color="pink">{subscanPage + 5}</IconButton>
+            </>
+          )
+        }
       </div>
       <Button
         variant="text"
-        className="flex items-center gap-2"
+        className={isMobile ? "flex items-center gap-2" :"flex items-center gap-2"}
         onClick={nextPage}
+        size={isMobile? "sm" : "md"}
         color="pink"
       >
         Next
-        <ArrowRightIcon strokeWidth={2} className="h-4 w-4" color="pink"/>
+        <ArrowRightIcon strokeWidth={2} className={isMobile? "h-2 w-2" :"h-4 w-4"} color="pink"/>
       </Button>
     </div>
     </>
