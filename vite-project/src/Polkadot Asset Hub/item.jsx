@@ -196,7 +196,7 @@ export default function PAHItems() {
       const nameData = name;
       const colletionMetadata = async () => {
         try {
-            const response = await Axios.get(`https://asset-hub-indexer.onrender.com/colletionMetadata?data=${id}`);
+            const response = await Axios.get(`http://localhost:3001/colletionMetadata?data=${id}`);
             setSelectedCollectionMetadata(response.data.data); // Store the data directly as an array of objects
             setCollectionDataboolean(true)
         } catch (error) {
@@ -241,7 +241,7 @@ console.log('Polkadot Address:', polkadotAddress);
     const Account = (JSON.parse(localStorage.getItem("Account")))
     const owned = async() => {
       try {
-          const response = await Axios.get(`https://asset-hub-indexer.vercel.app/owned?address=${JSON.stringify(Account && Account?.address)}&page=${ownedactive.toString()}`);
+          const response = await Axios.get(`http://localhost:3001/owned?address=${JSON.stringify(Account && Account?.address)}&page=${ownedactive.toString()}`);
           setOwner(response.data.data.result); // Store the data directly as an array of objects
           setOwnedMetadata(response.data.data.metadata)
           setOwnedPrice(response.data.data.result.price)
@@ -254,7 +254,7 @@ console.log('Polkadot Address:', polkadotAddress);
     const swap = async(item) => {
       try {
         setSwapLoading(true)
-        const response = await Axios.get(`https://asset-hub-indexer.onrender.com/swap?data=${item.Id}&collectionId=${IdData}`);
+        const response = await Axios.get(`http://localhost:3001/swap?data=${item.Id}&collectionId=${IdData}`);
         const res = response.data.data;
         const resarray = res && res.map(item => item)[0];
         setSwapData( resarray); // Store the data directly as an array of objects
@@ -266,7 +266,7 @@ console.log('Polkadot Address:', polkadotAddress);
 
     const getData = async (value) => {
         try {
-            const response = await Axios.get(`https://asset-hub-indexer.onrender.com/itemData?data=${IdData}&image=${imageData}&page=${active.toString()}&orderBy=${value === "Recently Minted"? "blockNumber_DESC": value === "Earliest Minted"? "blockNumber_ASC": value === "Price Low To High"? "price_ASC" : value === "Price High To Low"? "price_DESC" : "blockNumber_DESC"}`);
+            const response = await Axios.get(`http://localhost:3001/itemData?data=${IdData}&image=${imageData}&page=${active.toString()}&orderBy=${value === "Recently Minted"? "blockNumber_DESC": value === "Earliest Minted"? "blockNumber_ASC": value === "Price Low To High"? "price_ASC" : value === "Price High To Low"? "price_DESC" : "blockNumber_DESC"}`);
             setData(response.data.data); // Store the data directly as an array of objects
         } catch (error) {
             console.error('Error fetching data:', error);
@@ -275,7 +275,7 @@ console.log('Polkadot Address:', polkadotAddress);
     
     const giveItemId = async(item) => {
       try {
-        const response = await Axios.get(`https://asset-hub-indexer.vercel.app/itemId?data=${item.Id}&collectionId=${IdData}`);
+        const response = await Axios.get(`http://localhost:3001/itemId?data=${item.Id}&collectionId=${IdData}`);
         setItemConfig(response.data.data); // Store the data directly as an array of objects
     } catch (error) {
         console.error('Error fetching data:', error);
@@ -285,7 +285,7 @@ console.log('Polkadot Address:', polkadotAddress);
     const getItemPrice = async(item) => {
       try {
         setFetchLoading(true)
-        const response = await Axios.get(`https://asset-hub-indexer.vercel.app/itemPrice?data=${item.Id}&collectionId=${IdData}&price=${item.price}`);
+        const response = await Axios.get(`http://localhost:3001/itemPrice?data=${item.Id}&collectionId=${IdData}&price=${item.price}`);
         setPrice(response.data.data.priceDotUsd); // Store the data directly as an array of objects
         setIntegerPrice(response.data.data.price)
         setFetchLoading(false)
@@ -296,7 +296,7 @@ console.log('Polkadot Address:', polkadotAddress);
 
     const collectionActivity = async() => {
       try {
-        const response = await Axios.get(`https://asset-hub-indexer.vercel.app/collectionActivity?collectionId=${IdData}`);
+        const response = await Axios.get(`http://localhost:3001/collectionActivity?collectionId=${IdData}`);
         setCollectionActivity( response && response.data.data.data.list); // Store the data directly as an array of objects
     } catch (error) {
         console.error('Error fetching data:', error);
@@ -305,7 +305,7 @@ console.log('Polkadot Address:', polkadotAddress);
 
     const Holders = async() => {
       try {
-        const response = await Axios.get(`https://asset-hub-indexer.vercel.app/Holders?collectionId=${IdData}&page=${subscanPage.toString()}`);
+        const response = await Axios.get(`http://localhost:3001/Holders?collectionId=${IdData}&page=${subscanPage.toString()}`);
         setHolders(response.data.data.data.list); // Store the data directly as an array of objects
         setOwnersCount(response.data.data.data.count)
     } catch (error) {
@@ -315,7 +315,7 @@ console.log('Polkadot Address:', polkadotAddress);
     
     const metadata = async(item) => {
       try {
-        const response = await Axios.get(`https://asset-hub-indexer.vercel.app/metadata?metadata=${item.metadata}`);
+        const response = await Axios.get(`http://localhost:3001/metadata?metadata=${item.metadata}`);
         setItemMetadata(JSON.parse(response.data.data)); // Store the data directly as an array of objects
     } catch (error) {
         console.error('Error fetching data:', error);
@@ -2703,7 +2703,20 @@ const ipfsItemUri = `ipfs://${ipfsItemHash}`;
 <br />
       </CardBody>
       <CardFooter className="pt-0">
-      <Button size="md" variant="filled" color="red" onClick={deList}>Cancel sell</Button> <Button size="md" variant="filled" color="green" onClick={listToggleOpen}>Change price</Button> 
+{
+  isMobile? (
+    <>
+          <Button size="md" variant="filled" color="red" onClick={deList}>Cancel sell</Button>
+          <br />
+          <br />
+           <Button size="md" variant="filled" color="green" onClick={listToggleOpen}>Change price</Button> 
+    </>
+  ) : (
+    <>
+          <Button size="md" variant="filled" color="red" onClick={deList}>Cancel sell</Button> <Button size="md" variant="filled" color="green" onClick={listToggleOpen}>Change price</Button> 
+    </>
+  )
+}
       <Collapse open={listOpen}>
 <div className="w-98" style={{marginTop: "30px"}}>
 <Input
@@ -3003,7 +3016,7 @@ const ipfsItemUri = `ipfs://${ipfsItemHash}`;
                  </>
                  ) : (
                   <>
-                  <div style={{float: "right", marginTop: "50px"}}>
+                  <div style={{marginTop: "50px"}} className="overflow-scroll">
                 <Typography variant="h5" color="blue-gray" style={{marginLeft: "20px"}}>
           Buy now <br />
           <br />
