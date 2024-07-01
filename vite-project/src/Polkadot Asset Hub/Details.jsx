@@ -151,7 +151,7 @@ console.log('Polkadot Address:', polkadotAddress);
 
 const ownedNft = async() => {
   try {
-      const response = await Axios.get(`http://localhost:3001/owned?address=${JSON.stringify(address)}&page=${ownedactive.toString()}`);
+      const response = await Axios.get(`${import.meta.env.VITE_VPS_BACKEND_API}owned?address=${JSON.stringify(address)}&page=${ownedactive.toString()}`);
       setOwner(response.data.data.result); // Store the data directly as an array of objects
       setOwnedMetadata(response.data.data.metadata)
       setOwnedPrice(response.data.data.result.price)
@@ -164,7 +164,7 @@ const ownedNft = async() => {
     const owned = async() => {
         try {
           setFetchLoading(true)
-            const response = await Axios.get(`http://localhost:3001/metadatas?item=${ItemId}&collection=${collectionId}`);
+            const response = await Axios.get(`${import.meta.env.VITE_VPS_BACKEND_API}metadatas?item=${ItemId}&collection=${collectionId}`);
             setMetadata(response.data.data.itemJson); // Store the data directly as an array of objects
             setCollectionOwner(response.data.data.collectionOwner);
             setItemOwner(response.data.data.itemOwner);
@@ -180,7 +180,7 @@ const ownedNft = async() => {
       const swap = async() => {
         try {
           setSwapLoading(true)
-          const response = await Axios.get(`http://localhost:3001/swap?data=${ItemId}&collectionId=${collectionId}`);
+          const response = await Axios.get(`${import.meta.env.VITE_VPS_BACKEND_API}swap?data=${ItemId}&collectionId=${collectionId}`);
           const res = response.data.data;
           const resarray = res && res.map(item => item)[0];
           setSwapData( resarray); // Store the data directly as an array of objects

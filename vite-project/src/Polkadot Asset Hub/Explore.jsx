@@ -25,10 +25,10 @@ export default function PAHExplore() {
 
   const handleInputChange = (e) => {
     setSearchTerm(e.target.value);
-  };  
+  };
 
   const getData = async () => {
-    const response = await Axios.get("http://localhost:3001/getData");
+    const response = await Axios.get(`${import.meta.env.VITE_VPS_BACKEND_API}getData`);
     setData(response.data);
     setIsLoading(false);
   };
