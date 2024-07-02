@@ -3016,7 +3016,7 @@ const ipfsItemUri = `ipfs://${ipfsItemHash}`;
                  </>
                  ) : (
                   <>
-                  <div style={{marginTop: "50px"}} className="overflow-scroll">
+                  <div style={{marginTop: "50px"}} className={isMobile? "overflow-scroll" : undefined}>
                 <Typography variant="h5" color="blue-gray" style={{marginLeft: "20px"}}>
           Buy now <br />
           <br />
