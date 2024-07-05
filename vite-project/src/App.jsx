@@ -139,7 +139,7 @@ function NavListMenu() {
             {description}
           </Typography>
         </div>
-      </MenuItem> :<a href={`/${title}`} key={key} onClick={() => setNetwork(title)}>
+      </MenuItem> :<a href={`/${title}/Explore`} key={key} onClick={() => setNetwork(title)}>
         <MenuItem className={`flex items-center gap-3 rounded-lg ${network === title ? "border-2 border-pink-400" : "" }`}>
         <div className="flex items-center justify-center rounded-lg !bg-blue-gray-50 p-2">
   {/* Conditionally render image if 'icon' is a string representing an image path */}

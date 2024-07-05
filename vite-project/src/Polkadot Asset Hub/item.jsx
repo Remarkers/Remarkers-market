@@ -382,6 +382,7 @@ console.log('Polkadot Address:', polkadotAddress);
     };
 
     useEffect(() => {
+      getData(); // Call getData without value
       if (selectedCollectionMetadata && runCount.current < 2) {
           if (!isFilterOptionSet) {
               getData(); // Call getData without value

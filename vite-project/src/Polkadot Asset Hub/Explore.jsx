@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import '/src/index.css';
 import Axios from 'axios';
 import {
@@ -11,9 +11,8 @@ import {
 import { Link } from "react-router-dom";
 import { MediaRenderer } from "@thirdweb-dev/react";
 import { ArrowUpIcon, ArrowDownIcon } from "@heroicons/react/24/outline";
-import polkadotpunks from '/src/assets/Polkadot Punks.gif'
+import polkadotpunks from '/src/assets/polkadotpunks.png'
 import biodiversity from '/src/assets/Polkadot Punks.png'
-import lunarpunks from '/src/assets/Polkadot Punks (1).gif'
 
 export default function PAHExplore() {
   const [data, setData] = useState([]);
@@ -103,12 +102,7 @@ export default function PAHExplore() {
 
   return (
     <>
-      <br />
-      <Typography variant="h2" color="black" style={{marginLeft: "20px"}}>
-        Trending
-      </Typography>
-      <br />
-       <Carousel loop={true} autoplay={true} className="rounded-xl">
+       <Carousel loop={true} autoplay={true} className="sm">
         <a href="https://remarkers-market.vercel.app/Polkadot%20Asset%20Hub/marketplace/7/Polkadot%20Punks">
       <img
         src={polkadotpunks}
@@ -123,14 +117,8 @@ export default function PAHExplore() {
         className="h-200 w-full object-cover object-center"
       />
       </a>
-      <a href="https://remarkers-market.vercel.app/Polkadot%20Asset%20Hub/marketplace/155/Lunar%20Punks">
-      <img
-        src={lunarpunks}
-        alt="image 3"
-        className="h-200 w-full object-cover object-center"
-      />
-      </a>
     </Carousel>
+
     <br />
       <div className="relative w-full md:w-1/2">
         <span className="absolute inset-y-0 left-0 flex items-center pl-3">
