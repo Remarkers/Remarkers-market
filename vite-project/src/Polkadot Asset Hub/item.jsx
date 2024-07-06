@@ -2145,7 +2145,7 @@ const ipfsItemUri = `ipfs://${ipfsItemHash}`;
 </>
                       );
                     }
-                    return null; // Return null if no items match
+                    return null; // Return null if no items matched
                   })}
                 </td>
                 <td>
