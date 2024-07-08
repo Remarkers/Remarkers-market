@@ -2342,16 +2342,11 @@ const ipfsItemUri = `ipfs://${ipfsItemHash}`;
     <br />
                 
             {/* Here's where you can map over your data and render Cards for each item */}
-            {
-              loadingData === true? (
-                <>
-                        <div className="flex justify-center items-center h-screen">
+            {loadingData ? (
+        <div className="flex justify-center items-center h-screen">
           <Spinner className="h-8 w-8" color="pink" />
         </div>
-        </>
-      ) : (
-        <>
-            {data.length <= 1 ? (
+      ) : data.length <= 1 ? (
         <div className="flex justify-center items-start h-screen">
           <div className="flex justify-center items-center w-full mt-20">
             <Typography variant="h5">
@@ -2366,6 +2361,7 @@ const ipfsItemUri = `ipfs://${ipfsItemHash}`;
             .map((item, index) => {
               const ipfsHash = item.image?.replace(/^(ipfs:\/\/ipfs\/|ipfs:\/\/)/, "") || "";
               const ipfsUri = `ipfs://${ipfsHash}`;
+
               return (
                 <Card
                   key={index}
@@ -2397,7 +2393,7 @@ const ipfsItemUri = `ipfs://${ipfsItemHash}`;
                       alt=""
                       className="h-full w-full object-cover"
                       onClick={() => dataUrl(renderURL, JsonData)}
-                      style={isMobile ? { maxWidth: "130px", maxHeight: "130px", borderRadius: "10px", display: isLoading || error ? 'none' : 'block' } : { display: isLoading && error ? 'none' : 'block', borderRadius: "10px" }}
+                      style={isMobile ? { maxWidth: "130px", maxHeight: "130px", borderRadius: "10px", display: isLoading || error ? 'none' : 'block' } : { display: isLoading || error ? 'none' : 'block', borderRadius: "10px" }}
                       onLoad={() => setIsLoading(false)}
                       onError={() => {
                         setIsLoading(false);
@@ -2431,9 +2427,6 @@ const ipfsItemUri = `ipfs://${ipfsItemHash}`;
           }
         </>
       )}
-                      </>
-              )
-            }
 <br />
 <br />
 <br />
