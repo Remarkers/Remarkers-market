@@ -2336,7 +2336,18 @@ const ipfsItemUri = `ipfs://${ipfsItemHash}`;
                 
             {/* Here's where you can map over your data and render Cards for each item */}
             {
-              data.length < 1 ? (
+              loadingData === true && (
+                <>
+                                    <div className="flex justify-center items-start h-screen">
+  <div className="flex justify-center items-center w-full mt-20"> {/* Adjust mt-20 to your desired margin */}
+    <Spinner className="h-8 w-8" color="pink" />
+  </div>
+</div>
+                </>
+              )
+            }
+            {
+              data && data.length < 1 && loadingData === false && (
                 <>
                                             <div className="flex justify-center items-start h-screen">
   <div className="flex justify-center items-center w-full mt-20"> {/* Adjust mt-20 to your desired margin */}
@@ -2346,9 +2357,8 @@ const ipfsItemUri = `ipfs://${ipfsItemHash}`;
   </div>
 </div>
                 </>
-              ) : (
-<>
-            {data
+              )}
+            { loadingData === false && data.length > 1 && data
   .filter(item => item && !item.burned && (!isBuyChecked || (isBuyChecked && item.price)) && (!isOwnedChecked || (isOwnedChecked && item.currentOwner === polkadotAddress)))
   .map((item, index) => {
     const ipfsHash = item.image?.replace(/^(ipfs:\/\/ipfs\/|ipfs:\/\/)/, "") || "";
@@ -2416,9 +2426,6 @@ const ipfsItemUri = `ipfs://${ipfsItemHash}`;
         </Card>
       )
   })
-}
-</>
-)
 }
 
 <br />
