@@ -2340,11 +2340,13 @@ const ipfsItemUri = `ipfs://${ipfsItemHash}`;
                 
             {/* Here's where you can map over your data and render Cards for each item */}
             {
-              data.length < 1 ? (
+              data.length <= 1 ? (
                 <>
-<div className="flex justify-center items-start h-screen">
+                            <div className="flex justify-center items-start h-screen">
   <div className="flex justify-center items-center w-full mt-20"> {/* Adjust mt-20 to your desired margin */}
-    <Spinner className="h-8 w-8" color="pink" />
+    <Typography variant="h5">
+      Nothing to see here ?
+    </Typography>
   </div>
 </div>
 
