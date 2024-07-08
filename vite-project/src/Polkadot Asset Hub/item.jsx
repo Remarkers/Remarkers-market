@@ -2347,14 +2347,7 @@ const ipfsItemUri = `ipfs://${ipfsItemHash}`;
   .map((item, index) => {
     const ipfsHash = item.image?.replace(/^(ipfs:\/\/ipfs\/|ipfs:\/\/)/, "") || "";
     const ipfsUri = `ipfs://${ipfsHash}`;
-    
-    if (loadingData) {
-      return (
-        <div className="flex justify-center items-center h-screen">
-          <Spinner className="h-8 w-8" color="pink" />
-        </div>
-      );
-    } else {
+
       return (
         <Card
           key={index}
@@ -2416,7 +2409,6 @@ const ipfsItemUri = `ipfs://${ipfsItemHash}`;
           </CardFooter>
         </Card>
       )
-    }
   })
 }
 
