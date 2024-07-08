@@ -112,7 +112,6 @@ export default function PAHItems() {
   const [selectedCollectionMetadata, setSelectedCollectionMetadata] = useState(null)
   const [collectionDataboolean, setCollectionDataboolean] = useState(false)
   const [isFilterOptionSet, setIsFilterOptionSet] = useState(false);
-  const runCount = useRef(0);
   const [loadingData, setLoadingData] = useState(false)
 
   useEffect(() => {
@@ -386,17 +385,11 @@ console.log('Polkadot Address:', polkadotAddress);
 
     useEffect(() => {
       getData(); // Call getData without value
-      if (selectedCollectionMetadata && runCount.current < 2) {
-          if (!isFilterOptionSet) {
-              getData(); // Call getData without value
-          }
           Holders();
           if (Account) {
               owned();
           }
-          runCount.current += 1; // Increment the run count
-      }
-  }, [selectedCollectionMetadata, Account, isFilterOptionSet]);
+  }, [, Account, isFilterOptionSet]);
     
     const handleSelectChange = (value) => {
       setFilterOption(value);
