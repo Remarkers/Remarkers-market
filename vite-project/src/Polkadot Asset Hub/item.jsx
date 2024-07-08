@@ -2342,6 +2342,19 @@ const ipfsItemUri = `ipfs://${ipfsItemHash}`;
     <br />
                 
             {/* Here's where you can map over your data and render Cards for each item */}
+            {
+              data.length < 1 ? (
+                <>
+                                            <div className="flex justify-center items-start h-screen">
+  <div className="flex justify-center items-center w-full mt-20"> {/* Adjust mt-20 to your desired margin */}
+    <Typography variant="h5">
+      Nothing to see here ?
+    </Typography>
+  </div>
+</div>
+                </>
+              ) : (
+<>
             {data
   .filter(item => item && !item.burned && (!isBuyChecked || (isBuyChecked && item.price)) && (!isOwnedChecked || (isOwnedChecked && item.currentOwner === polkadotAddress)))
   .map((item, index) => {
@@ -2410,6 +2423,9 @@ const ipfsItemUri = `ipfs://${ipfsItemHash}`;
         </Card>
       )
   })
+}
+</>
+)
 }
 
 <br />
