@@ -335,11 +335,11 @@ console.log('Polkadot Address:', polkadotAddress);
       });
       
     const next = () => {
-      {setActive(active + 1), getItemProps(), getData()};
+      {setActive(active + 1), getItemProps(), getData(filterOption)};
     };
    
     const prev = () => {
-      {setActive(active - 1),getItemProps(), getData()};
+      {setActive(active - 1),getItemProps(), getData(filterOption)};
     };
 
     const [ownedactive, setOwnedActive] = React.useState(1);
