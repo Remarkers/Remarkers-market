@@ -112,6 +112,7 @@ export default function PAHItems() {
   const [selectedCollectionMetadata, setSelectedCollectionMetadata] = useState(null)
   const [collectionDataboolean, setCollectionDataboolean] = useState(false)
   const [isFilterOptionSet, setIsFilterOptionSet] = useState(false);
+  const runCount = useRef(0);
   const [loadingData, setLoadingData] = useState(false)
 
   useEffect(() => {
@@ -385,11 +386,17 @@ console.log('Polkadot Address:', polkadotAddress);
 
     useEffect(() => {
       getData(); // Call getData without value
+      if (selectedCollectionMetadata && runCount.current < 2) {
+          if (!isFilterOptionSet) {
+              getData(); // Call getData without value
+          }
           Holders();
           if (Account) {
               owned();
           }
-  }, [, Account, isFilterOptionSet]);
+          runCount.current += 1; // Increment the run count
+      }
+  }, [selectedCollectionMetadata, Account, isFilterOptionSet]);
     
     const handleSelectChange = (value) => {
       setFilterOption(value);
@@ -2335,30 +2342,7 @@ const ipfsItemUri = `ipfs://${ipfsItemHash}`;
     <br />
                 
             {/* Here's where you can map over your data and render Cards for each item */}
-            {
-              loadingData === true && (
-                <>
-                                    <div className="flex justify-center items-start h-screen">
-  <div className="flex justify-center items-center w-full mt-20"> {/* Adjust mt-20 to your desired margin */}
-    <Spinner className="h-8 w-8" color="pink" />
-  </div>
-</div>
-                </>
-              )
-            }
-            {
-              data && data.length < 1 && loadingData === false && (
-                <>
-                                            <div className="flex justify-center items-start h-screen">
-  <div className="flex justify-center items-center w-full mt-20"> {/* Adjust mt-20 to your desired margin */}
-    <Typography variant="h5">
-      Nothing to see here ?
-    </Typography>
-  </div>
-</div>
-                </>
-              )}
-            { loadingData === false && data.length > 1 && data
+            { data
   .filter(item => item && !item.burned && (!isBuyChecked || (isBuyChecked && item.price)) && (!isOwnedChecked || (isOwnedChecked && item.currentOwner === polkadotAddress)))
   .map((item, index) => {
     const ipfsHash = item.image?.replace(/^(ipfs:\/\/ipfs\/|ipfs:\/\/)/, "") || "";
