@@ -197,7 +197,7 @@ export default function PAHItems() {
       const nameData = name;
       const colletionMetadata = async () => {
         try {
-            const response = await Axios.get(`${import.meta.env.VITE_VPS_BACKEND_API}colletionMetadata?data=${id}`);
+            const response = await Axios.get(`http://localhost:3001/colletionMetadata?data=${id}`);
             setSelectedCollectionMetadata(response.data.data); // Store the data directly as an array of objects
             setCollectionDataboolean(true)
         } catch (error) {
@@ -242,7 +242,7 @@ console.log('Polkadot Address:', polkadotAddress);
     const Account = (JSON.parse(localStorage.getItem("Account")))
     const owned = async() => {
       try {
-          const response = await Axios.get(`${import.meta.env.VITE_VPS_BACKEND_API}owned?address=${JSON.stringify(Account && Account?.address)}&page=${ownedactive.toString()}`);
+          const response = await Axios.get(`http://localhost:3001/owned?address=${JSON.stringify(Account && Account?.address)}&page=${ownedactive.toString()}`);
           setOwner(response.data.data.result); // Store the data directly as an array of objects
           setOwnedMetadata(response.data.data.metadata)
           setOwnedPrice(response.data.data.result.price)
@@ -255,7 +255,7 @@ console.log('Polkadot Address:', polkadotAddress);
     const swap = async(item) => {
       try {
         setSwapLoading(true)
-        const response = await Axios.get(`${import.meta.env.VITE_VPS_BACKEND_API}swap?data=${item.Id}&collectionId=${IdData}`);
+        const response = await Axios.get(`http://localhost:3001/swap?data=${item.Id}&collectionId=${IdData}`);
         const res = response.data.data;
         const resarray = res && res.map(item => item)[0];
         setSwapData( resarray); // Store the data directly as an array of objects
@@ -268,7 +268,7 @@ console.log('Polkadot Address:', polkadotAddress);
     const getData = async (value) => {
         try {
           setLoadingData(true)
-            const response = await Axios.get(`${import.meta.env.VITE_VPS_BACKEND_API}itemData?data=${IdData}&image=${imageData}&page=${active.toString()}&orderBy=${value === "Recently Minted"? "blockNumber_DESC": value === "Earliest Minted"? "blockNumber_ASC": value === "Price Low To High"? "price_ASC" : value === "Price High To Low"? "price_DESC" : "blockNumber_DESC"}`);
+            const response = await Axios.get(`http://localhost:3001/itemData?data=${IdData}&page=${active.toString()}&orderBy=${value === "Recently Minted"? "blockNumber_DESC": value === "Earliest Minted"? "blockNumber_ASC": value === "Price Low To High"? "price_ASC" : value === "Price High To Low"? "price_DESC" : "blockNumber_DESC"}`);
             setData(response.data.data); // Store the data directly as an array of objects
             setLoadingData(false)
         } catch (error) {
@@ -278,7 +278,7 @@ console.log('Polkadot Address:', polkadotAddress);
     
     const giveItemId = async(item) => {
       try {
-        const response = await Axios.get(`${import.meta.env.VITE_VPS_BACKEND_API}itemId?data=${item.Id}&collectionId=${IdData}`);
+        const response = await Axios.get(`http://localhost:3001/itemId?data=${item.Id}&collectionId=${IdData}`);
         setItemConfig(response.data.data); // Store the data directly as an array of objects
     } catch (error) {
         console.error('Error fetching data:', error);
@@ -288,7 +288,7 @@ console.log('Polkadot Address:', polkadotAddress);
     const getItemPrice = async(item) => {
       try {
         setFetchLoading(true)
-        const response = await Axios.get(`${import.meta.env.VITE_VPS_BACKEND_API}itemPrice?data=${item.Id}&collectionId=${IdData}&price=${item.price}`);
+        const response = await Axios.get(`http://localhost:3001/itemPrice?data=${item.Id}&collectionId=${IdData}&price=${item.price}`);
         setPrice(response.data.data.priceDotUsd); // Store the data directly as an array of objects
         setIntegerPrice(response.data.data.price)
         setFetchLoading(false)
@@ -299,7 +299,7 @@ console.log('Polkadot Address:', polkadotAddress);
 
     const collectionActivity = async() => {
       try {
-        const response = await Axios.get(`${import.meta.env.VITE_VPS_BACKEND_API}collectionActivity?collectionId=${IdData}`);
+        const response = await Axios.get(`http://localhost:3001/collectionActivity?collectionId=${IdData}`);
         setCollectionActivity( response && response.data.data.data.list); // Store the data directly as an array of objects
     } catch (error) {
         console.error('Error fetching data:', error);
@@ -308,7 +308,7 @@ console.log('Polkadot Address:', polkadotAddress);
 
     const Holders = async() => {
       try {
-        const response = await Axios.get(`${import.meta.env.VITE_VPS_BACKEND_API}Holders?collectionId=${IdData}&page=${subscanPage.toString()}`);
+        const response = await Axios.get(`http://localhost:3001/Holders?collectionId=${IdData}&page=${subscanPage.toString()}`);
         setHolders(response.data.data.data.list); // Store the data directly as an array of objects
         setOwnersCount(response.data.data.data.count)
     } catch (error) {
@@ -318,7 +318,7 @@ console.log('Polkadot Address:', polkadotAddress);
     
     const metadata = async(item) => {
       try {
-        const response = await Axios.get(`${import.meta.env.VITE_VPS_BACKEND_API}metadata?metadata=${item.metadata}`);
+        const response = await Axios.get(`http://localhost:3001/metadata?metadata=${item.metadata}`);
         setItemMetadata(JSON.parse(response.data.data)); // Store the data directly as an array of objects
     } catch (error) {
         console.error('Error fetching data:', error);
@@ -385,17 +385,15 @@ console.log('Polkadot Address:', polkadotAddress);
     };
 
     useEffect(() => {
-      if (selectedCollectionMetadata && runCount.current < 2) {
-          if (!isFilterOptionSet) {
+          if (!isFilterOptionSet && runCount.current < 2) {
               getData(); // Call getData without value
           }
+          runCount.current += 1; // Increment the run count
           Holders();
           if (Account) {
               owned();
           }
-          runCount.current += 1; // Increment the run count
-      }
-  }, [selectedCollectionMetadata, Account, isFilterOptionSet]);
+  }, [ Account, isFilterOptionSet]);
     
     const handleSelectChange = (value) => {
       setFilterOption(value);
@@ -2341,16 +2339,10 @@ const ipfsItemUri = `ipfs://${ipfsItemHash}`;
     <br />
                 
             {/* Here's where you can map over your data and render Cards for each item */}
-            {loadingData ? (
-        <div className="flex justify-center items-center h-screen">
-          <Spinner className="h-8 w-8" color="pink" />
-        </div>
-      ) : data.length <= 1 ? (
+            { data.length < 1 ? (
         <div className="flex justify-center items-start h-screen">
           <div className="flex justify-center items-center w-full mt-20">
-            <Typography variant="h5">
-              Nothing to see here ?
-            </Typography>
+          <Spinner className="h-8 w-8" color="pink" />
           </div>
         </div>
       ) : (

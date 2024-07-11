@@ -266,8 +266,10 @@ export default function PAHExplore() {
           </table>
         </Card>
       ) : (
-        <div className="flex justify-center items-center h-screen">
+        <div className="flex justify-center items-start h-screen">
+          <div className="flex justify-center items-center w-full mt-20">
           <Spinner className="h-8 w-8" color="pink" />
+          </div>
         </div>
       )}
     </>

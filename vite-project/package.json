@@ -15,6 +15,7 @@
     "@headlessui/react": "^1.7.19",
     "@heroicons/react": "^2.1.1",
     "@material-tailwind/react": "^2.1.8",
+    "@polkadot/api": "^12.1.1",
     "@polkadot/extension-dapp": "^0.46.5",
     "@polkadot/extension-inject": "^0.46.5",
     "@polkadot/react-identicon": "^3.6.2",

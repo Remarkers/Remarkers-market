@@ -107,7 +107,7 @@ export default function PAHCreate( ) {
     const created = async() => {
         try {
           setCreatedLoading(true)
-            const response = await Axios.get(`${import.meta.env.VITE_VPS_BACKEND_API}created?address=${JSON.stringify(Account?.address)}`);
+            const response = await Axios.get(`http://localhost:3001/created?address=${JSON.stringify(Account?.address)}`);
             setCreatedCollection(response.data.data); // Store the data directly as an array of objects
             setCreatedLoading(false)
       } catch (error) {
