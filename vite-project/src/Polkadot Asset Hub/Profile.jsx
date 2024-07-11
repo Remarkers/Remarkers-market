@@ -88,7 +88,7 @@ export default function PAHProfile( ) {
     const owned = async() => {
         try {
           setLoading(true)
-            const response = await Axios.get(`${import.meta.env.VITE_VPS_BACKEND_API}owned?address=${JSON.stringify(Account?.address)}&page=${active.toString()}`);
+            const response = await Axios.get(`http://localhost:3001/owned?address=${JSON.stringify(Account?.address)}&page=${active.toString()}`);
             setOwner(response.data.data.result); // Store the data directly as an array of objects
             setItemMetadata(response.data.data.metadata)
             setLoading(false)
@@ -101,7 +101,7 @@ export default function PAHProfile( ) {
 
       const created = async() => {
         try {
-            const response = await Axios.get(`${import.meta.env.VITE_VPS_BACKEND_API}created?address=${JSON.stringify(Account?.address)}`);
+            const response = await Axios.get(`http://localhost:3001/created?address=${JSON.stringify(Account?.address)}`);
             setCreatedCollection(response.data.data); // Store the data directly as an array of objects
       } catch (error) {
           console.error('Error fetching data:', error);
@@ -514,8 +514,10 @@ const handleReload = () => {
     {
       loading? (
         <> 
-                <div className="flex justify-center items-center h-screen">
+        <div className="flex justify-center items-start h-screen">
+          <div className="flex justify-center items-center w-full mt-20">
           <Spinner className="h-8 w-8" color="pink" />
+          </div>
         </div>
         </>
       ) : (
@@ -523,8 +525,10 @@ const handleReload = () => {
         {
           metadata? (
             <>
-                            <div className="flex justify-center items-center h-screen">
+        <div className="flex justify-center items-start h-screen">
+          <div className="flex justify-center items-center w-full mt-20">
           <Spinner className="h-8 w-8" color="pink" />
+          </div>
         </div>
             </>
           ) : (
