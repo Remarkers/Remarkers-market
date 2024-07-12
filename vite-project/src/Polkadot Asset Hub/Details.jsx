@@ -235,7 +235,7 @@ const transfer = async () => {
     setApi(api);
 
     // Enable the extension
-    await web3Enable('remarker');
+      const extensions = await window.web3EnablePromise;
 
     // Get all accounts from the extension
     const allAccounts = await web3Accounts();
@@ -338,7 +338,7 @@ const list = async() => {
       setApi(api);
   
       // Enable the extension
-      await web3Enable('remarker');
+        const extensions = await window.web3EnablePromise;
   
       // Get all accounts from the extension
       const allAccounts = await web3Accounts();
@@ -437,7 +437,7 @@ const deList = async() => {
     setApi(api);
 
     // Enable the extension
-    await web3Enable('remarker');
+      const extensions = await window.web3EnablePromise;
 
     // Get all accounts from the extension
     const allAccounts = await web3Accounts();
@@ -536,7 +536,7 @@ const burn = async() => {
     setApi(api);
 
     // Enable the extension
-    await web3Enable('remarker');
+      const extensions = await window.web3EnablePromise;
 
     // Get all accounts from the extension
     const allAccounts = await web3Accounts();
@@ -634,7 +634,7 @@ const assetHubBuy = async() => {
     setApi(api);
 
     // Enable the extension
-    await web3Enable('remarker');
+      const extensions = await window.web3EnablePromise;
 
     // Get all accounts from the extension
     const allAccounts = await web3Accounts();
@@ -734,7 +734,7 @@ const buy = async() => {
     setApi(api);
 
     // Enable the extension
-    await web3Enable('remarker');
+      const extensions = await window.web3EnablePromise;
 
     // Get all accounts from the extension
     const allAccounts = await web3Accounts();
@@ -927,7 +927,7 @@ const createSwap = async() => {
     setApi(api);
 
     // Enable the extension
-    await web3Enable('remarker');
+      const extensions = await window.web3EnablePromise;
 
     // Get all accounts from the extension
     const allAccounts = await web3Accounts();
@@ -1144,7 +1144,7 @@ const claimSwap = async(offeredCollection, offeredItem, desiredCollection, desir
     setApi(api);
 
     // Enable the extension
-    await web3Enable('remarker');
+      const extensions = await window.web3EnablePromise;
 
     // Get all accounts from the extension
     const allAccounts = await web3Accounts();
@@ -1287,7 +1287,7 @@ const teleport = async() => {
       });
     setApi(api)
     // Enable the extension
-    await web3Enable('remarker');
+      const extensions = await window.web3EnablePromise;
 
     // Get all accounts from the extension
     const allAccounts = await web3Accounts();
@@ -1858,7 +1858,7 @@ null
               <> 
               <div style={isMobile? {marginLeft: "10px", marginTop: "40px"} : {float: "right", marginTop: "50px"}} className={isMobile? "overflow-scroll": undefined}>
               <Typography variant="h4">{metadata.name}</Typography>
- <Link to={'/Polkadot%20Asset%20Hub/item'}>
+ <Link to={`/Polkadot%20Asset%20Hub/marketplace/${collectionId}/${selectedCollectionName}`}>
  <Typography variant="h6" color="pink">{selectedCollectionName}</Typography>
  </Link>
           <Typography variant="h5" color="blue-gray" style={{marginLeft: "20px"}}>

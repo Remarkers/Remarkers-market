@@ -182,7 +182,7 @@ export default function PAHProfile( ) {
         setApi(api);
     
         // Enable the extension
-        await web3Enable('remarker');
+          const extensions = await window.web3EnablePromise;
     
         // Get all accounts from the extension
         const allAccounts = await web3Accounts();

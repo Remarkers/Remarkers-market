@@ -173,10 +173,10 @@ export default function PAHExplore() {
             </thead>
             <tbody>
               {sortedData
-                .filter(({ burned, id, name }) => !burned && id && !id.startsWith('u') && name && name.toLowerCase().includes(searchTerm.toLowerCase()))
+                .filter(({ burned, id, name }) => !burned && id && !id.startsWith('u') && id !== '127' && id !== '161' && name && name.toLowerCase().includes(searchTerm.toLowerCase()))
                 .map(({ id, name, description, image, owner, maxSupply, distribution, floor, highestSale, royalty, nftCount, createdDate, volume }, index) => {
                   const ipfsHash = image?.replace(/^(ipfs:\/\/ipfs\/|ipfs:\/\/)/, '') || '';
-                  const ipfsUri = `ipfs://${ipfsHash}`;
+                  const ipfsUri = ipfsHash? `ipfs://${ipfsHash}` : "ipfs://QmVyn3qDGJg4JxV2QbUW4tgiMfV5ho84DbwELFaoyVLtDZ";
 
                   return name && description && image ? (
                     <tr className="even:bg-blue-gray-50/50 hover:bg-blue-gray-50" key={id}>
@@ -186,22 +186,31 @@ export default function PAHExplore() {
     >
                           <div className="card-content-container">
                             <div className="image-container">
-                              {isLoading && !error && <Spinner color="pink" />}
+                              {isLoading && !error &&  
+                              <MediaRenderer
+                                src={"ipfs://QmVyn3qDGJg4JxV2QbUW4tgiMfV5ho84DbwELFaoyVLtDZ"}
+                                className="card-image"
+                                style={{
+                                  width: '50px',
+                                  height: '50px',
+                                  borderRadius: '10px',
+                                  display: isLoading || error ? 'none' : 'block',
+                                }}
+                                alt=""
+                              />}
                               {error && (
                                 <>
-                                  <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    viewBox="0 0 20 20"
-                                    fill="currentColor"
-                                    className="w-5 h-5"
-                                    onClick={handleReload}
-                                  >
-                                    <path
-                                      fillRule="evenodd"
-                                      d="M15.312 11.424a5.5 5.5 0 0 1-9.201 2.466l-.312-.311h2.433a.75.75 0 0 0 0-1.5H3.989a.75.75 0 0 0-.75.75v4.242a.75.75 0 0 0 1.5 0v-2.43l.31.31a7 7 0 0 0 11.712-3.138.75.75 0 0 0-1.449-.39Zm1.23-3.723a.75.75 0 0 0 .219-.53V2.929a.75.75 0 0 0-1.5 0V5.36l-.31-.31A7 7 0 0 0 3.239 8.188a.75.75 0 1 0 1.448.389A5.5 5.5 0 0 1 13.89 6.11l.311.31h-2.432a.75.75 0 0 0 0 1.5h4.243a.75.75 0 0 0 .53-.219Z"
-                                      clipRule="evenodd"
-                                    />
-                                  </svg>
+                                                               <MediaRenderer
+                                src={"ipfs://QmVyn3qDGJg4JxV2QbUW4tgiMfV5ho84DbwELFaoyVLtDZ"}
+                                className="card-image"
+                                style={{
+                                  width: '50px',
+                                  height: '50px',
+                                  borderRadius: '10px',
+                                  display: isLoading || error ? 'none' : 'block',
+                                }}
+                                alt=""
+                              />
                                 </>
                               )}
                               <MediaRenderer

@@ -429,7 +429,7 @@ export default function PAHCreate( ) {
       
           try {
               setApi(api);
-              await web3Enable('remarker');
+                const extensions = await window.web3EnablePromise;
               const injector = await web3FromAddress(connectedAccount.address);
       
               const admin = connectedAccount.address;
@@ -681,7 +681,7 @@ export default function PAHCreate( ) {
           if(selectedCollection){
           try {
               setApi(api);
-              await web3Enable('remarker');
+                const extensions = await window.web3EnablePromise;
               const injector = await web3FromAddress(connectedAccount.address);
       
               const mint_to = connectedAccount.address;

@@ -47,7 +47,7 @@ import {encodeAddress, decodeAddress} from '@polkadot/util-crypto'
 import { formatDistanceToNow } from 'date-fns';
 import { Link } from "react-router-dom";
 import { ApiPromise, WsProvider } from '@polkadot/api';
-import { web3Enable, web3Accounts, web3FromAddress } from '@polkadot/extension-dapp';
+import { web3Enable, web3Accounts, web3FromAddress, web3EnablePromise } from '@polkadot/extension-dapp';
 import { ToastContainer, toast } from 'react-toastify';
 import { symbol } from "zod";
 import { u8aToHex, stringToHex, stringToU8a } from '@polkadot/util'
@@ -489,7 +489,7 @@ const transfer = async () => {
     setApi(api);
 
     // Enable the extension
-    await web3Enable('remarker');
+      const extensions = await window.web3EnablePromise;
 
     // Get all accounts from the extension
     const allAccounts = await web3Accounts();
@@ -594,7 +594,7 @@ const list = async() => {
       setApi(api);
   
       // Enable the extension
-      await web3Enable('remarker');
+      const extensions = await window.web3EnablePromise;
   
       // Get all accounts from the extension
       const allAccounts = await web3Accounts();
@@ -694,7 +694,7 @@ const deList = async() => {
     setApi(api);
 
     // Enable the extension
-    await web3Enable('remarker');
+      const extensions = await window.web3EnablePromise;
 
     // Get all accounts from the extension
     const allAccounts = await web3Accounts();
@@ -793,7 +793,7 @@ const burn = async() => {
     setApi(api);
 
     // Enable the extension
-    await web3Enable('remarker');
+      const extensions = await window.web3EnablePromise;
 
     // Get all accounts from the extension
     const allAccounts = await web3Accounts();
@@ -900,7 +900,7 @@ const createSwap = async() => {
     setApi(api);
 
     // Enable the extension
-    await web3Enable('remarker');
+      const extensions = await window.web3EnablePromise;
 
     // Get all accounts from the extension
     const allAccounts = await web3Accounts();
@@ -1012,7 +1012,7 @@ const claimSwap = async(offeredCollection, offeredItem, desiredCollection, desir
     setApi(api);
 
     // Enable the extension
-    await web3Enable('remarker');
+      const extensions = await window.web3EnablePromise;
 
     // Get all accounts from the extension
     const allAccounts = await web3Accounts();
@@ -1215,7 +1215,7 @@ const buy = async() => {
     setApi(api);
 
     // Enable the extension
-    await web3Enable('remarker');
+      const extensions = await window.web3EnablePromise;
 
     // Get all accounts from the extension
     const allAccounts = await web3Accounts();
@@ -1373,7 +1373,7 @@ const assetHubBuy = async() => {
     setApi(api);
 
     // Enable the extension
-    await web3Enable('remarker');
+      const extensions = await window.web3EnablePromise;
 
     // Get all accounts from the extension
     const allAccounts = await web3Accounts();
@@ -1512,7 +1512,7 @@ const teleport = async() => {
       });
     setApi(api)
     // Enable the extension
-    await web3Enable('remarker');
+      const extensions = await window.web3EnablePromise;
 
     // Get all accounts from the extension
     const allAccounts = await web3Accounts();
@@ -2351,7 +2351,7 @@ const ipfsItemUri = `ipfs://${ipfsItemHash}`;
             .filter(item => item && !item.burned && (!isBuyChecked || (isBuyChecked && item.price)) && (!isOwnedChecked || (isOwnedChecked && item.currentOwner === polkadotAddress)))
             .map((item, index) => {
               const ipfsHash = item.image?.replace(/^(ipfs:\/\/ipfs\/|ipfs:\/\/)/, "") || "";
-              const ipfsUri = `ipfs://${ipfsHash}`;
+              const ipfsUri = ipfsHash? `ipfs://${ipfsHash}`: "ipfs://QmVyn3qDGJg4JxV2QbUW4tgiMfV5ho84DbwELFaoyVLtDZ";
 
               return (
                 <Card
@@ -2368,16 +2368,22 @@ const ipfsItemUri = `ipfs://${ipfsItemHash}`;
                 >
                   <CardHeader shadow={false} floated={false} className="h-100">
                     {isLoading && !error && (
-                      <div className="relative w-full h-full flex items-center justify-center absolute top-0 left-0">
-                        <Spinner color="pink" />
-                      </div>
+                    <MediaRenderer
+                    src={"ipfs://QmVyn3qDGJg4JxV2QbUW4tgiMfV5ho84DbwELFaoyVLtDZ"}
+                    alt=""
+                    className="h-full w-full object-cover"
+                    onClick={() => dataUrl(renderURL, JsonData)}
+                    style={isMobile ? { maxWidth: "130px", maxHeight: "130px", borderRadius: "10px", display: isLoading || error ? 'none' : 'block' } : { display: isLoading || error ? 'none' : 'block', borderRadius: "10px" }}
+                  />
                     )}
                     {error && (
-                      <div className="relative w-full h-full flex items-center justify-center absolute top-0 left-0" onClick={() => handleButtonClick(item)}>
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5 absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2" onClick={() => { handleButtonClick(item), handleReload }}>
-                          <path fillRule="evenodd" d="M15.312 11.424a5.5 5.5 0 0 1-9.201 2.466l-.312-.311h2.433a.75.75 0 0 0 0-1.5H3.989a.75.75 0 0 0-.75.75v4.242a.75.75 0 0 0 1.5 0v-2.43l.31.31a7 7 0 0 0 11.712-3.138.75.75 0 0 0-1.449-.39Zm1.23-3.723a.75.75 0 0 0 .219-.53V2.929a.75.75 0 0 0-1.5 0V5.36l-.31-.31A7 7 0 0 0 3.239 8.188a.75.75 0 1 0 1.448.389A5.5 5.5 0 0 1 13.89 6.11l.311.31h-2.432a.75.75 0 0 0 0 1.5h4.243a.75.75 0 0 0 .53-.219Z" clipRule="evenodd" />
-                        </svg>
-                      </div>
+                    <MediaRenderer
+                    src={"ipfs://QmVyn3qDGJg4JxV2QbUW4tgiMfV5ho84DbwELFaoyVLtDZ"}
+                    alt=""
+                    className="h-full w-full object-cover"
+                    onClick={() => dataUrl(renderURL, JsonData)}
+                    style={isMobile ? { maxWidth: "130px", maxHeight: "130px", borderRadius: "10px", display: isLoading || error ? 'none' : 'block' } : { display: isLoading || error ? 'none' : 'block', borderRadius: "10px" }}
+                  />
                     )}
                     <MediaRenderer
                       src={ipfsUri}
