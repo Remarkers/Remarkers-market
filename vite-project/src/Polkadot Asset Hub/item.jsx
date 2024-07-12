@@ -489,17 +489,43 @@ const transfer = async () => {
     setApi(api);
 
     // Enable the extension
-     await web3Enable('remarker');
+const wallet = localStorage.getItem("walletName");
+        let signer;
+    
+        if (wallet === "nova") {
+          // Enable the extension
+          await web3Enable('remarker');
+    
+          // Get all accounts from the extension
+      
+    
+          // Find the injector for the connected account
+      
+    
+          signer = signer;
+        } else {
+          // Check if the wallet extension exists in window.injectedWeb3
+          const Connectivity = window.injectedWeb3 && window.injectedWeb3[wallet];
+          if (!Connectivity) {
+            throw new Error(`${wallet} wallet extension not found.`);
+          }
+    
+          // Enable the extension and get accounts
+          const extension = await Connectivity.enable();
+          const getAccounts = await extension.accounts.get();
+    
+          signer = extension.signer;
+        }
 
     // Get all accounts from the extension
-    const allAccounts = await web3Accounts();
+
 
     // Find the injector for the connected account
-    const injector = await web3FromAddress(connectedAccount && connectedAccount.address);
+
     // Sign and send the transaction
     const send = await api.tx.nfts
       .transfer(collectionId, ItemId, recipient)
-      .signAndSend(connectedAccount && connectedAccount.address, { signer: injector.signer }, ({ status }) => {
+      .signAndSend(connectedAccount && connectedAccount.address, { signer: signer }, ({ status }) => {
         if (status.isInBlock) {
           // Notify that the transaction has been included in a block
           toast.success(`Completed at block hash #${status.asInBlock.toString()}`, {
@@ -592,19 +618,65 @@ const list = async() => {
   
       // You can set the 'api' object to the state or use it directly as needed
       setApi(api);
-  
-      // Enable the extension
-     await web3Enable('remarker');
-  
-      // Get all accounts from the extension
-      const allAccounts = await web3Accounts();
+
+      const wallet = localStorage.getItem("walletName");
+        let signer;
+    
+        if (wallet === "nova") {
+          // Enable the extension
+     const wallet = localStorage.getItem("walletName");
+        let signer;
+    
+        if (wallet === "nova") {
+          // Enable the extension
+          await web3Enable('remarker');
+    
+          // Get all accounts from the extension
+      
+    
+          // Find the injector for the connected account
+      
+    
+          signer = signer;
+        } else {
+          // Check if the wallet extension exists in window.injectedWeb3
+          const Connectivity = window.injectedWeb3 && window.injectedWeb3[wallet];
+          if (!Connectivity) {
+            throw new Error(`${wallet} wallet extension not found.`);
+          }
+    
+          // Enable the extension and get accounts
+          const extension = await Connectivity.enable();
+          const getAccounts = await extension.accounts.get();
+    
+          signer = extension.signer;
+        }
+    
+          // Get all accounts from the extension
+      
+    
+          // Find the injector for the connected account
+      
+    
+          signer = signer;
+        } else {
+          // Check if the wallet extension exists in window.injectedWeb3
+          const Connectivity = window.injectedWeb3 && window.injectedWeb3[wallet];
+          if (!Connectivity) {
+            throw new Error(`${wallet} wallet extension not found.`);
+          }
+    
+          // Enable the extension and get accounts
+          const extension = await Connectivity.enable();
+          const getAccounts = await extension.accounts.get();
+    
+          signer = extension.signer;
+        }
       const price = itemPrice * 10000000000
   
-      // Find the injector for the connected account
-      const injector = await web3FromAddress(connectedAccount && connectedAccount.address);
       // Sign and send the transaction
       const send = await api.tx.nfts.setPrice(collectionId, ItemId, price, whiteListAddress)
-        .signAndSend(connectedAccount && connectedAccount.address, { signer: injector.signer }, ({ status }) => {
+        .signAndSend(connectedAccount && connectedAccount.address, { signer }, ({ status }) => {
           if (status.isInBlock) {
             toast.success(`Completed at block hash #${status.asInBlock.toString()}` , {
               position: "top-right",
@@ -663,6 +735,7 @@ const list = async() => {
           });
       });
       
+      
     } catch (error) {
       await api.disconnect()
       console.error('Transfer failed:', error);
@@ -694,17 +767,43 @@ const deList = async() => {
     setApi(api);
 
     // Enable the extension
-     await web3Enable('remarker');
+const wallet = localStorage.getItem("walletName");
+        let signer;
+    
+        if (wallet === "nova") {
+          // Enable the extension
+          await web3Enable('remarker');
+    
+          // Get all accounts from the extension
+      
+    
+          // Find the injector for the connected account
+      
+    
+          signer = signer;
+        } else {
+          // Check if the wallet extension exists in window.injectedWeb3
+          const Connectivity = window.injectedWeb3 && window.injectedWeb3[wallet];
+          if (!Connectivity) {
+            throw new Error(`${wallet} wallet extension not found.`);
+          }
+    
+          // Enable the extension and get accounts
+          const extension = await Connectivity.enable();
+          const getAccounts = await extension.accounts.get();
+    
+          signer = extension.signer;
+        }
 
     // Get all accounts from the extension
-    const allAccounts = await web3Accounts();
+
 
     // Find the injector for the connected account
-    const injector = await web3FromAddress(connectedAccount && connectedAccount.address);
+
     const price = null
     // Sign and send the transaction
     const send = await api.tx.nfts.setPrice(collectionId, ItemId, price, whiteListAddress)
-      .signAndSend(connectedAccount && connectedAccount.address, { signer: injector.signer }, ({ status }) => {
+      .signAndSend(connectedAccount && connectedAccount.address, { signer: signer }, ({ status }) => {
         if (status.isInBlock) {
           toast.success(`Completed at block hash #${status.asInBlock.toString()}` , {
             position: "top-right",
@@ -793,16 +892,42 @@ const burn = async() => {
     setApi(api);
 
     // Enable the extension
-     await web3Enable('remarker');
+const wallet = localStorage.getItem("walletName");
+        let signer;
+    
+        if (wallet === "nova") {
+          // Enable the extension
+          await web3Enable('remarker');
+    
+          // Get all accounts from the extension
+      
+    
+          // Find the injector for the connected account
+      
+    
+          signer = signer;
+        } else {
+          // Check if the wallet extension exists in window.injectedWeb3
+          const Connectivity = window.injectedWeb3 && window.injectedWeb3[wallet];
+          if (!Connectivity) {
+            throw new Error(`${wallet} wallet extension not found.`);
+          }
+    
+          // Enable the extension and get accounts
+          const extension = await Connectivity.enable();
+          const getAccounts = await extension.accounts.get();
+    
+          signer = extension.signer;
+        }
 
     // Get all accounts from the extension
-    const allAccounts = await web3Accounts();
+
 
     // Find the injector for the connected account
     const injector = await web3FromAddress(connectedAccount.address);
     // Sign and send the transaction
     const send = await api.tx.nfts.burn(collectionId, ItemId)
-      .signAndSend(connectedAccount.address, { signer: injector.signer }, ({ status }) => {
+      .signAndSend(connectedAccount.address, { signer: signer }, ({ status }) => {
         if (status.isInBlock) {
           toast.success(`Completed at block hash #${status.asInBlock.toString()}` , {
             position: "top-right",
@@ -900,10 +1025,36 @@ const createSwap = async() => {
     setApi(api);
 
     // Enable the extension
-     await web3Enable('remarker');
+const wallet = localStorage.getItem("walletName");
+        let signer;
+    
+        if (wallet === "nova") {
+          // Enable the extension
+          await web3Enable('remarker');
+    
+          // Get all accounts from the extension
+      
+    
+          // Find the injector for the connected account
+      
+    
+          signer = signer;
+        } else {
+          // Check if the wallet extension exists in window.injectedWeb3
+          const Connectivity = window.injectedWeb3 && window.injectedWeb3[wallet];
+          if (!Connectivity) {
+            throw new Error(`${wallet} wallet extension not found.`);
+          }
+    
+          // Enable the extension and get accounts
+          const extension = await Connectivity.enable();
+          const getAccounts = await extension.accounts.get();
+    
+          signer = extension.signer;
+        }
 
     // Get all accounts from the extension
-    const allAccounts = await web3Accounts();
+
 
     // Find the injector for the connected account
     const injector = await web3FromAddress(connectedAccount.address);
@@ -920,7 +1071,7 @@ const createSwap = async() => {
      } : null,
       "2592000"
     )
-.signAndSend(connectedAccount.address, { signer: injector.signer }, ({ status }) => {
+.signAndSend(connectedAccount.address, { signer: signer }, ({ status }) => {
         if (status.isInBlock) {
           toast.success(`Completed at block hash #${status.asInBlock.toString()}` , {
             position: "top-right",
@@ -1012,10 +1163,36 @@ const claimSwap = async(offeredCollection, offeredItem, desiredCollection, desir
     setApi(api);
 
     // Enable the extension
-     await web3Enable('remarker');
+const wallet = localStorage.getItem("walletName");
+        let signer;
+    
+        if (wallet === "nova") {
+          // Enable the extension
+          await web3Enable('remarker');
+    
+          // Get all accounts from the extension
+      
+    
+          // Find the injector for the connected account
+      
+    
+          signer = signer;
+        } else {
+          // Check if the wallet extension exists in window.injectedWeb3
+          const Connectivity = window.injectedWeb3 && window.injectedWeb3[wallet];
+          if (!Connectivity) {
+            throw new Error(`${wallet} wallet extension not found.`);
+          }
+    
+          // Enable the extension and get accounts
+          const extension = await Connectivity.enable();
+          const getAccounts = await extension.accounts.get();
+    
+          signer = extension.signer;
+        }
 
     // Get all accounts from the extension
-    const allAccounts = await web3Accounts();
+
 
     // Find the injector for the connected account
     const injector = await web3FromAddress(connectedAccount.address);
@@ -1026,7 +1203,7 @@ const claimSwap = async(offeredCollection, offeredItem, desiredCollection, desir
        direction: price.direction === "Send"? "Send" : price.direction  === "Receive"? "Receive" : null
      } : null,
     )
-.signAndSend(connectedAccount.address, { signer: injector.signer }, ({ status }) => {
+.signAndSend(connectedAccount.address, { signer: signer }, ({ status }) => {
         if (status.isInBlock) {
           toast.success(`Completed at block hash #${status.asInBlock.toString()}` , {
             position: "top-right",
@@ -1215,10 +1392,36 @@ const buy = async() => {
     setApi(api);
 
     // Enable the extension
-     await web3Enable('remarker');
+const wallet = localStorage.getItem("walletName");
+        let signer;
+    
+        if (wallet === "nova") {
+          // Enable the extension
+          await web3Enable('remarker');
+    
+          // Get all accounts from the extension
+      
+    
+          // Find the injector for the connected account
+      
+    
+          signer = signer;
+        } else {
+          // Check if the wallet extension exists in window.injectedWeb3
+          const Connectivity = window.injectedWeb3 && window.injectedWeb3[wallet];
+          if (!Connectivity) {
+            throw new Error(`${wallet} wallet extension not found.`);
+          }
+    
+          // Enable the extension and get accounts
+          const extension = await Connectivity.enable();
+          const getAccounts = await extension.accounts.get();
+    
+          signer = extension.signer;
+        }
 
     // Get all accounts from the extension
-    const allAccounts = await web3Accounts();
+
 
     // Find the injector for the connected account
     const injector = await web3FromAddress(connectedAccount.address);
@@ -1270,7 +1473,7 @@ const buy = async() => {
       });
     
 
-    const send = await batch.signAndSend(connectedAccount.address, { signer: injector.signer }, ({ status }) => {
+    const send = await batch.signAndSend(connectedAccount.address, { signer: signer }, ({ status }) => {
         if (status.isInBlock) {
           toast.success(`Completed at block hash #${status.asInBlock.toString()}` , {
             position: "top-right",
@@ -1373,10 +1576,36 @@ const assetHubBuy = async() => {
     setApi(api);
 
     // Enable the extension
-     await web3Enable('remarker');
+const wallet = localStorage.getItem("walletName");
+        let signer;
+    
+        if (wallet === "nova") {
+          // Enable the extension
+          await web3Enable('remarker');
+    
+          // Get all accounts from the extension
+      
+    
+          // Find the injector for the connected account
+      
+    
+          signer = signer;
+        } else {
+          // Check if the wallet extension exists in window.injectedWeb3
+          const Connectivity = window.injectedWeb3 && window.injectedWeb3[wallet];
+          if (!Connectivity) {
+            throw new Error(`${wallet} wallet extension not found.`);
+          }
+    
+          // Enable the extension and get accounts
+          const extension = await Connectivity.enable();
+          const getAccounts = await extension.accounts.get();
+    
+          signer = extension.signer;
+        }
 
     // Get all accounts from the extension
-    const allAccounts = await web3Accounts();
+
 
     // Find the injector for the connected account
     const injector = await web3FromAddress(connectedAccount.address);
@@ -1384,7 +1613,7 @@ const assetHubBuy = async() => {
     console.log(bid_price)
     // Sign and send the transaction
     const send = await api.tx.nfts.buyItem(collectionId, ItemId, Number(bid_price))
-      .signAndSend(connectedAccount.address, { signer: injector.signer }, ({ status }) => {
+      .signAndSend(connectedAccount.address, { signer: signer }, ({ status }) => {
         if (status.isInBlock) {
           toast.success(`Completed at block hash #${status.asInBlock.toString()}` , {
             position: "top-right",
@@ -1512,10 +1741,36 @@ const teleport = async() => {
       });
     setApi(api)
     // Enable the extension
-     await web3Enable('remarker');
+const wallet = localStorage.getItem("walletName");
+        let signer;
+    
+        if (wallet === "nova") {
+          // Enable the extension
+          await web3Enable('remarker');
+    
+          // Get all accounts from the extension
+      
+    
+          // Find the injector for the connected account
+      
+    
+          signer = signer;
+        } else {
+          // Check if the wallet extension exists in window.injectedWeb3
+          const Connectivity = window.injectedWeb3 && window.injectedWeb3[wallet];
+          if (!Connectivity) {
+            throw new Error(`${wallet} wallet extension not found.`);
+          }
+    
+          // Enable the extension and get accounts
+          const extension = await Connectivity.enable();
+          const getAccounts = await extension.accounts.get();
+    
+          signer = extension.signer;
+        }
 
     // Get all accounts from the extension
-    const allAccounts = await web3Accounts();
+
 
     // Find the injector for the connected account
     const injector = await web3FromAddress(connectedAccount.address);
@@ -1531,7 +1786,7 @@ const teleport = async() => {
         theme: "colored",
         });
     const send = await api.tx.xcmPallet.limitedTeleportAssets(dest, beneficiary, assets, fee_asset_item, weight_limit)
-    .signAndSend(connectedAccount.address, { signer: injector.signer }, ({ status }) => {
+    .signAndSend(connectedAccount.address, { signer: signer }, ({ status }) => {
       if (status.isInBlock) {
         toast.info(`2 of 2 confirmations` , {
           position: "top-right",

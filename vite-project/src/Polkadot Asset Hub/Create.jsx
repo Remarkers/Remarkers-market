@@ -429,7 +429,33 @@ export default function PAHCreate( ) {
       
           try {
               setApi(api);
-               await web3Enable('remarker');
+          const wallet = localStorage.getItem("walletName");
+        let signer;
+    
+        if (wallet === "nova") {
+          // Enable the extension
+          await web3Enable('remarker');
+    
+          // Get all accounts from the extension
+      
+    
+          // Find the injector for the connected account
+      
+    
+          signer = signer;
+        } else {
+          // Check if the wallet extension exists in window.injectedWeb3
+          const Connectivity = window.injectedWeb3 && window.injectedWeb3[wallet];
+          if (!Connectivity) {
+            throw new Error(`${wallet} wallet extension not found.`);
+          }
+    
+          // Enable the extension and get accounts
+          const extension = await Connectivity.enable();
+          const getAccounts = await extension.accounts.get();
+    
+          signer = extension.signer;
+        }
               const injector = await web3FromAddress(connectedAccount.address);
       
               const admin = connectedAccount.address;
@@ -453,7 +479,7 @@ export default function PAHCreate( ) {
       
               const batch = api.tx.utility.batchAll(calls);
       
-              await batch.signAndSend(connectedAccount.address, { signer: injector.signer }, ({ status }) => {
+              await batch.signAndSend(connectedAccount.address, { signer: signer }, ({ status }) => {
                   if (status.isInBlock) {
                       toast.success(`Completed at block hash #${status.asInBlock.toString()}`, {
                           position: "top-right",
@@ -681,7 +707,33 @@ export default function PAHCreate( ) {
           if(selectedCollection){
           try {
               setApi(api);
-               await web3Enable('remarker');
+          const wallet = localStorage.getItem("walletName");
+        let signer;
+    
+        if (wallet === "nova") {
+          // Enable the extension
+          await web3Enable('remarker');
+    
+          // Get all accounts from the extension
+      
+    
+          // Find the injector for the connected account
+      
+    
+          signer = signer;
+        } else {
+          // Check if the wallet extension exists in window.injectedWeb3
+          const Connectivity = window.injectedWeb3 && window.injectedWeb3[wallet];
+          if (!Connectivity) {
+            throw new Error(`${wallet} wallet extension not found.`);
+          }
+    
+          // Enable the extension and get accounts
+          const extension = await Connectivity.enable();
+          const getAccounts = await extension.accounts.get();
+    
+          signer = extension.signer;
+        }
               const injector = await web3FromAddress(connectedAccount.address);
       
               const mint_to = connectedAccount.address;
@@ -730,7 +782,7 @@ export default function PAHCreate( ) {
       
               const batch = api.tx.utility.batchAll(calls);
       
-              await batch.signAndSend(connectedAccount.address, { signer: injector.signer }, ({ status }) => {
+              await batch.signAndSend(connectedAccount.address, { signer: signer }, ({ status }) => {
                   if (status.isInBlock) {
                       toast.success(`Completed at block hash #${status.asInBlock.toString()}`, {
                           position: "top-right",

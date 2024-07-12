@@ -128,6 +128,7 @@ console.log(JSON.parse(localStorage.getItem("Account")))
               try {
                 const extension = await SubWalletExtension.enable();
                 const getAccounts = await extension.accounts.get();
+                localStorage.setItem("walletName", "subwallet-js")
             
                 if (getAccounts && getAccounts.length > 0) {
                   setAccount(getAccounts)
@@ -146,6 +147,7 @@ console.log(JSON.parse(localStorage.getItem("Account")))
               try {
                 const extension = await TalismanWalletExtension.enable();
                 const getAccounts = await extension.accounts.get();
+                localStorage.setItem("walletName", "talisman")
             
                 if (getAccounts && getAccounts.length > 0) {
                   setAccount(getAccounts)
@@ -164,6 +166,7 @@ console.log(JSON.parse(localStorage.getItem("Account")))
               try {
                 const extension = await PolkadotjsWalletExtension.enable();
                 const getAccounts = await extension.accounts.get();
+                localStorage.setItem("walletName", "polkadot-js")
             
                 if (getAccounts && getAccounts.length > 0) {
                   setAccount(getAccounts)
@@ -183,6 +186,7 @@ console.log(JSON.parse(localStorage.getItem("Account")))
               
                 try {
                   const getAccounts = await web3Accounts();
+                  localStorage.setItem("walletName", "nova")
               
                   if (getAccounts && getAccounts.length > 0) {
                     setAccount(getAccounts)
@@ -238,7 +242,7 @@ console.log(JSON.parse(localStorage.getItem("Account")))
               const allInjected = await web3Enable('my cool dapp');
               // returns an array of { address, meta: { name, source } }
           // meta.source contains the name of the extension that provides this account
-          const allAccounts = await web3Accounts();
+      
           
           // finds an injector for an address
           const SENDER = account && account?.address;
@@ -289,7 +293,7 @@ console.log(JSON.parse(localStorage.getItem("Account")))
             const feeAssetItem = 0;
             const weightLimit = "Unlimited";
           
-          api.tx.utility.batchAll([ await api.tx.xcmPallet.limitedTeleportAssets(dest, beneficiary, assets, feeAssetItem, weightLimit)]).signAndSend(SENDER, { signer: injector.signer }, async ({ status }) => {
+          api.tx.utility.batchAll([ await api.tx.xcmPallet.limitedTeleportAssets(dest, beneficiary, assets, feeAssetItem, weightLimit)]).signAndSend(SENDER, { signer: signer }, async ({ status }) => {
               if (status.isInBlock) {
                   toast.success(`Completed at block hash #${status.asInBlock.toString()}` , {
                     position: "top-right",
@@ -350,13 +354,14 @@ console.log(JSON.parse(localStorage.getItem("Account")))
         return JSON.parse(localStorage.getItem("walletConnected"))
       }
       const theme = JSON.parse(localStorage.getItem("theme"))
+      const nova = localStorage.getItem("walletName")
       return (
         <>
          {walletConnected() && selectedAccount ? (
         <Button variant="text" style={{ display: 'flex', alignItems: 'center' }} onClick={handleOpen} ><Identicon
           value={selectedAccount?.address}
           size={32}
-          theme="polkadot" className='icon-float-left' /><span style={{ marginLeft: '8px' }} className={theme}>{selectedAccount?.name}</span></Button>
+          theme="polkadot" className='icon-float-left' /><span style={{ marginLeft: '8px' }} className={theme}>{nova === "nova"? selectedAccount?.meta && selectedAccount?.meta.name : selectedAccount?.name}</span></Button>
           ) : (
           <><Button onClick={handleOpen} color='pink' variant='md' style={{ display: 'flex', alignItems: 'center' }}>Connect</Button>
                 </>
@@ -479,9 +484,9 @@ window.location.reload()}}>
                           className={`uppercase ${theme} ${isMobile? 'truncate' :undefined}`}
                           color="blue-gray"
                           variant="h6"
-                          key={account.name}
+                          key={nova === "nova"? account.meta && account.meta.name :account.name}
                         >
-                          {account.name}
+                          {nova === "nova"? account.meta && account.meta.name :account.name}
                           <Typography
                         className={`lowercase text-nowrap uppercase ${isMobile? 'text-nowrap truncate' : undefined} ${theme}`}
                         color="blue-gray"

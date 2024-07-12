@@ -177,7 +177,7 @@ const injector = await web3FromAddress(SENDER);
   const feeAssetItem = 0;
   const weightLimit = "Unlimited";
 
-api.tx.utility.batchAll([ await api.tx.xcmPallet.limitedTeleportAssets(dest, beneficiary, assets, feeAssetItem, weightLimit)]).signAndSend(SENDER, { signer: injector.signer }, async ({ status }) => {
+api.tx.utility.batchAll([ await api.tx.xcmPallet.limitedTeleportAssets(dest, beneficiary, assets, feeAssetItem, weightLimit)]).signAndSend(SENDER, { signer: signer }, async ({ status }) => {
     if (status.isInBlock) {
         toast.success(`Completed at block hash #${status.asInBlock.toString()}` , {
           position: "top-right",
@@ -243,7 +243,7 @@ const injector = await web3FromAddress(SENDER);
 
     const MultiAddress = SENDER;
 
-await api.tx.nfts.Create(u32, u33, MultiAddress,  witnessData ).signAndSend(SENDER, { signer: injector.signer }, async ({ status }) => {
+await api.tx.nfts.Create(u32, u33, MultiAddress,  witnessData ).signAndSend(SENDER, { signer: signer }, async ({ status }) => {
     if (status.isInBlock) {
 
       // type: ed25519, ssFormat: 42 (all defaults

@@ -182,16 +182,42 @@ export default function PAHProfile( ) {
         setApi(api);
     
         // Enable the extension
-         await web3Enable('remarker');
+    const wallet = localStorage.getItem("walletName");
+        let signer;
+    
+        if (wallet === "nova") {
+          // Enable the extension
+          await web3Enable('remarker');
+    
+          // Get all accounts from the extension
+      
+    
+          // Find the injector for the connected account
+      
+    
+          signer = signer;
+        } else {
+          // Check if the wallet extension exists in window.injectedWeb3
+          const Connectivity = window.injectedWeb3 && window.injectedWeb3[wallet];
+          if (!Connectivity) {
+            throw new Error(`${wallet} wallet extension not found.`);
+          }
+    
+          // Enable the extension and get accounts
+          const extension = await Connectivity.enable();
+          const getAccounts = await extension.accounts.get();
+    
+          signer = extension.signer;
+        }
     
         // Get all accounts from the extension
-        const allAccounts = await web3Accounts();
+    
     
         // Find the injector for the connected account
         const injector = await web3FromAddress(connectedAccount.address);
         // Sign and send the transaction
         const send = await api.tx.nfts.cancelSwap(collectionId, itemId)
-          .signAndSend(connectedAccount.address, { signer: injector.signer }, ({ status }) => {
+          .signAndSend(connectedAccount.address, { signer: signer }, ({ status }) => {
             if (status.isInBlock) {
               toast.success(`Completed at block hash #${status.asInBlock.toString()}` , {
                 position: "top-right",
