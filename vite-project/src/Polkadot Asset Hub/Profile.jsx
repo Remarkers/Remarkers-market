@@ -41,7 +41,7 @@ import Axios from 'axios';
 import { Link } from "react-router-dom";
 import { ArrowRightIcon, ArrowLeftIcon } from "@heroicons/react/24/outline";
 import { ApiPromise, WsProvider } from '@polkadot/api';
-import { web3Enable, web3Accounts, web3FromAddress } from '@polkadot/extension-dapp';
+import { web3Enable, web3Accounts, web3FromAddress, web3EnablePromise } from '@polkadot/extension-dapp';
 import { ToastContainer, toast } from 'react-toastify';
 import { MediaRenderer } from "@thirdweb-dev/react";
 import subscan from '/src/assets/subscan.png'
