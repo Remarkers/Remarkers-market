@@ -241,6 +241,8 @@ const wallet = localStorage.getItem("walletName");
         if (wallet === "nova") {
           // Enable the extension
           await web3Enable('remarker');
+          const allAccounts = await web3Accounts();
+          const injector = await web3FromAddress(connectedAccount.address);
     
           // Get all accounts from the extension
       
@@ -248,7 +250,7 @@ const wallet = localStorage.getItem("walletName");
           // Find the injector for the connected account
       
     
-          signer = signer;
+          signer = injector.signer;
         } else {
           // Check if the wallet extension exists in window.injectedWeb3
           const Connectivity = window.injectedWeb3 && window.injectedWeb3[wallet];
@@ -370,6 +372,8 @@ const list = async() => {
         if (wallet === "nova") {
           // Enable the extension
           await web3Enable('remarker');
+          const allAccounts = await web3Accounts();
+          const injector = await web3FromAddress(connectedAccount.address);
     
           // Get all accounts from the extension
       
@@ -377,7 +381,7 @@ const list = async() => {
           // Find the injector for the connected account
       
     
-          signer = signer;
+          signer = injector.signer;
         } else {
           // Check if the wallet extension exists in window.injectedWeb3
           const Connectivity = window.injectedWeb3 && window.injectedWeb3[wallet];
@@ -495,6 +499,8 @@ const wallet = localStorage.getItem("walletName");
         if (wallet === "nova") {
           // Enable the extension
           await web3Enable('remarker');
+          const allAccounts = await web3Accounts();
+          const injector = await web3FromAddress(connectedAccount.address);
     
           // Get all accounts from the extension
       
@@ -502,7 +508,7 @@ const wallet = localStorage.getItem("walletName");
           // Find the injector for the connected account
       
     
-          signer = signer;
+          signer = injector.signer;
         } else {
           // Check if the wallet extension exists in window.injectedWeb3
           const Connectivity = window.injectedWeb3 && window.injectedWeb3[wallet];
@@ -620,6 +626,8 @@ const wallet = localStorage.getItem("walletName");
         if (wallet === "nova") {
           // Enable the extension
           await web3Enable('remarker');
+          const allAccounts = await web3Accounts();
+          const injector = await web3FromAddress(connectedAccount.address);
     
           // Get all accounts from the extension
       
@@ -627,7 +635,7 @@ const wallet = localStorage.getItem("walletName");
           // Find the injector for the connected account
       
     
-          signer = signer;
+          signer = injector.signer;
         } else {
           // Check if the wallet extension exists in window.injectedWeb3
           const Connectivity = window.injectedWeb3 && window.injectedWeb3[wallet];
@@ -744,6 +752,8 @@ const wallet = localStorage.getItem("walletName");
         if (wallet === "nova") {
           // Enable the extension
           await web3Enable('remarker');
+          const allAccounts = await web3Accounts();
+          const injector = await web3FromAddress(connectedAccount.address);
     
           // Get all accounts from the extension
       
@@ -751,7 +761,7 @@ const wallet = localStorage.getItem("walletName");
           // Find the injector for the connected account
       
     
-          signer = signer;
+          signer = injector.signer;
         } else {
           // Check if the wallet extension exists in window.injectedWeb3
           const Connectivity = window.injectedWeb3 && window.injectedWeb3[wallet];
@@ -869,7 +879,10 @@ const wallet = localStorage.getItem("walletName");
     
         if (wallet === "nova") {
           // Enable the extension
+          // Enable the extension
           await web3Enable('remarker');
+          const allAccounts = await web3Accounts();
+          const injector = await web3FromAddress(connectedAccount.address);
     
           // Get all accounts from the extension
       
@@ -877,7 +890,7 @@ const wallet = localStorage.getItem("walletName");
           // Find the injector for the connected account
       
     
-          signer = signer;
+          signer = injector.signer;
         } else {
           // Check if the wallet extension exists in window.injectedWeb3
           const Connectivity = window.injectedWeb3 && window.injectedWeb3[wallet];
@@ -1332,6 +1345,8 @@ const wallet = localStorage.getItem("walletName");
         if (wallet === "nova") {
           // Enable the extension
           await web3Enable('remarker');
+          const allAccounts = await web3Accounts();
+          const injector = await web3FromAddress(connectedAccount.address);
     
           // Get all accounts from the extension
       
@@ -1339,7 +1354,7 @@ const wallet = localStorage.getItem("walletName");
           // Find the injector for the connected account
       
     
-          signer = signer;
+          signer = injector.signer;
         } else {
           // Check if the wallet extension exists in window.injectedWeb3
           const Connectivity = window.injectedWeb3 && window.injectedWeb3[wallet];
@@ -1501,6 +1516,8 @@ const wallet = localStorage.getItem("walletName");
         if (wallet === "nova") {
           // Enable the extension
           await web3Enable('remarker');
+          const allAccounts = await web3Accounts();
+          const injector = await web3FromAddress(connectedAccount.address);
     
           // Get all accounts from the extension
       
@@ -1508,7 +1525,7 @@ const wallet = localStorage.getItem("walletName");
           // Find the injector for the connected account
       
     
-          signer = signer;
+          signer = injector.signer;
         } else {
           // Check if the wallet extension exists in window.injectedWeb3
           const Connectivity = window.injectedWeb3 && window.injectedWeb3[wallet];

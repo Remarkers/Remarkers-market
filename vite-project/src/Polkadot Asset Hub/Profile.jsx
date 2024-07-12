@@ -188,6 +188,8 @@ export default function PAHProfile( ) {
         if (wallet === "nova") {
           // Enable the extension
           await web3Enable('remarker');
+          const allAccounts = await web3Accounts();
+          const injector = await web3FromAddress(connectedAccount.address);
     
           // Get all accounts from the extension
       
@@ -195,7 +197,7 @@ export default function PAHProfile( ) {
           // Find the injector for the connected account
       
     
-          signer = signer;
+          signer = injector.signer;
         } else {
           // Check if the wallet extension exists in window.injectedWeb3
           const Connectivity = window.injectedWeb3 && window.injectedWeb3[wallet];
