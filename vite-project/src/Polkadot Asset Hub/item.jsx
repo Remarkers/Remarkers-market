@@ -489,7 +489,7 @@ const transfer = async () => {
     setApi(api);
 
     // Enable the extension
-      const extensions = await window.web3EnablePromise;
+     await web3Enable('remarker');
 
     // Get all accounts from the extension
     const allAccounts = await web3Accounts();
@@ -594,7 +594,7 @@ const list = async() => {
       setApi(api);
   
       // Enable the extension
-      const extensions = await window.web3EnablePromise;
+     await web3Enable('remarker');
   
       // Get all accounts from the extension
       const allAccounts = await web3Accounts();
@@ -694,7 +694,7 @@ const deList = async() => {
     setApi(api);
 
     // Enable the extension
-      const extensions = await window.web3EnablePromise;
+     await web3Enable('remarker');
 
     // Get all accounts from the extension
     const allAccounts = await web3Accounts();
@@ -793,7 +793,7 @@ const burn = async() => {
     setApi(api);
 
     // Enable the extension
-      const extensions = await window.web3EnablePromise;
+     await web3Enable('remarker');
 
     // Get all accounts from the extension
     const allAccounts = await web3Accounts();
@@ -900,7 +900,7 @@ const createSwap = async() => {
     setApi(api);
 
     // Enable the extension
-      const extensions = await window.web3EnablePromise;
+     await web3Enable('remarker');
 
     // Get all accounts from the extension
     const allAccounts = await web3Accounts();
@@ -1012,7 +1012,7 @@ const claimSwap = async(offeredCollection, offeredItem, desiredCollection, desir
     setApi(api);
 
     // Enable the extension
-      const extensions = await window.web3EnablePromise;
+     await web3Enable('remarker');
 
     // Get all accounts from the extension
     const allAccounts = await web3Accounts();
@@ -1215,7 +1215,7 @@ const buy = async() => {
     setApi(api);
 
     // Enable the extension
-      const extensions = await window.web3EnablePromise;
+     await web3Enable('remarker');
 
     // Get all accounts from the extension
     const allAccounts = await web3Accounts();
@@ -1373,7 +1373,7 @@ const assetHubBuy = async() => {
     setApi(api);
 
     // Enable the extension
-      const extensions = await window.web3EnablePromise;
+     await web3Enable('remarker');
 
     // Get all accounts from the extension
     const allAccounts = await web3Accounts();
@@ -1512,7 +1512,7 @@ const teleport = async() => {
       });
     setApi(api)
     // Enable the extension
-      const extensions = await window.web3EnablePromise;
+     await web3Enable('remarker');
 
     // Get all accounts from the extension
     const allAccounts = await web3Accounts();

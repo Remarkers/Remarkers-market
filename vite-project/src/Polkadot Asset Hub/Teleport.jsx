@@ -136,7 +136,7 @@ export default function PAHTeleport() {
                 theme: "colored",
             });
             // Enable the extension
-              const extensions = await window.web3EnablePromise;
+             await web3Enable('remarker');
 
             // Get all accounts from the extension
             const allAccounts = await web3Accounts();
@@ -280,7 +280,7 @@ export default function PAHTeleport() {
                 theme: "colored",
             });
             // Enable the extension
-              const extensions = await window.web3EnablePromise;
+             await web3Enable('remarker');
 
             // Get all accounts from the extension
             const allAccounts = await web3Accounts();
