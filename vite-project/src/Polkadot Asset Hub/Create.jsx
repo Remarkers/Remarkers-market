@@ -346,7 +346,7 @@ export default function PAHCreate( ) {
           };
           toast.info(`Creating collection`, {
             position: "top-right",
-            autoClose: 2500,
+            autoClose: 5000,
             hideProgressBar: false,
             closeOnClick: true,
             pauseOnHover: true,
@@ -359,7 +359,7 @@ export default function PAHCreate( ) {
 
           toast.info(`Uploading Metadata`, {
             position: "top-right",
-            autoClose: 2500,
+            autoClose: 5000,
             hideProgressBar: false,
             closeOnClick: true,
             pauseOnHover: true,
@@ -458,7 +458,6 @@ export default function PAHCreate( ) {
     
           signer = extension.signer;
         }
-              const injector = await web3FromAddress(connectedAccount.address);
       
               const admin = connectedAccount.address;
               const config = {
@@ -622,7 +621,7 @@ export default function PAHCreate( ) {
 
         toast.info(`Creating nft`, {
           position: "top-right",
-          autoClose: 2500,
+          autoClose: 5000,
           hideProgressBar: false,
           closeOnClick: true,
           pauseOnHover: true,
@@ -636,7 +635,7 @@ export default function PAHCreate( ) {
 
         toast.info(`Uploading metadata to ipfs`, {
           position: "top-right",
-          autoClose: 2500,
+          autoClose: 5000,
           hideProgressBar: false,
           closeOnClick: true,
           pauseOnHover: true,
@@ -738,7 +737,6 @@ export default function PAHCreate( ) {
     
           signer = extension.signer;
         }
-              const injector = await web3FromAddress(connectedAccount.address);
       
               const mint_to = connectedAccount.address;
 
