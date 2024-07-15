@@ -53,28 +53,6 @@ import usdtLogo from '/src/assets/logo.png';
 import usdcLogo from '/src/assets/usd-coin-usdc-logo.png';
 import dotWhiteLogo from '/src/assets/Polkadot_Token_PinkOnWhite.png';
 import { add } from "date-fns";
-import { Helmet } from 'react-helmet';
-
-const MetaTags = ({ title, description, image, url }) => {
-  return (
-    <Helmet>
-      {/* Open Graph tags */}
-      <meta property="og:type" content="website" />
-      <meta property="og:title" content={title} />
-      <meta property="og:description" content={description} />
-      <meta property="og:image" content={image} />
-      <meta property="og:url" content={url} />
-
-      {/* Twitter Card tags */}
-      <meta name="twitter:card" content="summary_large_image" />
-      <meta name="twitter:title" content={title} />
-      <meta name="twitter:description" content={description} />
-      <meta name="twitter:image" content={image} />
-      <meta name="twitter:url" content={url} />
-    </Helmet>
-  );
-};
-
 
 export default function PAHDetails() {
     const [metadata, setMetadata] = useState()
@@ -1655,19 +1633,12 @@ useEffect(() => {
 const dataUrl = ((renderURL, JsonData) => {
   setSelectedImageUrl(renderURL);
   setJsondata(JsonData)})
-  console.log(`https://019cf278511f800d2a474ef346ebc669.ipfscdn.io/ipfs/${(metadata && metadata.image).replace(/^ipfs:\/\/(?:ipfs\/)?/, "")}`)
 
     return (
         <>
             {
                 metadata? (
                     <>
-                                  <MetaTags 
-        title={metadata && metadata.name}
-        description={metadata && metadata.description}
-        image={dotLogo}
-        url={`/Polkadot%20Asset%20Hub/Details/${collectionId}/${itemId}`}
-      />
                             <div style={isMobile? undefined :{float: "right", marginRight: "300px"}} className={isMobile? "max-w-full" : undefined}>
  <ToastContainer
         position="top-right"
