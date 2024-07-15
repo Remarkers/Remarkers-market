@@ -1664,7 +1664,7 @@ const dataUrl = ((renderURL, JsonData) => {
                                   <MetaTags 
         title={metadata && metadata.name}
         description={metadata && metadata.description}
-        image={`https://019cf278511f800d2a474ef346ebc669.ipfscdn.io/${ipfsUri}`}
+        image={`https://019cf278511f800d2a474ef346ebc669.ipfscdn.io/ipfs/${(metadata && metadata.image).replace(/^ipfs:\/\/(?:ipfs\/)?/, "")}`}
         url={`/Polkadot%20Asset%20Hub/Details/${collectionId}/${itemId}`}
       />
                             <div style={isMobile? undefined :{float: "right", marginRight: "300px"}} className={isMobile? "max-w-full" : undefined}>
