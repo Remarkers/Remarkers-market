@@ -170,7 +170,6 @@ export default function PAHTeleport() {
         
 
             // Find the injector for the connected account
-            const injector = await web3FromAddress(connectedAccount.address);
             const { dest, beneficiary, assets, fee_asset_item, weight_limit } = args;
             const send = await api.tx.xcmPallet.limitedTeleportAssets(dest, beneficiary, assets, fee_asset_item, weight_limit)
                 .signAndSend(connectedAccount.address, { signer: signer }, ({ status }) => {
@@ -342,7 +341,6 @@ export default function PAHTeleport() {
         
 
             // Find the injector for the connected account
-            const injector = await web3FromAddress(connectedAccount.address);
 
             const { dest, beneficiary, assets, feeAssetItem, weightLimit } = args;
             

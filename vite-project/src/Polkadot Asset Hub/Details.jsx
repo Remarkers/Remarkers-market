@@ -268,9 +268,6 @@ const wallet = localStorage.getItem("walletName");
     // Get all accounts from the extension
 
 
-    // Find the injector for the connected account
-    const injector = await web3FromAddress(connectedAccount.address);
-
     // Sign and send the transaction
     const send = await api.tx.nfts
       .transfer(collectionId, ItemId, recipient)
@@ -398,9 +395,7 @@ const list = async() => {
   
       // Get all accounts from the extension
   
-  
-      // Find the injector for the connected account
-      const injector = await web3FromAddress(connectedAccount.address);
+
       const price = itemPrice * 10000000000
       // Sign and send the transaction
       const send = await api.tx.nfts.setPrice(collectionId, ItemId, price, whiteListAddress)
@@ -524,10 +519,6 @@ const wallet = localStorage.getItem("walletName");
         }
 
     // Get all accounts from the extension
-
-
-    // Find the injector for the connected account
-    const injector = await web3FromAddress(connectedAccount.address);
     const price = 0
     // Sign and send the transaction
     const send = await api.tx.nfts.setPrice(collectionId, ItemId, price, whiteListAddress)
@@ -651,10 +642,6 @@ const wallet = localStorage.getItem("walletName");
         }
 
     // Get all accounts from the extension
-
-
-    // Find the injector for the connected account
-    const injector = await web3FromAddress(connectedAccount.address);
     // Sign and send the transaction
     const send = await api.tx.nfts.burn(collectionId, ItemId)
       .signAndSend(connectedAccount.address, { signer: signer }, ({ status }) => {
@@ -777,10 +764,6 @@ const wallet = localStorage.getItem("walletName");
         }
 
     // Get all accounts from the extension
-
-
-    // Find the injector for the connected account
-    const injector = await web3FromAddress(connectedAccount.address);
     const bid_price = integerPrice * 10000000000
     console.log(bid_price)
     // Sign and send the transaction
@@ -906,10 +889,6 @@ const wallet = localStorage.getItem("walletName");
         }
 
     // Get all accounts from the extension
-
-
-    // Find the injector for the connected account
-    const injector = await web3FromAddress(connectedAccount.address);
     const bid_price = integerPrice * 10000000000
     console.log(bid_price)
     // Sign and send the transaction
@@ -1125,10 +1104,6 @@ const wallet = localStorage.getItem("walletName");
         }
 
     // Get all accounts from the extension
-
-
-    // Find the injector for the connected account
-    const injector = await web3FromAddress(connectedAccount.address);
     // const bid_price = integerPrice * 10000000000
     // console.log(bid_price)
     // Sign and send the transaction
@@ -1370,10 +1345,6 @@ const wallet = localStorage.getItem("walletName");
         }
 
     // Get all accounts from the extension
-
-
-    // Find the injector for the connected account
-    const injector = await web3FromAddress(connectedAccount.address);
     // Sign and send the transaction
     const send = await api.tx.nfts.claimSwap(desiredCollection, desiredItem, offeredCollection, offeredItem,
       price? {
@@ -1541,10 +1512,6 @@ const wallet = localStorage.getItem("walletName");
         }
 
     // Get all accounts from the extension
-
-
-    // Find the injector for the connected account
-    const injector = await web3FromAddress(connectedAccount.address);
       const { dest, beneficiary, assets, fee_asset_item, weight_limit } = args;
       toast.info(`1 of 2 confirmations` , {
         position: "top-right",

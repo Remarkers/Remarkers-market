@@ -213,10 +213,7 @@ export default function PAHProfile( ) {
         }
     
         // Get all accounts from the extension
-    
-    
-        // Find the injector for the connected account
-        const injector = await web3FromAddress(connectedAccount.address);
+  
         // Sign and send the transaction
         const send = await api.tx.nfts.cancelSwap(collectionId, itemId)
           .signAndSend(connectedAccount.address, { signer: signer }, ({ status }) => {
