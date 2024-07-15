@@ -47,6 +47,7 @@ export default function PAHCreate( ) {
     const [collectionMetadata, setCollectionMetadata] = useState(null)
     const [selectedCollection, setSelectedCollection] = useState(null)
     const [createdLoading, setCreatedLoading] = useState()
+    const [duplicateEnabled, setDuplicateEnabled] = useState(false)
     const [formData, setFormData] = useState({
       collectionFile: null,
       collectionName: '',
@@ -66,6 +67,7 @@ export default function PAHCreate( ) {
       itemName: '',
       itemDescription: '',
       attributes: [],
+      duplicate: ''
     });
 
     useEffect(() => {
@@ -290,7 +292,7 @@ export default function PAHCreate( ) {
         };
         
         
-      
+        
         const createCollection = async () => {
           const connectedAccount = JSON.parse(localStorage.getItem('Account'));
           if(connectedAccount){
@@ -344,6 +346,19 @@ export default function PAHCreate( ) {
               discord: formData.collectionDiscord,
               externalLink: formData.collectionExternalLink,
           };
+          if (!jsonMetadata.image) {
+            toast.warning("Collection image is required", {
+              position: "top-right",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "colored",
+            });
+            return;
+          }
           toast.info(`Creating collection`, {
             position: "top-right",
             autoClose: 5000,
@@ -618,6 +633,19 @@ export default function PAHCreate( ) {
             image: "ipfs://" + nftformData.itemFile,
             attributes: nftformData.attributes,
         };
+        if (!jsonMetadata.image) {
+          toast.warning("Item image is required", {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+          });
+          return;
+        }
 
         toast.info(`Creating nft`, {
           position: "top-right",
@@ -775,13 +803,17 @@ export default function PAHCreate( ) {
             };
     
             const nftData = await fetchNFTs();
+            const duplicateCount = Number(nftformData.duplicate);
 
             if(nftData){
-              const calls = [
-                api.tx.nfts.mint(selectedCollection.Id, nftData,  mint_to, null),
-                api.tx.nfts.setMetadata(selectedCollection.Id, nftData, itemMetadataHex),
-              ];
-      
+              const calls = [];
+
+              for (let i = 0; i <= duplicateCount; i++) {
+                const currentNftData = nftData + i; // Increment nftData by i for each duplicate
+                calls.push(api.tx.nfts.mint(selectedCollection.Id, currentNftData, mint_to, null));
+                calls.push(api.tx.nfts.setMetadata(selectedCollection.Id, currentNftData, itemMetadataHex));
+              }
+
               const batch = api.tx.utility.batchAll(calls);
       
               await batch.signAndSend(connectedAccount.address, { signer: signer }, ({ status }) => {
@@ -1299,6 +1331,27 @@ SVGs (for onchain NFTs)
           onChange={handleInputCreateNftChange}       required
           minLength={nftformData && nftformData.itemDescription.length < 1}/>
     </div>
+    <br />
+    <Typography variant="h5" color="gray">
+    <Switch
+                defaultChecked={duplicateEnabled}
+                onChange={() => setDuplicateEnabled(!duplicateEnabled)}
+                color="pink"
+              />
+              <span className="ml-4">Duplicate</span>
+            </Typography>
+              {
+                duplicateEnabled? (
+                  <>
+    <br />
+    <div className={isMobile? "w-80" : "w-96"}>
+      <Input label="Duplicate"  size="lg" name="duplicate"
+          onChange={handleInputCreateNftChange}
+          type="number"/>
+    </div>
+                  </>
+                ) : null
+              }
     <br />
     <Typography variant="h6" color="gray"> Attributes (optional) </Typography>
     <br />

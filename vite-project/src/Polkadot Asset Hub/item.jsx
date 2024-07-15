@@ -2125,7 +2125,7 @@ const ipfsItemUri = `ipfs://${ipfsItemHash}`;
   </div>
   <div style={{ margin: "10px" }}>
     <Typography style={{ marginTop: "30px" }} variant="h5" color="pink">
-      {distribution === null ? 0 : distribution}
+      {ownersCount}
     </Typography>
     <Typography style={{ marginTop: "5px" }} variant="h7">
       Owners
@@ -2157,7 +2157,7 @@ const ipfsItemUri = `ipfs://${ipfsItemHash}`;
   </div>
   <div style={{ margin: "10px" }}>
     <Typography style={{ marginTop: "30px" }} variant="h5" color="pink">
-      {filteredPrices.length} {nftCount ? "/" : null} {nftCount}
+      {filteredPrices.length} {nftCount > 1 ? `/${nftCount}` : null}
     </Typography>
     <Typography style={{ marginTop: "5px" }} variant="h7">
       Listed / Minted
@@ -2232,7 +2232,7 @@ const ipfsItemUri = `ipfs://${ipfsItemHash}`;
   </div>
   <div style={{ marginLeft: "20px" }}> {/* Add margin for spacing */}
     <Typography style={{ marginTop: "30px" }} variant="h5" color="pink">
-      {distribution === null? 0 : distribution}
+    {ownersCount}
     </Typography>
     <Typography style={{ marginTop: "5px" }} variant="h7">
     Owners
@@ -2264,7 +2264,7 @@ const ipfsItemUri = `ipfs://${ipfsItemHash}`;
   </div>
   <div style={{ marginLeft: "20px" }}> {/* Add margin for spacing */}
     <Typography style={{ marginTop: "30px" }} variant="h5" color="pink">
-      {filteredPrices.length} {nftCount? "/" : null} {nftCount}
+      {filteredPrices.length} {nftCount > 1 ? `/${nftCount}` : null}
     </Typography>
     <Typography style={{ marginTop: "5px" }} variant="h7">
     Listed / Minted
@@ -2562,11 +2562,24 @@ const ipfsItemUri = `ipfs://${ipfsItemHash}`;
                 
             {/* Here's where you can map over your data and render Cards for each item */}
             { data.length < 1 ? (
-        <div className="flex justify-center items-start h-screen">
+              nftCount > 1 ? (
+                <>
+                        <div className="flex justify-center items-start h-screen">
           <div className="flex justify-center items-center w-full mt-20">
           <Spinner className="h-8 w-8" color="pink" />
           </div>
         </div>
+                </>
+              ) : (
+                <div className="flex justify-center items-start h-screen">
+                <div className="flex justify-center items-center w-full mt-20"> {/* Adjust mt-20 to your desired margin */}
+                  <Typography variant="h5">
+                    Nothing to see here ?
+                  </Typography>
+                </div>
+              </div>
+              )
+
       ) : (
         <>
           {data
