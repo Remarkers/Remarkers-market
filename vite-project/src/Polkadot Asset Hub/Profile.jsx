@@ -39,7 +39,7 @@ import {
 } from "@material-tailwind/react";
 import Axios from 'axios';
 import { Link } from "react-router-dom";
-import { ArrowRightIcon, ArrowLeftIcon } from "@heroicons/react/24/outline";
+import { ArrowRightIcon, ArrowLeftIcon, CircleStackIcon } from "@heroicons/react/24/outline";
 import { ApiPromise, WsProvider } from '@polkadot/api';
 import { web3Enable, web3Accounts, web3FromAddress, web3EnablePromise } from '@polkadot/extension-dapp';
 import { ToastContainer, toast } from 'react-toastify';
@@ -55,6 +55,7 @@ export default function PAHProfile( ) {
     const [activeTab, setActiveTab] = React.useState("Owned");
     const [owner, setOwner] = useState()
     const [price, setPrice] = useState()
+    const [sendSize, setSendSize] = useState()
     const [createdCollection, setCreatedCollection] = useState()
     const [metadata, setItemMetadata] = useState()
     const [swap, setSwap] = useState()
@@ -63,6 +64,28 @@ export default function PAHProfile( ) {
     const [error, setError] = useState(false);
     const [isMobile, setIsMobile] = useState();
     const [loading, setLoading] = useState(false)
+    const [selected, setSelected] = React.useState();
+    const [recipient, setRecipient] = useState()
+    const [calls, setCalls] = useState([]);
+    const [collectionId, setCollectionId] = useState()
+    const [itemId, setItemId] = useState()
+    const [open, setOpen] = React.useState(false);
+    const [openItemIndex, setOpenItemIndex] = useState(null); // State to track which item is open
+    const [added, setAdded] = useState()
+
+    // Function to handle clicking on an item
+    const handleItemClick = (index) => {
+      // Toggle the open state for the clicked item
+      setOpenItemIndex(openItemIndex === index ? null : index);
+    };
+
+ 
+    const toggleOpen = () => setOpen((cur) => !cur);
+
+
+    const setSelectedItem = (value) => setSelected(value);
+
+    const sendHandleOpen = (value) => setSendSize(value);
 
     const walletConnected = () => {
       return JSON.parse(localStorage.getItem("walletConnected"))
@@ -281,9 +304,332 @@ export default function PAHProfile( ) {
         console.error('Transfer failed:', error);
       }
     }
+
+    const callHandler = async() => {
+      const endpoint = "wss://polkadot-asset-hub-rpc.polkadot.io";
+      // Assuming you have 'api', 'collectionId', 'ItemId', and 'recipient' available in this context
+      try {
+        // Create a new WebSocket provider
+        const wsProvider = new WsProvider(endpoint);
+    
+        // Create the API instance
+        const api = await ApiPromise.create({ provider: wsProvider });
+    
+        // Now you have the 'api' object ready for use
+        console.log('API initialized successfully:', api);
+    
+        // You can set the 'api' object to the state or use it directly as needed
+        setApi(api);
+    
+        // Enable the extension
+    const wallet = localStorage.getItem("walletName");
+            let signer;
+        
+            if (wallet === "nova") {
+              // Enable the extension
+              await web3Enable('remarker');
+              const allAccounts = await web3Accounts();
+              const injector = await web3FromAddress(connectedAccount.address);
+        
+              // Get all accounts from the extension
+          
+        
+              // Find the injector for the connected account
+          
+        
+              signer = injector.signer;
+            } else {
+              // Check if the wallet extension exists in window.injectedWeb3
+              const Connectivity = window.injectedWeb3 && window.injectedWeb3[wallet];
+              if (!Connectivity) {
+                throw new Error(`${wallet} wallet extension not found.`);
+              }
+        
+              // Enable the extension and get accounts
+              const extension = await Connectivity.enable();
+              const getAccounts = await extension.accounts.get();
+        
+              signer = extension.signer;
+            }
+      console.log("datatrnasfer", collectionId, itemId, recipient)
+
+      setCalls(prevCalls => [
+        ...prevCalls,
+        api.tx.nfts.transfer(collectionId, itemId, recipient)
+      ]);
+    }catch(e) {
+      console.log(e)
+    }
+    }
+
+    const transfer = async () => {
+      const endpoint = "wss://polkadot-asset-hub-rpc.polkadot.io";
+      // Assuming you have 'api', 'collectionId', 'ItemId', and 'recipient' available in this context
+      try {
+        toast.info(`Sending your nft` , {
+          position: "top-right",
+          autoClose: 25009,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+          });
+        // Create a new WebSocket provider
+        const wsProvider = new WsProvider(endpoint);
+    
+        // Create the API instance
+        const api = await ApiPromise.create({ provider: wsProvider });
+    
+        // Now you have the 'api' object ready for use
+        console.log('API initialized successfully:', api);
+    
+        // You can set the 'api' object to the state or use it directly as needed
+        setApi(api);
+    
+        // Enable the extension
+    const wallet = localStorage.getItem("walletName");
+            let signer;
+        
+            if (wallet === "nova") {
+              // Enable the extension
+              await web3Enable('remarker');
+              const allAccounts = await web3Accounts();
+              const injector = await web3FromAddress(connectedAccount.address);
+        
+              // Get all accounts from the extension
+          
+        
+              // Find the injector for the connected account
+          
+        
+              signer = injector.signer;
+            } else {
+              // Check if the wallet extension exists in window.injectedWeb3
+              const Connectivity = window.injectedWeb3 && window.injectedWeb3[wallet];
+              if (!Connectivity) {
+                throw new Error(`${wallet} wallet extension not found.`);
+              }
+        
+              // Enable the extension and get accounts
+              const extension = await Connectivity.enable();
+              const getAccounts = await extension.accounts.get();
+        
+              signer = extension.signer;
+            }
+    
+        // Get all accounts from the extension
+
+        const batch = api.tx.utility.batchAll(calls);
+    
+        // await api.tx.nfts
+        // .transfer(collectionId, collectionId, recipient)
+
+        // Sign and send the transaction
+        const send = await batch.signAndSend(connectedAccount.address, { signer: signer }, ({ status }) => {
+            if (status.isInBlock) {
+              toast.success(`Completed at block hash #${status.asInBlock.toString()}` , {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "colored",
+                });
+                const toastId = toast.info('Transaction is processing', {
+                  position: "top-right",
+                  autoClose: false, // Set autoClose to false to keep the toast visible
+                  hideProgressBar: false,
+                  closeOnClick: false,
+                  pauseOnHover: true,
+                  draggable: true,
+                  progress: undefined,
+                  theme: "colored",
+                  isLoading: true, // This shows the loading indicator
+                });
+              
+                // Simulate an async action, e.g., sending an NFT
+                setTimeout(() => {
+                  toast.update(toastId, {
+                    render: 'successfully sent',
+                    type: 'success',
+                    isLoading: false,
+                    autoClose: 5000, // Close the toast after 5 seconds
+                    closeOnClick: true,
+                  });
+                }, 30000); // Example delay for the async action (e.g., 25 seconds)=
+            } else {
+              toast.info(`Current status: ${status.type}` , {
+                position: "top-right",
+                autoClose: 25009,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "colored",
+                });
+            }
+        });
+        
+      } catch (error) {
+        toast.error(`Transaction failed' ${error}` , {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+          });
+      }
+    };
+    
     
       return (
           <>
+                <Dialog open={sendSize === "xl"} size="xl" handler={sendHandleOpen}>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        style={{ width: '500px', maxHeight: '10px' }} 
+      />
+        <DialogHeader className="justify-between">
+          Send Items
+          <IconButton
+            color="blue-gray"
+            size="sm"
+            variant="text"
+            onClick={sendHandleOpen}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+              className="h-5 w-5"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </IconButton>
+        </DialogHeader>
+        <DialogBody className='h-[30rem] w-full overflow-scroll'>
+          <div style={{ display: 'flex', overflowX: 'auto' }}>
+            <Card className="w-full">
+              {metadata && metadata.map((item, index) => (
+                <div key={index} style={{ marginRight: '10px' }} onClick={() => {
+                  // handle item click
+                }}>
+                  <List>
+                    <ListItem selected={selected} onClick={() => {
+                      setSelectedItem();
+                      toggleOpen();
+                      console.log("itemIDs", item.collectionId, item.itemId, recipient)
+                      setCollectionId(item.collectionId)
+                      setItemId(item.itemId)
+                      console.log("calls", calls)
+                      handleItemClick(index)
+                      setAdded(false)
+                      // setOfferedItem(item.itemId);
+                      // setOfferedCollection(item.collectionId);
+                    }}>
+                       {item && (
+        <MediaRenderer src={`ipfs://${item?.image?.replace(/^(ipfs:\/\/ipfs\/|ipfs:\/\/)/, "")}`}                 className="h-10 w-10 rounded-lg object-cover object-center" style={{borderRadius: "10px",  display: isLoading || error ? 'none' : 'block', width: "50px", height: "50px" }} />
+      )}
+                      <Typography color="blue-gray" className="font-medium" style={{ marginLeft: "20px" }}>
+                        {item && item.name}
+                      </Typography>
+                      <Chip variant="ghost" value={item.itemId}  style={{marginLeft: "200px"}}/>
+                    </ListItem>
+                  </List>
+                  {openItemIndex === index && (
+            <Collapse open={openItemIndex === index}>
+              <Card className="my-4 mx-auto w-full">
+                <CardBody>
+                  <Input label="Recipient" onChange={(e) => setRecipient(e.target.value)} />
+                  {
+                    added? (
+                      <>
+                      <Typography style={{ float: "right", marginTop: "20px" }}>
+                      Added Referesh to change
+                      </Typography>
+                      </>
+                    ) : (
+                      <>
+                      <Button onClick={() => { callHandler(), setAdded(true) }} color="green" size="md" style={{ float: "right", marginTop: "20px" }}> Add </Button>
+                      </>
+                    )
+                  }
+                </CardBody>
+              </Card>
+            </Collapse>
+          )}
+                </div>
+              ))}
+            </Card>
+          </div>
+          <br />
+          <div className="flex items-center gap-4" style={{ marginTop: "50px" }}>
+      <Button
+        variant="text"
+        className="flex items-center gap-2"
+        onClick={prev}
+        disabled={active === 1}
+        color="pink"
+      >
+        <ArrowLeftIcon  strokeWidth={2} className="h-4 w-4" color="pink"/> Previous
+      </Button>
+      <div className="flex items-center gap-2">
+        {
+          isMobile? (
+            <>
+                    <IconButton {...getItemProps(active)} color="pink" variant="outlined" size="sm">{active}</IconButton>
+        <IconButton {...getItemProps(active + 1 )} color="pink" size="sm">{active + 1}</IconButton>
+        <IconButton {...getItemProps(active + 2)} color="pink" size="sm">{active + 2}</IconButton>
+            </>
+          ) : (
+            <>
+                    <IconButton {...getItemProps(active)} color="pink" variant="outlined">{active}</IconButton>
+        <IconButton {...getItemProps(active + 1 )} color="pink">{active + 1}</IconButton>
+        <IconButton {...getItemProps(active + 2)} color="pink">{active + 2}</IconButton>
+        <IconButton {...getItemProps(active + 3)} color="pink">{active + 3}</IconButton>
+        <IconButton {...getItemProps(active + 4)} color="pink">{active + 4}</IconButton>
+        <IconButton {...getItemProps(active + 5)} color="pink">{active + 5}</IconButton>
+            </>
+          )
+        }
+      </div>
+      <Button
+        variant="text"
+        className="flex items-center gap-2"
+        onClick={next}
+        color="pink"
+      >
+        Next
+        <ArrowRightIcon strokeWidth={2} className="h-4 w-4" color="pink"/>
+      </Button>
+    </div>
+        </DialogBody>
+        <DialogFooter>
+          <Button color="pink" onClick={() => {transfer()}}>Confirm Send</Button>
+        </DialogFooter>
+</Dialog>
           { walletConnected() && Account? (
             <>
           <br />
@@ -405,7 +751,7 @@ export default function PAHProfile( ) {
 
       </IconButton> */}
       </div>
-      <br />
+
 <Tabs value={activeTab} style={{width: "300px"}} >
       <TabsHeader
         className="rounded-none border-b border-blue-gray-50 bg-transparent p-0"
@@ -430,6 +776,81 @@ export default function PAHProfile( ) {
     <hr />
     {activeTab === "Owned" && (
       <>
+      {
+        connectedAccount.address === "5G1JYfaUF9s8TmTsnsFPfLejsdv9EdqZMZgcmZbMCqMUEsmc" ? (
+          <>
+          {
+        isMobile? (
+          <>
+                <Button
+  color="blue"
+  style={{ marginLeft: "10px", marginTop: "20px", marginBottom: "20px" }}
+  size="sm"
+  variant="gradient"
+  onClick={() => sendHandleOpen("xl")}
+>
+  <div style={{ display: "flex", alignItems: "center"}}>
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6" width={20} style={{marginRight: "10px"}}>
+  <path stroke-linecap="round" stroke-linejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
+</svg>
+  Send
+  </div>
+</Button>
+<Button
+  color="red"
+  style={{ marginLeft: "10px", marginTop: "20px", marginBottom: "20px" }}
+  size="sm"
+  variant="gradient"
+  disabled
+>
+  <div style={{ display: "flex", alignItems: "center"}}>
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6" width={20} style={{marginRight: "10px"}} >
+  <path stroke-linecap="round" stroke-linejoin="round" d="M15.362 5.214A8.252 8.252 0 0 1 12 21 8.25 8.25 0 0 1 6.038 7.047 8.287 8.287 0 0 0 9 9.601a8.983 8.983 0 0 1 3.361-6.867 8.21 8.21 0 0 0 3 2.48Z" />
+  <path stroke-linecap="round" stroke-linejoin="round" d="M12 18a3.75 3.75 0 0 0 .495-7.468 5.99 5.99 0 0 0-1.925 3.547 5.975 5.975 0 0 1-2.133-1.001A3.75 3.75 0 0 0 12 18Z" />
+</svg>
+
+Burn
+  </div>
+</Button>
+          </>
+        ) : (
+          <>
+                <Button
+  color="blue"
+  style={{ marginLeft: "10px", marginTop: "20px", marginBottom: "20px" }}
+  size="sm"
+  variant="gradient"
+  onClick={() => sendHandleOpen("xl")}
+>
+  <div style={{ display: "flex", alignItems: "center"}}>
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6" width={20} style={{marginRight: "10px"}}>
+  <path stroke-linecap="round" stroke-linejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
+</svg>
+  Send
+  </div>
+</Button>
+<Button
+  color="red"
+  style={{ marginLeft: "10px", marginTop: "20px", marginBottom: "20px" }}
+  size="sm"
+  variant="gradient"
+  disabled
+>
+  <div style={{ display: "flex", alignItems: "center"}}>
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6" width={20} style={{marginRight: "10px"}} >
+  <path stroke-linecap="round" stroke-linejoin="round" d="M15.362 5.214A8.252 8.252 0 0 1 12 21 8.25 8.25 0 0 1 6.038 7.047 8.287 8.287 0 0 0 9 9.601a8.983 8.983 0 0 1 3.361-6.867 8.21 8.21 0 0 0 3 2.48Z" />
+  <path stroke-linecap="round" stroke-linejoin="round" d="M12 18a3.75 3.75 0 0 0 .495-7.468 5.99 5.99 0 0 0-1.925 3.547 5.975 5.975 0 0 1-2.133-1.001A3.75 3.75 0 0 0 12 18Z" />
+</svg>
+
+Burn
+  </div>
+</Button>
+          </>
+        )
+      }
+                </>
+        ) : null
+      }
 {metadata? (  <>
     <div >
       {metadata && metadata.map((item, index) => {
