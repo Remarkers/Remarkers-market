@@ -170,11 +170,13 @@ export default function PAHProfile( ) {
     const next = () => {
       setActive(active + 1);
       owned()
+      setItemMetadata(null)
     };
    
     const prev = () => {
       setActive(active - 1);
       owned()
+      setItemMetadata(null)
     };
 
     const TABLE_HEAD = ["Offered Item", "Desired Item", "Price Offered", "Price Desired", "Cancel Swap"];
@@ -532,7 +534,7 @@ export default function PAHProfile( ) {
         <DialogBody className='h-[30rem] w-full overflow-scroll'>
           <div style={{ display: 'flex', overflowX: 'auto' }}>
             <Card className="w-full">
-              {metadata && metadata.map((item, index) => (
+              {metadata? metadata.map((item, index) => (
                 <div key={index} style={{ marginRight: '10px' }} onClick={() => {
                   // handle item click
                 }}>
@@ -581,7 +583,15 @@ export default function PAHProfile( ) {
             </Collapse>
           )}
                 </div>
-              ))}
+              )) : (
+                <>
+                        <div className="flex justify-center items-start h-screen">
+          <div className="flex justify-center items-center w-full mt-20">
+          <Spinner className="h-8 w-8" color="pink" />
+          </div>
+        </div>
+                </>
+              )}
             </Card>
           </div>
           <br />
