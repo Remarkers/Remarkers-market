@@ -569,7 +569,7 @@ export default function PAHProfile( ) {
                     added? (
                       <>
                       <Typography style={{ float: "right", marginTop: "20px" }}>
-                      Added Referesh to change
+                      Added Jay
                       </Typography>
                       </>
                     ) : (
