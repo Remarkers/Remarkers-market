@@ -44,7 +44,7 @@ import Axios from 'axios';
 import { useCopyToClipboard } from "usehooks-ts";
 import { CheckIcon, DocumentDuplicateIcon, ArrowRightIcon, ArrowLeftIcon  } from "@heroicons/react/24/outline";
 import {encodeAddress, decodeAddress} from '@polkadot/util-crypto'
-import { formatDistanceToNow } from 'date-fns';
+import { formatDistanceToNow, set } from 'date-fns';
 import { Link } from "react-router-dom";
 import { ApiPromise, WsProvider } from '@polkadot/api';
 import { web3Enable, web3Accounts, web3FromAddress, web3EnablePromise } from '@polkadot/extension-dapp';
@@ -57,6 +57,7 @@ import dotLogo from '/src/assets/statemint-native-dot.png';
 import usdtLogo from '/src/assets/logo.png';
 import usdcLogo from '/src/assets/usd-coin-usdc-logo.png';
 import dotWhiteLogo from '/src/assets/Polkadot_Token_PinkOnWhite.png';
+import wud from '/src/assets/file.png'
 import { Connection } from "../Connection";
 
 export default function PAHItems() {
@@ -1262,6 +1263,11 @@ const tokens = [
     logo: usdcLogo,
     id: 1337
   },
+  {
+    symbol: "WUD",
+    logo: wud,
+    id: 31337
+  }
 ]
 
 const quotePriceExactTokensForTokens = async (id) => {
@@ -1923,14 +1929,20 @@ const ipfsItemUri = `ipfs://${ipfsItemHash}`;
                       setTokenPrice(null)
                       fetchDotBalance()
                     }}>
-                      <img
-                        src={item.logo}
-                        alt="card-image"
-                        className="h-10 w-10 rounded-lg object-cover object-center"
-                      />
-                      <Typography color="blue-gray" className="font-medium" style={{ marginLeft: "20px" }}>
-                        {item && item.symbol}
-                      </Typography>
+                      {
+                        (id === "165" || item.symbol !== "WUD") && (
+                          <div key={item.symbol} className="flex items-center mb-4">
+                            <img
+                              src={item.logo}
+                              alt="card-image"
+                              className="h-10 w-10 rounded-lg object-cover object-center"
+                            />
+                            <Typography color="blue-gray" className="font-medium" style={{ marginLeft: "20px" }}>
+                              {item.symbol}
+                            </Typography>
+                          </div>
+                        )
+                      }
                     </ListItem>
                   </List>
                 </div>
@@ -2074,7 +2086,18 @@ const ipfsItemUri = `ipfs://${ipfsItemHash}`;
                                          setError(true);
                                        }}/>
                                                                                     <Typography style={{marginLeft: "20px"}} variant="h5">
-                        {nameData}
+                        {nameData}{
+                          id === "165"? (
+                            <>
+                            <IconButton variant="text" color="pink" className="rounded-full">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6" width={30}>
+  <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 0 1-1.043 3.296 3.745 3.745 0 0 1-3.296 1.043A3.745 3.745 0 0 1 12 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 0 1-3.296-1.043 3.745 3.745 0 0 1-1.043-3.296A3.745 3.745 0 0 1 3 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 0 1 1.043-3.296 3.746 3.746 0 0 1 3.296-1.043A3.746 3.746 0 0 1 12 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 0 1 3.296 1.043 3.746 3.746 0 0 1 1.043 3.296A3.745 3.745 0 0 1 21 12Z" />
+</svg>
+
+                        </IconButton>
+                            </>
+                          ) : null
+                        }
                     </Typography>
                     </div>
                     <div style={{marginTop: "30px", marginLeft: "10px"}}>
@@ -2186,7 +2209,18 @@ const ipfsItemUri = `ipfs://${ipfsItemHash}`;
                     isMobile? null : (
                       <>
                                           <Typography variant={ isMobile? "h6" : "h5"}>
-                        {nameData}
+                        {nameData} {
+                          id === "165"? (
+                            <>
+                            <IconButton variant="text" color="pink" className="rounded-full">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6" width={30}>
+  <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 0 1-1.043 3.296 3.745 3.745 0 0 1-3.296 1.043A3.745 3.745 0 0 1 12 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 0 1-3.296-1.043 3.745 3.745 0 0 1-1.043-3.296A3.745 3.745 0 0 1 3 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 0 1 1.043-3.296 3.746 3.746 0 0 1 3.296-1.043A3.746 3.746 0 0 1 12 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 0 1 3.296 1.043 3.746 3.746 0 0 1 1.043 3.296A3.745 3.745 0 0 1 21 12Z" />
+</svg>
+
+                        </IconButton>
+                            </>
+                          ) : null
+                        }
                     </Typography>
                     <Typography color="blue-gray" className="font-medium" variant="h6" style={{ display: 'flex', alignItems: 'center', marginTop: "5px" }}>
                 <Typography color="blue-gray" className="font-medium" variant="h6" style={{ marginRight: '10px',  }}>
@@ -2562,15 +2596,7 @@ const ipfsItemUri = `ipfs://${ipfsItemHash}`;
                 
             {/* Here's where you can map over your data and render Cards for each item */}
             { data.length < 1 ? (
-              nftCount > 1 ? (
-                <>
-                        <div className="flex justify-center items-start h-screen">
-          <div className="flex justify-center items-center w-full mt-20">
-          <Spinner className="h-8 w-8" color="pink" />
-          </div>
-        </div>
-                </>
-              ) : (
+              nftCount > 1 && (
                 <div className="flex justify-center items-start h-screen">
                 <div className="flex justify-center items-center w-full mt-20"> {/* Adjust mt-20 to your desired margin */}
                   <Typography variant="h5">
@@ -2578,10 +2604,21 @@ const ipfsItemUri = `ipfs://${ipfsItemHash}`;
                   </Typography>
                 </div>
               </div>
-              )
+              ) 
 
       ) : (
         <>
+        {
+          loadingData? (
+            <>
+                                    <div className="flex justify-center items-start h-screen">
+          <div className="flex justify-center items-center w-full mt-20">
+          <Spinner className="h-8 w-8" color="pink" />
+          </div>
+        </div>
+            </>
+          ): (
+            <>
           {data
             .filter(item => item && !item.burned && (!isBuyChecked || (isBuyChecked && item.price)) && (!isOwnedChecked || (isOwnedChecked && item.currentOwner === polkadotAddress)))
             .map((item, index) => {
@@ -2657,6 +2694,9 @@ const ipfsItemUri = `ipfs://${ipfsItemHash}`;
               )
             })
           }
+                      </>
+          )
+        }
         </>
       )}
 
