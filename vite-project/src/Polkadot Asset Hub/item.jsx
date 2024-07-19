@@ -268,7 +268,7 @@ console.log('Polkadot Address:', polkadotAddress);
 
     const getData = async (value) => {
         try {
-          setLoadingData(true)
+            setLoadingData(true)
             const response = await Axios.get(`${import.meta.env.VITE_VPS_BACKEND_API}itemData?data=${IdData}&page=${active.toString()}&orderBy=${value === "Recently Minted"? "blockNumber_DESC": value === "Earliest Minted"? "blockNumber_ASC": value === "Price Low To High"? "price_ASC" : value === "Price High To Low"? "price_DESC" : "blockNumber_DESC"}`);
             setData(response.data.data); // Store the data directly as an array of objects
             setLoadingData(false)
@@ -340,7 +340,7 @@ console.log('Polkadot Address:', polkadotAddress);
     };
    
     const prev = () => {
-      {setActive(active - 1),getItemProps(), getData(filterOption)};
+      {setActive(active - 1), getItemProps(), getData(filterOption)};
     };
 
     const [ownedactive, setOwnedActive] = React.useState(1);
@@ -394,7 +394,15 @@ console.log('Polkadot Address:', polkadotAddress);
           if (Account) {
               owned();
           }
-  }, [ Account, isFilterOptionSet]);
+          if (data.length < 1) {
+          const timeout = setTimeout(() => {
+              setLoadingData(false);
+          }, 10000); // Delay by 10 seconds
+      
+          // Cleanup timeout if component unmounts or dependencies change
+          return () => clearTimeout(timeout);
+        }
+  }, [ Account, isFilterOptionSet, data]);
     
     const handleSelectChange = (value) => {
       setFilterOption(value);
@@ -2595,30 +2603,15 @@ const ipfsItemUri = `ipfs://${ipfsItemHash}`;
     <br />
                 
             {/* Here's where you can map over your data and render Cards for each item */}
-            { data.length < 1 ? (
-              nftCount > 1 && (
-                <div className="flex justify-center items-start h-screen">
-                <div className="flex justify-center items-center w-full mt-20"> {/* Adjust mt-20 to your desired margin */}
-                  <Typography variant="h5">
-                    Nothing to see here ?
-                  </Typography>
-                </div>
-              </div>
-              ) 
+            { loadingData ? (
+                  <div className="flex justify-center items-start h-screen">
+                    <div className="flex justify-center items-center w-full mt-20">
+                      <Spinner className="h-8 w-8" color="pink" />
+                    </div>
+                  </div>
 
       ) : (
         <>
-        {
-          loadingData? (
-            <>
-                                    <div className="flex justify-center items-start h-screen">
-          <div className="flex justify-center items-center w-full mt-20">
-          <Spinner className="h-8 w-8" color="pink" />
-          </div>
-        </div>
-            </>
-          ): (
-            <>
           {data
             .filter(item => item && !item.burned && (!isBuyChecked || (isBuyChecked && item.price)) && (!isOwnedChecked || (isOwnedChecked && item.currentOwner === polkadotAddress)))
             .map((item, index) => {
@@ -2694,9 +2687,6 @@ const ipfsItemUri = `ipfs://${ipfsItemHash}`;
               )
             })
           }
-                      </>
-          )
-        }
         </>
       )}
 

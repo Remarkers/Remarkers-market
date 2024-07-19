@@ -13,7 +13,7 @@ import { MediaRenderer } from "@thirdweb-dev/react";
 import { ArrowUpIcon, ArrowDownIcon } from "@heroicons/react/24/outline";
 import polkadotpunks from '/src/assets/polkadotpunks.png'
 import biodiversity from '/src/assets/Polkadot Punks.png'
-import kus from '/src/assets/Kus.png'
+import kus from '/src/assets/COLLECTABLES_BY_KUS1.png'
 
 export default function PAHExplore() {
   const [data, setData] = useState([]);
