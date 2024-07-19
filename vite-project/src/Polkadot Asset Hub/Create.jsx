@@ -62,6 +62,7 @@ export default function PAHCreate( ) {
     const [addAttribute, setaddAttribute] = useState([])
     const [selectedFile, setSelectedFile] = useState(null);
     const [fileType, setFileType] = useState('');  
+    const [nextItemId, setNextItemId] = useState()
     const [nftformData, setNftFormData] = useState({
       itemFile: null,
       itemName: '',
@@ -116,6 +117,16 @@ export default function PAHCreate( ) {
           console.error('Error fetching data:', error);
       }
       }
+
+      const itemId = async() => {
+        try {
+            const response = await Axios.get(`${import.meta.env.VITE_VPS_BACKEND_API}itemId?selected=${selectedCollection.Id}`);
+            setNextItemId(response.data.data); // Store the data directly as an array of objects
+        } catch(error) {
+          console.error('Error fetching data:', error);
+        }
+      }
+
       useEffect(() => {
         created()
       },[])
@@ -767,49 +778,14 @@ export default function PAHCreate( ) {
         }
       
               const mint_to = connectedAccount.address;
-
-              const getNextItemId = (currentItemIds) => {
-                if (currentItemIds.length === 0) {
-                  return 1; // Start with item ID 1 if no items exist
-                }
-                const maxItemId = Math.max(...currentItemIds);
-                return maxItemId + 1;
-              };
-
-              const fetchNFTs = async () => {
-                const query = `
-                query MyQuery {
-                  collectionEntityById(id: "${selectedCollection.Id}") {
-                    nfts {
-                      sn
-                    }
-                  }
-                }
-                `;
-                const endpoint = 'https://squid.subsquid.io/speck/graphql';
     
-                try {
-                    const response = await Axios.post(endpoint, { query });
-                    const responseData = response.data.data.collectionEntityById.nfts;
-                    console.log(responseData);
-                    const currentItemIds = responseData.map(item => parseInt(item.sn, 10));
-                    const nextItemId = getNextItemId(currentItemIds);
-
-                    return nextItemId;
-                } catch (err) {
-                    console.error(err);
-                    return null;
-                }
-            };
-    
-            const nftData = await fetchNFTs();
             const duplicateCount = Number(nftformData.duplicate);
 
-            if(nftData){
+            if(nextItemId){
               const calls = [];
 
               for (let i = 0; i <= duplicateCount; i++) {
-                const currentNftData = nftData + i; // Increment nftData by i for each duplicate
+                const currentNftData = nextItemId + i; // Increment nftData by i for each duplicate
                 calls.push(api.tx.nfts.mint(selectedCollection.Id, currentNftData, mint_to, null));
                 calls.push(api.tx.nfts.setMetadata(selectedCollection.Id, currentNftData, itemMetadataHex));
               }
@@ -1018,12 +994,13 @@ export default function PAHCreate( ) {
                     <ListItem selected={selected} onClick={() => {
                       setSelectedItem();
                       setSelectedCollection(item);
+                      itemId()
                       // setOfferedItem(item.itemId);
                       // setOfferedCollection(item.collectionId);
                     }}>
                               <MediaRenderer src={`ipfs://${item && item.itemData.image && item.itemData.image.replace(/^(ipfs:\/\/ipfs\/|ipfs:\/\/)/, "")}`} style={{ height: '2.5rem', width: '2.5rem', borderRadius: '0.5rem', objectFit: 'cover', objectPosition: 'center' }} />
                       <Typography color="blue-gray" className="font-medium" style={{ marginLeft: "20px" }}>
-                      {item.itemData.name}
+                      {item && item.itemData.name}
                       </Typography>
                     </ListItem>
                   </List>

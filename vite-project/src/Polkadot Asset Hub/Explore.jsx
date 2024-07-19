@@ -11,9 +11,8 @@ import {
 import { Link } from "react-router-dom";
 import { MediaRenderer } from "@thirdweb-dev/react";
 import { ArrowUpIcon, ArrowDownIcon } from "@heroicons/react/24/outline";
-import polkadotpunks from '/src/assets/polkadotpunks.png'
 import biodiversity from '/src/assets/Polkadot Punks.png'
-import kus from '/src/assets/COLLECTABLES_BY_KUS1.png'
+import kus from '/src/assets/COLLECTABLES BY KUS - FINAL - -min.png'
 
 export default function PAHExplore() {
   const [data, setData] = useState([]);
@@ -108,13 +107,6 @@ export default function PAHExplore() {
       <img
         src={kus}
         alt="image 2"
-        className="h-200 w-full object-cover object-center"
-      />
-      </a>
-        <a href="https://remarkers-market.vercel.app/Polkadot%20Asset%20Hub/marketplace/7/Polkadot%20Punks">
-      <img
-        src={polkadotpunks}
-        alt="image 1"
         className="h-200 w-full object-cover object-center"
       />
       </a>
