@@ -1,0 +1,15 @@
+{
+    "method": "Create",
+    "maxSupply": 10000,
+    "issuer": "1HzwKkNGv4gdWq4ds1C5k63u8hvmjC6ULneAaZbwUBZEauF",
+    "class": 7,
+    "id": "552dc05-7",
+    "CreateSettings" : {
+        "CreateType" : "public",
+        "CreatePrice" : 0,
+        "startBlock" : null,
+        "endBlock" : null
+    },
+    "metadata": "ipfs://bafkreia6ic7hcz76fcpsz3mgt7rkrmzc3um6twjkpmtghyalzk4hq3w5qm",
+    "royalty": 0
+}

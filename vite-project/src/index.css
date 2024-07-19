@@ -1,0 +1,265 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.Createitem{
+  text-align: center;
+}
+.Create{
+  background-color: #ff1290;
+  align-items: center;
+  background-position: 0 0;
+border: 1px solid #ffb1d9;
+border-radius: 11px;
+box-sizing: border-box;
+  color: #ffffff;
+  cursor: pointer;
+font-size: 1rem;
+font-weight: 700;
+line-height: 33.4929px;
+list-style: outside url(https://www.smashingmagazine.com/images/bullet.svg) none;
+padding: 2px 12px;
+text-align: left;
+text-decoration: none;
+text-shadow: none;
+text-underline-offset: 1px;
+transition: border .2s ease-in-out,box-shadow .2s ease-in-out;
+user-select: none;
+-webkit-user-select: none;
+touch-action: manipulation;
+white-space: nowrap;
+word-break: break-word;
+}
+.teleport-style{
+   text-align: center;
+}
+.connect{
+  background-color: #ffe9f5;
+align-items: center;
+background-position: 0 0;
+border: 1px solid #ffd3ea;
+border-radius: 11px;
+box-sizing: border-box;
+color: #ff1290;
+cursor: pointer;
+display: flex;
+font-size: 1rem;
+font-weight: 700;
+line-height: 33.4929px;
+list-style: outside url(https://www.smashingmagazine.com/images/bullet.svg) none;
+padding: 2px 12px;
+text-align: left;
+text-decoration: none;
+text-shadow: none;
+text-underline-offset: 1px;
+transition: border .2s ease-in-out,box-shadow .2s ease-in-out;
+user-select: none;
+-webkit-user-select: none;
+touch-action: manipulation;
+white-space: nowrap;
+word-break: break-word;
+float: right;
+}
+.select{
+background-color: #ff1290;
+align-items: center;
+background-position: 0 0;
+border: 1px solid #ff1290;
+border-radius: 11px;
+box-sizing: border-box;
+color: #ffffff;
+cursor: pointer;
+display: flex;
+font-size: 1rem;
+font-weight: 700;
+line-height: 33.4929px;
+list-style: outside url(https://www.smashingmagazine.com/images/bullet.svg) none;
+padding: 2px 12px;
+text-align: left;
+text-decoration: none;
+text-shadow: none;
+text-underline-offset: 1px;
+transition: border .2s ease-in-out,box-shadow .2s ease-in-out;
+user-select: none;
+-webkit-user-select: none;
+touch-action: manipulation;
+white-space: nowrap;
+word-break: break-word;
+float: right;
+font-family: Trebuchet MS;
+margin-right: 20px;
+width: 200px;
+height: 35px;
+margin-top: 2px;
+}
+.PolkadotPunks{
+  color: #E6007A; font-family: Trebuchet MS
+}
+.identicons{
+  float: right;
+  margin-top: 3px;
+}
+.hr2{
+  height: 12px;
+    border: 0;
+    box-shadow: inset 0 12px 12px -12px  #E6007A;
+    margin-top: 500px;
+}
+.icon{
+  float: right;
+  margin-top: 2px;
+  margin-right: 7px;
+}
+.count{
+  color: #E6007A;
+   font-family: Trebuchet MS;
+  text-align: center;
+  margin-top: 150px;
+}
+.fee{
+  color: #E6007A;
+  font-family: Trebuchet MS;
+ text-align: center;
+ margin-top: 5px;
+}
+.hr{
+  border: 0;
+  height: 1px;
+  background-image: linear-gradient(to right, rgba(0, 0, 0, 0), #d5d5d5, rgba(190, 190, 190, 0));
+}
+.teleport{
+  background-color: #ff1290;
+  align-items: center;
+  background-position: 0 0;
+border: 1px solid #ffb1d9;
+border-radius: 11px;
+box-sizing: border-box;
+  color: #ffffff;
+  cursor: pointer;
+font-size: 1rem;
+font-weight: 700;
+line-height: 33.4929px;
+list-style: outside url(https://www.smashingmagazine.com/images/bullet.svg) none;
+padding: 2px 12px;
+text-align: left;
+text-decoration: none;
+text-shadow: none;
+text-underline-offset: 1px;
+transition: border .2s ease-in-out,box-shadow .2s ease-in-out;
+user-select: none;
+-webkit-user-select: none;
+touch-action: manipulation;
+white-space: nowrap;
+word-break: break-word;
+}
+.logo{
+  width:  15px;
+  margin-left: 90%;
+}
+.Price{
+  color: #E6007A;
+   font-family: Trebuchet MS;
+  text-align: center;
+  margin-top: 20px;
+}
+.mobile-only {
+  display: block; /* or any other styles for mobile-only component */
+}
+/* styles.css */
+.app {
+  padding: 20px;
+}
+
+.light {
+  background-color: #fff;
+  color: #333;
+}
+
+.dark {
+  background-color: #333;
+  color: #fff;
+}
+.catalog-card {
+    width: calc(33.33% - 16px); /* Set width to one-third of the container width with some margin */
+    margin: 8px; /* Add margin between cards */
+    display: inline-block; /* Ensure cards display in rows */
+}
+
+.card-image {
+    width: 100%;
+    height: auto;
+}
+
+.card-content {
+    padding: 8px;
+}
+.card-content-container {
+  display: flex;
+  align-items: center;
+}
+
+.image-container {
+  flex-shrink: 0;
+}
+
+.text-container {
+  margin-left: 10px; /* Adjust margin as needed */
+}
+.mobilecatalog-card{
+  width: calc(45.33% - 0px); /* Set width to one-third of the container width with some margin */
+  margin: 8px; /* Add margin between cards */
+  display: inline-block; /* Ensure cards display in rows */
+}
+
+.Item-card{
+  width: calc(27.33% - 50px); /* Set width to one-third of the container width with some margin */
+  margin: 4px; /* Add margin between cards */
+  display: inline-block; /* Ensure cards display in rows */
+}
+
+.Mobile-Item-card{
+  width: calc(51.33% - 20px); /* Set width to one-third of the container width with some margin */
+  margin: 4px; /* Add margin between cards */
+  display: inline-block; /* Ensure cards display in rows */
+}
+
+.Profile-Item-card{
+  width: calc(51.33% - 20px); /* Set width to one-third of the container width with some margin */
+  margin: 4px; /* Add margin between cards */
+  display: inline-block; /* Ensure cards display in rows */
+}
+
+.pink-tabs {
+  color: #E6007A; /* Set the background color to pink */
+  /* Add any additional styling as needed */
+}
+
+.traits {
+  width: calc(45.33% - 0px); /* Set width to one-third of the container width with some margin */
+  margin: 8px; /* Add margin between cards */
+  display: inline-block; /* Ensure cards display in rows */
+}
+
+.traits-item {
+  width: calc(45.33% - 0px); /* Set width to one-third of the container width with some margin */
+  margin: 8px; /* Add margin between cards */
+  display: inline-block; /* Ensure cards display in rows */
+}
+
+.mobile-traits-item {
+  width: calc(200.33% - 0px); /* Set width to one-third of the container width with some margin */
+  margin: 4px; /* Add margin between cards */
+  display: inline-block; /* Ensure cards display in rows */
+}
+
+.lowercase {
+  text-transform: lowercase;
+}
+.bold-hr {
+  height: 1px;
+  background-color: rgb(225, 225, 225);
+  border: none;
+}
+.disabled {
+ background-color: #f5f5f5;
+}
