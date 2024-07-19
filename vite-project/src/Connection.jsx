@@ -361,7 +361,7 @@ console.log(JSON.parse(localStorage.getItem("Account")))
         <Button variant="text" style={{ display: 'flex', alignItems: 'center' }} onClick={handleOpen} ><Identicon
           value={selectedAccount?.address}
           size={32}
-          theme="polkadot" className='icon-float-left' /><span style={{ marginLeft: '8px' }} className={theme}>{nova === "nova"? selectedAccount?.meta && selectedAccount?.meta.name : selectedAccount?.name}</span></Button>
+          theme="polkadot" className='icon-float-left' /><span style={{ marginLeft: '8px' }} >{nova === "nova"? selectedAccount?.meta && selectedAccount?.meta.name : selectedAccount?.name}</span></Button>
           ) : (
           <><Button onClick={handleOpen} color='pink' variant='md' style={{ display: 'flex', alignItems: 'center' }}>Connect</Button>
                 </>
