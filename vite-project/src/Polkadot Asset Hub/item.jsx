@@ -44,10 +44,10 @@ import Axios from 'axios';
 import { useCopyToClipboard } from "usehooks-ts";
 import { CheckIcon, DocumentDuplicateIcon, ArrowRightIcon, ArrowLeftIcon  } from "@heroicons/react/24/outline";
 import {encodeAddress, decodeAddress} from '@polkadot/util-crypto'
-import { formatDistanceToNow } from 'date-fns';
+import { formatDistanceToNow, set } from 'date-fns';
 import { Link } from "react-router-dom";
 import { ApiPromise, WsProvider } from '@polkadot/api';
-import { web3Enable, web3Accounts, web3FromAddress } from '@polkadot/extension-dapp';
+import { web3Enable, web3Accounts, web3FromAddress, web3EnablePromise } from '@polkadot/extension-dapp';
 import { ToastContainer, toast } from 'react-toastify';
 import { symbol } from "zod";
 import { u8aToHex, stringToHex, stringToU8a } from '@polkadot/util'
@@ -57,6 +57,7 @@ import dotLogo from '/src/assets/statemint-native-dot.png';
 import usdtLogo from '/src/assets/logo.png';
 import usdcLogo from '/src/assets/usd-coin-usdc-logo.png';
 import dotWhiteLogo from '/src/assets/Polkadot_Token_PinkOnWhite.png';
+import wud from '/src/assets/file.png'
 import { Connection } from "../Connection";
 
 export default function PAHItems() {
@@ -197,7 +198,7 @@ export default function PAHItems() {
       const nameData = name;
       const colletionMetadata = async () => {
         try {
-            const response = await Axios.get(`http://localhost:3001/colletionMetadata?data=${id}`);
+            const response = await Axios.get(`${import.meta.env.VITE_VPS_BACKEND_API}colletionMetadata?data=${id}`);
             setSelectedCollectionMetadata(response.data.data); // Store the data directly as an array of objects
             setCollectionDataboolean(true)
         } catch (error) {
@@ -242,7 +243,7 @@ console.log('Polkadot Address:', polkadotAddress);
     const Account = (JSON.parse(localStorage.getItem("Account")))
     const owned = async() => {
       try {
-          const response = await Axios.get(`http://localhost:3001/owned?address=${JSON.stringify(Account && Account?.address)}&page=${ownedactive.toString()}`);
+          const response = await Axios.get(`${import.meta.env.VITE_VPS_BACKEND_API}owned?address=${JSON.stringify(Account && Account?.address)}&page=${ownedactive.toString()}`);
           setOwner(response.data.data.result); // Store the data directly as an array of objects
           setOwnedMetadata(response.data.data.metadata)
           setOwnedPrice(response.data.data.result.price)
@@ -255,7 +256,7 @@ console.log('Polkadot Address:', polkadotAddress);
     const swap = async(item) => {
       try {
         setSwapLoading(true)
-        const response = await Axios.get(`http://localhost:3001/swap?data=${item.Id}&collectionId=${IdData}`);
+        const response = await Axios.get(`${import.meta.env.VITE_VPS_BACKEND_API}swap?data=${item.Id}&collectionId=${IdData}`);
         const res = response.data.data;
         const resarray = res && res.map(item => item)[0];
         setSwapData( resarray); // Store the data directly as an array of objects
@@ -267,8 +268,8 @@ console.log('Polkadot Address:', polkadotAddress);
 
     const getData = async (value) => {
         try {
-          setLoadingData(true)
-            const response = await Axios.get(`http://localhost:3001/itemData?data=${IdData}&page=${active.toString()}&orderBy=${value === "Recently Minted"? "blockNumber_DESC": value === "Earliest Minted"? "blockNumber_ASC": value === "Price Low To High"? "price_ASC" : value === "Price High To Low"? "price_DESC" : "blockNumber_DESC"}`);
+            setLoadingData(true)
+            const response = await Axios.get(`${import.meta.env.VITE_VPS_BACKEND_API}itemData?data=${IdData}&page=${active.toString()}&orderBy=${value === "Recently Minted"? "blockNumber_DESC": value === "Earliest Minted"? "blockNumber_ASC": value === "Price Low To High"? "price_ASC" : value === "Price High To Low"? "price_DESC" : "blockNumber_DESC"}`);
             setData(response.data.data); // Store the data directly as an array of objects
             setLoadingData(false)
         } catch (error) {
@@ -278,7 +279,7 @@ console.log('Polkadot Address:', polkadotAddress);
     
     const giveItemId = async(item) => {
       try {
-        const response = await Axios.get(`http://localhost:3001/itemId?data=${item.Id}&collectionId=${IdData}`);
+        const response = await Axios.get(`${import.meta.env.VITE_VPS_BACKEND_API}itemId?data=${item.Id}&collectionId=${IdData}`);
         setItemConfig(response.data.data); // Store the data directly as an array of objects
     } catch (error) {
         console.error('Error fetching data:', error);
@@ -288,7 +289,7 @@ console.log('Polkadot Address:', polkadotAddress);
     const getItemPrice = async(item) => {
       try {
         setFetchLoading(true)
-        const response = await Axios.get(`http://localhost:3001/itemPrice?data=${item.Id}&collectionId=${IdData}&price=${item.price}`);
+        const response = await Axios.get(`${import.meta.env.VITE_VPS_BACKEND_API}itemPrice?data=${item.Id}&collectionId=${IdData}&price=${item.price}`);
         setPrice(response.data.data.priceDotUsd); // Store the data directly as an array of objects
         setIntegerPrice(response.data.data.price)
         setFetchLoading(false)
@@ -299,7 +300,7 @@ console.log('Polkadot Address:', polkadotAddress);
 
     const collectionActivity = async() => {
       try {
-        const response = await Axios.get(`http://localhost:3001/collectionActivity?collectionId=${IdData}`);
+        const response = await Axios.get(`${import.meta.env.VITE_VPS_BACKEND_API}collectionActivity?collectionId=${IdData}`);
         setCollectionActivity( response && response.data.data.data.list); // Store the data directly as an array of objects
     } catch (error) {
         console.error('Error fetching data:', error);
@@ -308,7 +309,7 @@ console.log('Polkadot Address:', polkadotAddress);
 
     const Holders = async() => {
       try {
-        const response = await Axios.get(`http://localhost:3001/Holders?collectionId=${IdData}&page=${subscanPage.toString()}`);
+        const response = await Axios.get(`${import.meta.env.VITE_VPS_BACKEND_API}Holders?collectionId=${IdData}&page=${subscanPage.toString()}`);
         setHolders(response.data.data.data.list); // Store the data directly as an array of objects
         setOwnersCount(response.data.data.data.count)
     } catch (error) {
@@ -318,7 +319,7 @@ console.log('Polkadot Address:', polkadotAddress);
     
     const metadata = async(item) => {
       try {
-        const response = await Axios.get(`http://localhost:3001/metadata?metadata=${item.metadata}`);
+        const response = await Axios.get(`${import.meta.env.VITE_VPS_BACKEND_API}metadata?metadata=${item.metadata}`);
         setItemMetadata(JSON.parse(response.data.data)); // Store the data directly as an array of objects
     } catch (error) {
         console.error('Error fetching data:', error);
@@ -339,7 +340,7 @@ console.log('Polkadot Address:', polkadotAddress);
     };
    
     const prev = () => {
-      {setActive(active - 1),getItemProps(), getData(filterOption)};
+      {setActive(active - 1), getItemProps(), getData(filterOption)};
     };
 
     const [ownedactive, setOwnedActive] = React.useState(1);
@@ -393,7 +394,15 @@ console.log('Polkadot Address:', polkadotAddress);
           if (Account) {
               owned();
           }
-  }, [ Account, isFilterOptionSet]);
+          if (data.length < 1) {
+          const timeout = setTimeout(() => {
+              setLoadingData(false);
+          }, 10000); // Delay by 10 seconds
+      
+          // Cleanup timeout if component unmounts or dependencies change
+          return () => clearTimeout(timeout);
+        }
+  }, [ Account, isFilterOptionSet, data]);
     
     const handleSelectChange = (value) => {
       setFilterOption(value);
@@ -489,17 +498,45 @@ const transfer = async () => {
     setApi(api);
 
     // Enable the extension
-    await web3Enable('remarker');
+const wallet = localStorage.getItem("walletName");
+        let signer;
+    
+        if (wallet === "nova") {
+          // Enable the extension
+          await web3Enable('remarker');
+          const allAccounts = await web3Accounts();
+          const injector = await web3FromAddress(connectedAccount.address);
+    
+          // Get all accounts from the extension
+      
+    
+          // Find the injector for the connected account
+      
+    
+          signer = injector.signer;
+        } else {
+          // Check if the wallet extension exists in window.injectedWeb3
+          const Connectivity = window.injectedWeb3 && window.injectedWeb3[wallet];
+          if (!Connectivity) {
+            throw new Error(`${wallet} wallet extension not found.`);
+          }
+    
+          // Enable the extension and get accounts
+          const extension = await Connectivity.enable();
+          const getAccounts = await extension.accounts.get();
+    
+          signer = extension.signer;
+        }
 
     // Get all accounts from the extension
-    const allAccounts = await web3Accounts();
+
 
     // Find the injector for the connected account
-    const injector = await web3FromAddress(connectedAccount && connectedAccount.address);
+
     // Sign and send the transaction
     const send = await api.tx.nfts
       .transfer(collectionId, ItemId, recipient)
-      .signAndSend(connectedAccount && connectedAccount.address, { signer: injector.signer }, ({ status }) => {
+      .signAndSend(connectedAccount && connectedAccount.address, { signer: signer }, ({ status }) => {
         if (status.isInBlock) {
           // Notify that the transaction has been included in a block
           toast.success(`Completed at block hash #${status.asInBlock.toString()}`, {
@@ -592,19 +629,40 @@ const list = async() => {
   
       // You can set the 'api' object to the state or use it directly as needed
       setApi(api);
-  
-      // Enable the extension
-      await web3Enable('remarker');
-  
-      // Get all accounts from the extension
-      const allAccounts = await web3Accounts();
+
+      const wallet = localStorage.getItem("walletName");
+      let signer;
+        if (wallet === "nova") {
+                    // Enable the extension
+          await web3Enable('remarker');
+          const allAccounts = await web3Accounts();
+          const injector = await web3FromAddress(connectedAccount.address);
+    
+          // Get all accounts from the extension
+      
+    
+          // Find the injector for the connected account
+      
+    
+          signer = injector.signer;
+        } else {
+          // Check if the wallet extension exists in window.injectedWeb3
+          const Connectivity = window.injectedWeb3 && window.injectedWeb3[wallet];
+          if (!Connectivity) {
+            throw new Error(`${wallet} wallet extension not found.`);
+          }
+    
+          // Enable the extension and get accounts
+          const extension = await Connectivity.enable();
+          const getAccounts = await extension.accounts.get();
+    
+          signer = extension.signer;
+        }
       const price = itemPrice * 10000000000
   
-      // Find the injector for the connected account
-      const injector = await web3FromAddress(connectedAccount && connectedAccount.address);
       // Sign and send the transaction
       const send = await api.tx.nfts.setPrice(collectionId, ItemId, price, whiteListAddress)
-        .signAndSend(connectedAccount && connectedAccount.address, { signer: injector.signer }, ({ status }) => {
+        .signAndSend(connectedAccount && connectedAccount.address, { signer }, ({ status }) => {
           if (status.isInBlock) {
             toast.success(`Completed at block hash #${status.asInBlock.toString()}` , {
               position: "top-right",
@@ -663,6 +721,7 @@ const list = async() => {
           });
       });
       
+      
     } catch (error) {
       await api.disconnect()
       console.error('Transfer failed:', error);
@@ -694,17 +753,45 @@ const deList = async() => {
     setApi(api);
 
     // Enable the extension
-    await web3Enable('remarker');
+const wallet = localStorage.getItem("walletName");
+        let signer;
+    
+        if (wallet === "nova") {
+          // Enable the extension
+          await web3Enable('remarker');
+          const allAccounts = await web3Accounts();
+          const injector = await web3FromAddress(connectedAccount.address);
+    
+          // Get all accounts from the extension
+      
+    
+          // Find the injector for the connected account
+      
+    
+          signer = injector.signer;
+        } else {
+          // Check if the wallet extension exists in window.injectedWeb3
+          const Connectivity = window.injectedWeb3 && window.injectedWeb3[wallet];
+          if (!Connectivity) {
+            throw new Error(`${wallet} wallet extension not found.`);
+          }
+    
+          // Enable the extension and get accounts
+          const extension = await Connectivity.enable();
+          const getAccounts = await extension.accounts.get();
+    
+          signer = extension.signer;
+        }
 
     // Get all accounts from the extension
-    const allAccounts = await web3Accounts();
+
 
     // Find the injector for the connected account
-    const injector = await web3FromAddress(connectedAccount && connectedAccount.address);
+
     const price = null
     // Sign and send the transaction
     const send = await api.tx.nfts.setPrice(collectionId, ItemId, price, whiteListAddress)
-      .signAndSend(connectedAccount && connectedAccount.address, { signer: injector.signer }, ({ status }) => {
+      .signAndSend(connectedAccount && connectedAccount.address, { signer: signer }, ({ status }) => {
         if (status.isInBlock) {
           toast.success(`Completed at block hash #${status.asInBlock.toString()}` , {
             position: "top-right",
@@ -793,16 +880,40 @@ const burn = async() => {
     setApi(api);
 
     // Enable the extension
-    await web3Enable('remarker');
+const wallet = localStorage.getItem("walletName");
+        let signer;
+    
+        if (wallet === "nova") {
+          // Enable the extension
+          await web3Enable('remarker');
+          const allAccounts = await web3Accounts();
+          const injector = await web3FromAddress(connectedAccount.address);
+    
+          // Get all accounts from the extension
+      
+    
+          // Find the injector for the connected account
+      
+    
+          signer = injector.signer;
+        } else {
+          // Check if the wallet extension exists in window.injectedWeb3
+          const Connectivity = window.injectedWeb3 && window.injectedWeb3[wallet];
+          if (!Connectivity) {
+            throw new Error(`${wallet} wallet extension not found.`);
+          }
+    
+          // Enable the extension and get accounts
+          const extension = await Connectivity.enable();
+          const getAccounts = await extension.accounts.get();
+    
+          signer = extension.signer;
+        }
 
     // Get all accounts from the extension
-    const allAccounts = await web3Accounts();
-
-    // Find the injector for the connected account
-    const injector = await web3FromAddress(connectedAccount.address);
     // Sign and send the transaction
     const send = await api.tx.nfts.burn(collectionId, ItemId)
-      .signAndSend(connectedAccount.address, { signer: injector.signer }, ({ status }) => {
+      .signAndSend(connectedAccount.address, { signer: signer }, ({ status }) => {
         if (status.isInBlock) {
           toast.success(`Completed at block hash #${status.asInBlock.toString()}` , {
             position: "top-right",
@@ -900,13 +1011,37 @@ const createSwap = async() => {
     setApi(api);
 
     // Enable the extension
-    await web3Enable('remarker');
+const wallet = localStorage.getItem("walletName");
+        let signer;
+    
+        if (wallet === "nova") {
+          // Enable the extension
+          await web3Enable('remarker');
+          const allAccounts = await web3Accounts();
+          const injector = await web3FromAddress(connectedAccount.address);
+    
+          // Get all accounts from the extension
+      
+    
+          // Find the injector for the connected account
+      
+    
+          signer = injector.signer;
+        } else {
+          // Check if the wallet extension exists in window.injectedWeb3
+          const Connectivity = window.injectedWeb3 && window.injectedWeb3[wallet];
+          if (!Connectivity) {
+            throw new Error(`${wallet} wallet extension not found.`);
+          }
+    
+          // Enable the extension and get accounts
+          const extension = await Connectivity.enable();
+          const getAccounts = await extension.accounts.get();
+    
+          signer = extension.signer;
+        }
 
     // Get all accounts from the extension
-    const allAccounts = await web3Accounts();
-
-    // Find the injector for the connected account
-    const injector = await web3FromAddress(connectedAccount.address);
     // const bid_price = integerPrice * 10000000000
     // console.log(bid_price)
     // Sign and send the transaction
@@ -920,7 +1055,7 @@ const createSwap = async() => {
      } : null,
       "2592000"
     )
-.signAndSend(connectedAccount.address, { signer: injector.signer }, ({ status }) => {
+.signAndSend(connectedAccount.address, { signer: signer }, ({ status }) => {
         if (status.isInBlock) {
           toast.success(`Completed at block hash #${status.asInBlock.toString()}` , {
             position: "top-right",
@@ -1012,13 +1147,37 @@ const claimSwap = async(offeredCollection, offeredItem, desiredCollection, desir
     setApi(api);
 
     // Enable the extension
-    await web3Enable('remarker');
+const wallet = localStorage.getItem("walletName");
+        let signer;
+    
+        if (wallet === "nova") {
+          // Enable the extension
+          await web3Enable('remarker');
+          const allAccounts = await web3Accounts();
+          const injector = await web3FromAddress(connectedAccount.address);
+    
+          // Get all accounts from the extension
+      
+    
+          // Find the injector for the connected account
+      
+    
+          signer = injector.signer;
+        } else {
+          // Check if the wallet extension exists in window.injectedWeb3
+          const Connectivity = window.injectedWeb3 && window.injectedWeb3[wallet];
+          if (!Connectivity) {
+            throw new Error(`${wallet} wallet extension not found.`);
+          }
+    
+          // Enable the extension and get accounts
+          const extension = await Connectivity.enable();
+          const getAccounts = await extension.accounts.get();
+    
+          signer = extension.signer;
+        }
 
     // Get all accounts from the extension
-    const allAccounts = await web3Accounts();
-
-    // Find the injector for the connected account
-    const injector = await web3FromAddress(connectedAccount.address);
     // Sign and send the transaction
     const send = await api.tx.nfts.claimSwap(desiredCollection, desiredItem, offeredCollection, offeredItem,
       price? {
@@ -1026,7 +1185,7 @@ const claimSwap = async(offeredCollection, offeredItem, desiredCollection, desir
        direction: price.direction === "Send"? "Send" : price.direction  === "Receive"? "Receive" : null
      } : null,
     )
-.signAndSend(connectedAccount.address, { signer: injector.signer }, ({ status }) => {
+.signAndSend(connectedAccount.address, { signer: signer }, ({ status }) => {
         if (status.isInBlock) {
           toast.success(`Completed at block hash #${status.asInBlock.toString()}` , {
             position: "top-right",
@@ -1112,6 +1271,11 @@ const tokens = [
     logo: usdcLogo,
     id: 1337
   },
+  {
+    symbol: "WUD",
+    logo: wud,
+    id: 31337
+  }
 ]
 
 const quotePriceExactTokensForTokens = async (id) => {
@@ -1215,13 +1379,37 @@ const buy = async() => {
     setApi(api);
 
     // Enable the extension
-    await web3Enable('remarker');
+const wallet = localStorage.getItem("walletName");
+        let signer;
+    
+        if (wallet === "nova") {
+          // Enable the extension
+          await web3Enable('remarker');
+          const allAccounts = await web3Accounts();
+          const injector = await web3FromAddress(connectedAccount.address);
+    
+          // Get all accounts from the extension
+      
+    
+          // Find the injector for the connected account
+      
+    
+          signer = injector.signer;
+        } else {
+          // Check if the wallet extension exists in window.injectedWeb3
+          const Connectivity = window.injectedWeb3 && window.injectedWeb3[wallet];
+          if (!Connectivity) {
+            throw new Error(`${wallet} wallet extension not found.`);
+          }
+    
+          // Enable the extension and get accounts
+          const extension = await Connectivity.enable();
+          const getAccounts = await extension.accounts.get();
+    
+          signer = extension.signer;
+        }
 
     // Get all accounts from the extension
-    const allAccounts = await web3Accounts();
-
-    // Find the injector for the connected account
-    const injector = await web3FromAddress(connectedAccount.address);
     const bid_price = integerPrice * 10000000000
     console.log(bid_price)
     // Sign and send the transaction
@@ -1270,7 +1458,7 @@ const buy = async() => {
       });
     
 
-    const send = await batch.signAndSend(connectedAccount.address, { signer: injector.signer }, ({ status }) => {
+    const send = await batch.signAndSend(connectedAccount.address, { signer: signer }, ({ status }) => {
         if (status.isInBlock) {
           toast.success(`Completed at block hash #${status.asInBlock.toString()}` , {
             position: "top-right",
@@ -1373,18 +1561,42 @@ const assetHubBuy = async() => {
     setApi(api);
 
     // Enable the extension
-    await web3Enable('remarker');
+const wallet = localStorage.getItem("walletName");
+        let signer;
+    
+        if (wallet === "nova") {
+          // Enable the extension
+          await web3Enable('remarker');
+          const allAccounts = await web3Accounts();
+          const injector = await web3FromAddress(connectedAccount.address);
+    
+          // Get all accounts from the extension
+      
+    
+          // Find the injector for the connected account
+      
+    
+          signer = injector.signer;
+        } else {
+          // Check if the wallet extension exists in window.injectedWeb3
+          const Connectivity = window.injectedWeb3 && window.injectedWeb3[wallet];
+          if (!Connectivity) {
+            throw new Error(`${wallet} wallet extension not found.`);
+          }
+    
+          // Enable the extension and get accounts
+          const extension = await Connectivity.enable();
+          const getAccounts = await extension.accounts.get();
+    
+          signer = extension.signer;
+        }
 
     // Get all accounts from the extension
-    const allAccounts = await web3Accounts();
-
-    // Find the injector for the connected account
-    const injector = await web3FromAddress(connectedAccount.address);
     const bid_price = integerPrice * 10000000000
     console.log(bid_price)
     // Sign and send the transaction
     const send = await api.tx.nfts.buyItem(collectionId, ItemId, Number(bid_price))
-      .signAndSend(connectedAccount.address, { signer: injector.signer }, ({ status }) => {
+      .signAndSend(connectedAccount.address, { signer: signer }, ({ status }) => {
         if (status.isInBlock) {
           toast.success(`Completed at block hash #${status.asInBlock.toString()}` , {
             position: "top-right",
@@ -1512,13 +1724,37 @@ const teleport = async() => {
       });
     setApi(api)
     // Enable the extension
-    await web3Enable('remarker');
+const wallet = localStorage.getItem("walletName");
+        let signer;
+    
+        if (wallet === "nova") {
+          // Enable the extension
+          await web3Enable('remarker');
+          const allAccounts = await web3Accounts();
+          const injector = await web3FromAddress(connectedAccount.address);
+    
+          // Get all accounts from the extension
+      
+    
+          // Find the injector for the connected account
+      
+    
+          signer = injector.signer;
+        } else {
+          // Check if the wallet extension exists in window.injectedWeb3
+          const Connectivity = window.injectedWeb3 && window.injectedWeb3[wallet];
+          if (!Connectivity) {
+            throw new Error(`${wallet} wallet extension not found.`);
+          }
+    
+          // Enable the extension and get accounts
+          const extension = await Connectivity.enable();
+          const getAccounts = await extension.accounts.get();
+    
+          signer = extension.signer;
+        }
 
     // Get all accounts from the extension
-    const allAccounts = await web3Accounts();
-
-    // Find the injector for the connected account
-    const injector = await web3FromAddress(connectedAccount.address);
       const { dest, beneficiary, assets, fee_asset_item, weight_limit } = args;
       toast.info(`1 of 2 confirmations` , {
         position: "top-right",
@@ -1531,7 +1767,7 @@ const teleport = async() => {
         theme: "colored",
         });
     const send = await api.tx.xcmPallet.limitedTeleportAssets(dest, beneficiary, assets, fee_asset_item, weight_limit)
-    .signAndSend(connectedAccount.address, { signer: injector.signer }, ({ status }) => {
+    .signAndSend(connectedAccount.address, { signer: signer }, ({ status }) => {
       if (status.isInBlock) {
         toast.info(`2 of 2 confirmations` , {
           position: "top-right",
@@ -1701,14 +1937,20 @@ const ipfsItemUri = `ipfs://${ipfsItemHash}`;
                       setTokenPrice(null)
                       fetchDotBalance()
                     }}>
-                      <img
-                        src={item.logo}
-                        alt="card-image"
-                        className="h-10 w-10 rounded-lg object-cover object-center"
-                      />
-                      <Typography color="blue-gray" className="font-medium" style={{ marginLeft: "20px" }}>
-                        {item && item.symbol}
-                      </Typography>
+                      {
+                        (id === "165" || item.symbol !== "WUD") && (
+                          <div key={item.symbol} className="flex items-center mb-4">
+                            <img
+                              src={item.logo}
+                              alt="card-image"
+                              className="h-10 w-10 rounded-lg object-cover object-center"
+                            />
+                            <Typography color="blue-gray" className="font-medium" style={{ marginLeft: "20px" }}>
+                              {item.symbol}
+                            </Typography>
+                          </div>
+                        )
+                      }
                     </ListItem>
                   </List>
                 </div>
@@ -1852,7 +2094,18 @@ const ipfsItemUri = `ipfs://${ipfsItemHash}`;
                                          setError(true);
                                        }}/>
                                                                                     <Typography style={{marginLeft: "20px"}} variant="h5">
-                        {nameData}
+                        {nameData}{
+                          id === "165"? (
+                            <>
+                            <IconButton variant="text" color="pink" className="rounded-full">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6" width={30}>
+  <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 0 1-1.043 3.296 3.745 3.745 0 0 1-3.296 1.043A3.745 3.745 0 0 1 12 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 0 1-3.296-1.043 3.745 3.745 0 0 1-1.043-3.296A3.745 3.745 0 0 1 3 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 0 1 1.043-3.296 3.746 3.746 0 0 1 3.296-1.043A3.746 3.746 0 0 1 12 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 0 1 3.296 1.043 3.746 3.746 0 0 1 1.043 3.296A3.745 3.745 0 0 1 21 12Z" />
+</svg>
+
+                        </IconButton>
+                            </>
+                          ) : null
+                        }
                     </Typography>
                     </div>
                     <div style={{marginTop: "30px", marginLeft: "10px"}}>
@@ -1903,7 +2156,7 @@ const ipfsItemUri = `ipfs://${ipfsItemHash}`;
   </div>
   <div style={{ margin: "10px" }}>
     <Typography style={{ marginTop: "30px" }} variant="h5" color="pink">
-      {distribution === null ? 0 : distribution}
+      {ownersCount}
     </Typography>
     <Typography style={{ marginTop: "5px" }} variant="h7">
       Owners
@@ -1935,7 +2188,7 @@ const ipfsItemUri = `ipfs://${ipfsItemHash}`;
   </div>
   <div style={{ margin: "10px" }}>
     <Typography style={{ marginTop: "30px" }} variant="h5" color="pink">
-      {filteredPrices.length} {nftCount ? "/" : null} {nftCount}
+      {filteredPrices.length} {nftCount > 1 ? `/${nftCount}` : null}
     </Typography>
     <Typography style={{ marginTop: "5px" }} variant="h7">
       Listed / Minted
@@ -1964,7 +2217,18 @@ const ipfsItemUri = `ipfs://${ipfsItemHash}`;
                     isMobile? null : (
                       <>
                                           <Typography variant={ isMobile? "h6" : "h5"}>
-                        {nameData}
+                        {nameData} {
+                          id === "165"? (
+                            <>
+                            <IconButton variant="text" color="pink" className="rounded-full">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6" width={30}>
+  <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 0 1-1.043 3.296 3.745 3.745 0 0 1-3.296 1.043A3.745 3.745 0 0 1 12 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 0 1-3.296-1.043 3.745 3.745 0 0 1-1.043-3.296A3.745 3.745 0 0 1 3 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 0 1 1.043-3.296 3.746 3.746 0 0 1 3.296-1.043A3.746 3.746 0 0 1 12 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 0 1 3.296 1.043 3.746 3.746 0 0 1 1.043 3.296A3.745 3.745 0 0 1 21 12Z" />
+</svg>
+
+                        </IconButton>
+                            </>
+                          ) : null
+                        }
                     </Typography>
                     <Typography color="blue-gray" className="font-medium" variant="h6" style={{ display: 'flex', alignItems: 'center', marginTop: "5px" }}>
                 <Typography color="blue-gray" className="font-medium" variant="h6" style={{ marginRight: '10px',  }}>
@@ -2010,7 +2274,7 @@ const ipfsItemUri = `ipfs://${ipfsItemHash}`;
   </div>
   <div style={{ marginLeft: "20px" }}> {/* Add margin for spacing */}
     <Typography style={{ marginTop: "30px" }} variant="h5" color="pink">
-      {distribution === null? 0 : distribution}
+    {ownersCount}
     </Typography>
     <Typography style={{ marginTop: "5px" }} variant="h7">
     Owners
@@ -2042,7 +2306,7 @@ const ipfsItemUri = `ipfs://${ipfsItemHash}`;
   </div>
   <div style={{ marginLeft: "20px" }}> {/* Add margin for spacing */}
     <Typography style={{ marginTop: "30px" }} variant="h5" color="pink">
-      {filteredPrices.length} {nftCount? "/" : null} {nftCount}
+      {filteredPrices.length} {nftCount > 1 ? `/${nftCount}` : null}
     </Typography>
     <Typography style={{ marginTop: "5px" }} variant="h7">
     Listed / Minted
@@ -2339,19 +2603,20 @@ const ipfsItemUri = `ipfs://${ipfsItemHash}`;
     <br />
                 
             {/* Here's where you can map over your data and render Cards for each item */}
-            { data.length < 1 ? (
-        <div className="flex justify-center items-start h-screen">
-          <div className="flex justify-center items-center w-full mt-20">
-          <Spinner className="h-8 w-8" color="pink" />
-          </div>
-        </div>
+            { loadingData ? (
+                  <div className="flex justify-center items-start h-screen">
+                    <div className="flex justify-center items-center w-full mt-20">
+                      <Spinner className="h-8 w-8" color="pink" />
+                    </div>
+                  </div>
+
       ) : (
         <>
           {data
             .filter(item => item && !item.burned && (!isBuyChecked || (isBuyChecked && item.price)) && (!isOwnedChecked || (isOwnedChecked && item.currentOwner === polkadotAddress)))
             .map((item, index) => {
               const ipfsHash = item.image?.replace(/^(ipfs:\/\/ipfs\/|ipfs:\/\/)/, "") || "";
-              const ipfsUri = `ipfs://${ipfsHash}`;
+              const ipfsUri = ipfsHash? `ipfs://${ipfsHash}`: "ipfs://QmVyn3qDGJg4JxV2QbUW4tgiMfV5ho84DbwELFaoyVLtDZ";
 
               return (
                 <Card
@@ -2368,16 +2633,22 @@ const ipfsItemUri = `ipfs://${ipfsItemHash}`;
                 >
                   <CardHeader shadow={false} floated={false} className="h-100">
                     {isLoading && !error && (
-                      <div className="relative w-full h-full flex items-center justify-center absolute top-0 left-0">
-                        <Spinner color="pink" />
-                      </div>
+                    <MediaRenderer
+                    src={"ipfs://QmVyn3qDGJg4JxV2QbUW4tgiMfV5ho84DbwELFaoyVLtDZ"}
+                    alt=""
+                    className="h-full w-full object-cover"
+                    onClick={() => dataUrl(renderURL, JsonData)}
+                    style={isMobile ? { maxWidth: "130px", maxHeight: "130px", borderRadius: "10px", display: isLoading || error ? 'none' : 'block' } : { display: isLoading || error ? 'none' : 'block', borderRadius: "10px" }}
+                  />
                     )}
                     {error && (
-                      <div className="relative w-full h-full flex items-center justify-center absolute top-0 left-0" onClick={() => handleButtonClick(item)}>
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5 absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2" onClick={() => { handleButtonClick(item), handleReload }}>
-                          <path fillRule="evenodd" d="M15.312 11.424a5.5 5.5 0 0 1-9.201 2.466l-.312-.311h2.433a.75.75 0 0 0 0-1.5H3.989a.75.75 0 0 0-.75.75v4.242a.75.75 0 0 0 1.5 0v-2.43l.31.31a7 7 0 0 0 11.712-3.138.75.75 0 0 0-1.449-.39Zm1.23-3.723a.75.75 0 0 0 .219-.53V2.929a.75.75 0 0 0-1.5 0V5.36l-.31-.31A7 7 0 0 0 3.239 8.188a.75.75 0 1 0 1.448.389A5.5 5.5 0 0 1 13.89 6.11l.311.31h-2.432a.75.75 0 0 0 0 1.5h4.243a.75.75 0 0 0 .53-.219Z" clipRule="evenodd" />
-                        </svg>
-                      </div>
+                    <MediaRenderer
+                    src={"ipfs://QmVyn3qDGJg4JxV2QbUW4tgiMfV5ho84DbwELFaoyVLtDZ"}
+                    alt=""
+                    className="h-full w-full object-cover"
+                    onClick={() => dataUrl(renderURL, JsonData)}
+                    style={isMobile ? { maxWidth: "130px", maxHeight: "130px", borderRadius: "10px", display: isLoading || error ? 'none' : 'block' } : { display: isLoading || error ? 'none' : 'block', borderRadius: "10px" }}
+                  />
                     )}
                     <MediaRenderer
                       src={ipfsUri}

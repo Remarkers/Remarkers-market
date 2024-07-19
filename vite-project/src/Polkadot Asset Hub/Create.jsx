@@ -26,7 +26,7 @@ import Axios, { all } from 'axios';
 import { useStorageUpload } from "@thirdweb-dev/react";
 import axios from "axios";
 import { ApiPromise, WsProvider } from '@polkadot/api';
-import { web3Enable, web3Accounts, web3FromAddress } from '@polkadot/extension-dapp';
+import { web3Enable, web3Accounts, web3FromAddress, web3EnablePromise } from '@polkadot/extension-dapp';
 import { ToastContainer, toast } from 'react-toastify';
 import {stringToHex} from '@polkadot/util'
 import {CheckIcon} from "@heroicons/react/24/outline";
@@ -47,6 +47,7 @@ export default function PAHCreate( ) {
     const [collectionMetadata, setCollectionMetadata] = useState(null)
     const [selectedCollection, setSelectedCollection] = useState(null)
     const [createdLoading, setCreatedLoading] = useState()
+    const [duplicateEnabled, setDuplicateEnabled] = useState(false)
     const [formData, setFormData] = useState({
       collectionFile: null,
       collectionName: '',
@@ -61,11 +62,13 @@ export default function PAHCreate( ) {
     const [addAttribute, setaddAttribute] = useState([])
     const [selectedFile, setSelectedFile] = useState(null);
     const [fileType, setFileType] = useState('');  
+    const [nextItemId, setNextItemId] = useState()
     const [nftformData, setNftFormData] = useState({
       itemFile: null,
       itemName: '',
       itemDescription: '',
       attributes: [],
+      duplicate: ''
     });
 
     useEffect(() => {
@@ -107,13 +110,23 @@ export default function PAHCreate( ) {
     const created = async() => {
         try {
           setCreatedLoading(true)
-            const response = await Axios.get(`http://localhost:3001/created?address=${JSON.stringify(Account?.address)}`);
+            const response = await Axios.get(`${import.meta.env.VITE_VPS_BACKEND_API}created?address=${JSON.stringify(Account?.address)}`);
             setCreatedCollection(response.data.data); // Store the data directly as an array of objects
             setCreatedLoading(false)
       } catch (error) {
           console.error('Error fetching data:', error);
       }
       }
+
+      const itemId = async() => {
+        try {
+            const response = await Axios.get(`${import.meta.env.VITE_VPS_BACKEND_API}itemId?selected=${selectedCollection.Id}`);
+            setNextItemId(response.data.data); // Store the data directly as an array of objects
+        } catch(error) {
+          console.error('Error fetching data:', error);
+        }
+      }
+
       useEffect(() => {
         created()
       },[])
@@ -290,7 +303,7 @@ export default function PAHCreate( ) {
         };
         
         
-      
+        
         const createCollection = async () => {
           const connectedAccount = JSON.parse(localStorage.getItem('Account'));
           if(connectedAccount){
@@ -344,9 +357,22 @@ export default function PAHCreate( ) {
               discord: formData.collectionDiscord,
               externalLink: formData.collectionExternalLink,
           };
+          if (!jsonMetadata.image) {
+            toast.warning("Collection image is required", {
+              position: "top-right",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "colored",
+            });
+            return;
+          }
           toast.info(`Creating collection`, {
             position: "top-right",
-            autoClose: 2500,
+            autoClose: 5000,
             hideProgressBar: false,
             closeOnClick: true,
             pauseOnHover: true,
@@ -359,7 +385,7 @@ export default function PAHCreate( ) {
 
           toast.info(`Uploading Metadata`, {
             position: "top-right",
-            autoClose: 2500,
+            autoClose: 5000,
             hideProgressBar: false,
             closeOnClick: true,
             pauseOnHover: true,
@@ -429,8 +455,35 @@ export default function PAHCreate( ) {
       
           try {
               setApi(api);
-              await web3Enable('remarker');
-              const injector = await web3FromAddress(connectedAccount.address);
+          const wallet = localStorage.getItem("walletName");
+        let signer;
+    
+        if (wallet === "nova") {
+                  // Enable the extension
+                  await web3Enable('remarker');
+                  const allAccounts = await web3Accounts();
+                  const injector = await web3FromAddress(connectedAccount.address);
+            
+                  // Get all accounts from the extension
+              
+            
+                  // Find the injector for the connected account
+              
+            
+                  signer = injector.signer;
+        } else {
+          // Check if the wallet extension exists in window.injectedWeb3
+          const Connectivity = window.injectedWeb3 && window.injectedWeb3[wallet];
+          if (!Connectivity) {
+            throw new Error(`${wallet} wallet extension not found.`);
+          }
+    
+          // Enable the extension and get accounts
+          const extension = await Connectivity.enable();
+          const getAccounts = await extension.accounts.get();
+    
+          signer = extension.signer;
+        }
       
               const admin = connectedAccount.address;
               const config = {
@@ -453,7 +506,7 @@ export default function PAHCreate( ) {
       
               const batch = api.tx.utility.batchAll(calls);
       
-              await batch.signAndSend(connectedAccount.address, { signer: injector.signer }, ({ status }) => {
+              await batch.signAndSend(connectedAccount.address, { signer: signer }, ({ status }) => {
                   if (status.isInBlock) {
                       toast.success(`Completed at block hash #${status.asInBlock.toString()}`, {
                           position: "top-right",
@@ -591,10 +644,23 @@ export default function PAHCreate( ) {
             image: "ipfs://" + nftformData.itemFile,
             attributes: nftformData.attributes,
         };
+        if (!jsonMetadata.image) {
+          toast.warning("Item image is required", {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+          });
+          return;
+        }
 
         toast.info(`Creating nft`, {
           position: "top-right",
-          autoClose: 2500,
+          autoClose: 5000,
           hideProgressBar: false,
           closeOnClick: true,
           pauseOnHover: true,
@@ -608,7 +674,7 @@ export default function PAHCreate( ) {
 
         toast.info(`Uploading metadata to ipfs`, {
           position: "top-right",
-          autoClose: 2500,
+          autoClose: 5000,
           hideProgressBar: false,
           closeOnClick: true,
           pauseOnHover: true,
@@ -681,56 +747,52 @@ export default function PAHCreate( ) {
           if(selectedCollection){
           try {
               setApi(api);
-              await web3Enable('remarker');
-              const injector = await web3FromAddress(connectedAccount.address);
+          const wallet = localStorage.getItem("walletName");
+        let signer;
+    
+        if (wallet === "nova") {
+          // Enable the extension
+          await web3Enable('remarker');
+          const allAccounts = await web3Accounts();
+          const injector = await web3FromAddress(connectedAccount.address);
+    
+          // Get all accounts from the extension
+      
+    
+          // Find the injector for the connected account
+      
+    
+          signer = injector.signer;
+        } else {
+          // Check if the wallet extension exists in window.injectedWeb3
+          const Connectivity = window.injectedWeb3 && window.injectedWeb3[wallet];
+          if (!Connectivity) {
+            throw new Error(`${wallet} wallet extension not found.`);
+          }
+    
+          // Enable the extension and get accounts
+          const extension = await Connectivity.enable();
+          const getAccounts = await extension.accounts.get();
+    
+          signer = extension.signer;
+        }
       
               const mint_to = connectedAccount.address;
-
-              const getNextItemId = (currentItemIds) => {
-                if (currentItemIds.length === 0) {
-                  return 1; // Start with item ID 1 if no items exist
-                }
-                const maxItemId = Math.max(...currentItemIds);
-                return maxItemId + 1;
-              };
-
-              const fetchNFTs = async () => {
-                const query = `
-                query MyQuery {
-                  collectionEntityById(id: "${selectedCollection.Id}") {
-                    nfts {
-                      sn
-                    }
-                  }
-                }
-                `;
-                const endpoint = 'https://squid.subsquid.io/speck/graphql';
     
-                try {
-                    const response = await Axios.post(endpoint, { query });
-                    const responseData = response.data.data.collectionEntityById.nfts;
-                    console.log(responseData);
-                    const currentItemIds = responseData.map(item => parseInt(item.sn, 10));
-                    const nextItemId = getNextItemId(currentItemIds);
+            const duplicateCount = Number(nftformData.duplicate);
 
-                    return nextItemId;
-                } catch (err) {
-                    console.error(err);
-                    return null;
-                }
-            };
-    
-            const nftData = await fetchNFTs();
+            if(nextItemId){
+              const calls = [];
 
-            if(nftData){
-              const calls = [
-                api.tx.nfts.mint(selectedCollection.Id, nftData,  mint_to, null),
-                api.tx.nfts.setMetadata(selectedCollection.Id, nftData, itemMetadataHex),
-              ];
-      
+              for (let i = 0; i <= duplicateCount; i++) {
+                const currentNftData = nextItemId + i; // Increment nftData by i for each duplicate
+                calls.push(api.tx.nfts.mint(selectedCollection.Id, currentNftData, mint_to, null));
+                calls.push(api.tx.nfts.setMetadata(selectedCollection.Id, currentNftData, itemMetadataHex));
+              }
+
               const batch = api.tx.utility.batchAll(calls);
       
-              await batch.signAndSend(connectedAccount.address, { signer: injector.signer }, ({ status }) => {
+              await batch.signAndSend(connectedAccount.address, { signer: signer }, ({ status }) => {
                   if (status.isInBlock) {
                       toast.success(`Completed at block hash #${status.asInBlock.toString()}`, {
                           position: "top-right",
@@ -932,12 +994,13 @@ export default function PAHCreate( ) {
                     <ListItem selected={selected} onClick={() => {
                       setSelectedItem();
                       setSelectedCollection(item);
+                      itemId()
                       // setOfferedItem(item.itemId);
                       // setOfferedCollection(item.collectionId);
                     }}>
                               <MediaRenderer src={`ipfs://${item && item.itemData.image && item.itemData.image.replace(/^(ipfs:\/\/ipfs\/|ipfs:\/\/)/, "")}`} style={{ height: '2.5rem', width: '2.5rem', borderRadius: '0.5rem', objectFit: 'cover', objectPosition: 'center' }} />
                       <Typography color="blue-gray" className="font-medium" style={{ marginLeft: "20px" }}>
-                      {item.itemData.name}
+                      {item && item.itemData.name}
                       </Typography>
                     </ListItem>
                   </List>
@@ -1245,6 +1308,27 @@ SVGs (for onchain NFTs)
           onChange={handleInputCreateNftChange}       required
           minLength={nftformData && nftformData.itemDescription.length < 1}/>
     </div>
+    <br />
+    <Typography variant="h5" color="gray">
+    <Switch
+                defaultChecked={duplicateEnabled}
+                onChange={() => setDuplicateEnabled(!duplicateEnabled)}
+                color="pink"
+              />
+              <span className="ml-4">Duplicate</span>
+            </Typography>
+              {
+                duplicateEnabled? (
+                  <>
+    <br />
+    <div className={isMobile? "w-80" : "w-96"}>
+      <Input label="Duplicate"  size="lg" name="duplicate"
+          onChange={handleInputCreateNftChange}
+          type="number"/>
+    </div>
+                  </>
+                ) : null
+              }
     <br />
     <Typography variant="h6" color="gray"> Attributes (optional) </Typography>
     <br />

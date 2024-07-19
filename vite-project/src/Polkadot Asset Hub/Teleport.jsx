@@ -22,7 +22,7 @@ import {
     Badge,
 } from '@material-tailwind/react';
 import { ApiPromise, WsProvider } from '@polkadot/api';
-import { web3Enable, web3Accounts, web3FromAddress } from '@polkadot/extension-dapp';
+import { web3Enable, web3Accounts, web3FromAddress, web3EnablePromise } from '@polkadot/extension-dapp';
 import { ToastContainer, toast } from 'react-toastify';
 import { stringToHex } from '@polkadot/util';
 import { CheckIcon } from "@heroicons/react/24/outline";
@@ -136,16 +136,43 @@ export default function PAHTeleport() {
                 theme: "colored",
             });
             // Enable the extension
-            await web3Enable('remarker');
+        const wallet = localStorage.getItem("walletName");
+        let signer;
+    
+        if (wallet === "nova") {
+          // Enable the extension
+          await web3Enable('remarker');
+          const allAccounts = await web3Accounts();
+          const injector = await web3FromAddress(connectedAccount.address);
+    
+          // Get all accounts from the extension
+      
+    
+          // Find the injector for the connected account
+      
+    
+          signer = injector.signer;
+        } else {
+          // Check if the wallet extension exists in window.injectedWeb3
+          const Connectivity = window.injectedWeb3 && window.injectedWeb3[wallet];
+          if (!Connectivity) {
+            throw new Error(`${wallet} wallet extension not found.`);
+          }
+    
+          // Enable the extension and get accounts
+          const extension = await Connectivity.enable();
+          const getAccounts = await extension.accounts.get();
+    
+          signer = extension.signer;
+        }
 
             // Get all accounts from the extension
-            const allAccounts = await web3Accounts();
+        
 
             // Find the injector for the connected account
-            const injector = await web3FromAddress(connectedAccount.address);
             const { dest, beneficiary, assets, fee_asset_item, weight_limit } = args;
             const send = await api.tx.xcmPallet.limitedTeleportAssets(dest, beneficiary, assets, fee_asset_item, weight_limit)
-                .signAndSend(connectedAccount.address, { signer: injector.signer }, ({ status }) => {
+                .signAndSend(connectedAccount.address, { signer: signer }, ({ status }) => {
                     if (status.isInBlock) {
                         toast.success(`Completed at block hash #${status.asInBlock.toString()}`, {
                             position: "top-right",
@@ -280,20 +307,47 @@ export default function PAHTeleport() {
                 theme: "colored",
             });
             // Enable the extension
-            await web3Enable('remarker');
+        const wallet = localStorage.getItem("walletName");
+        let signer;
+    
+        if (wallet === "nova") {
+          // Enable the extension
+          await web3Enable('remarker');
+          const allAccounts = await web3Accounts();
+          const injector = await web3FromAddress(connectedAccount.address);
+    
+          // Get all accounts from the extension
+      
+    
+          // Find the injector for the connected account
+      
+    
+          signer = injector.signer;
+        } else {
+          // Check if the wallet extension exists in window.injectedWeb3
+          const Connectivity = window.injectedWeb3 && window.injectedWeb3[wallet];
+          if (!Connectivity) {
+            throw new Error(`${wallet} wallet extension not found.`);
+          }
+    
+          // Enable the extension and get accounts
+          const extension = await Connectivity.enable();
+          const getAccounts = await extension.accounts.get();
+    
+          signer = extension.signer;
+        }
 
             // Get all accounts from the extension
-            const allAccounts = await web3Accounts();
+        
 
             // Find the injector for the connected account
-            const injector = await web3FromAddress(connectedAccount.address);
 
             const { dest, beneficiary, assets, feeAssetItem, weightLimit } = args;
             
             // Check if the xcmPallet module is available and use it
             if (api.tx.polkadotXcm) {
                 const send = await api.tx.polkadotXcm.limitedTeleportAssets(dest, beneficiary, assets, feeAssetItem, weightLimit)
-                    .signAndSend(connectedAccount.address, { signer: injector.signer }, ({ status }) => {
+                    .signAndSend(connectedAccount.address, { signer: signer }, ({ status }) => {
                         if (status.isInBlock) {
                             toast.success(`Completed at block hash #${status.asInBlock.toString()}`, {
                                 position: "top-right",

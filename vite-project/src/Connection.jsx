@@ -128,6 +128,7 @@ console.log(JSON.parse(localStorage.getItem("Account")))
               try {
                 const extension = await SubWalletExtension.enable();
                 const getAccounts = await extension.accounts.get();
+                localStorage.setItem("walletName", "subwallet-js")
             
                 if (getAccounts && getAccounts.length > 0) {
                   setAccount(getAccounts)
@@ -146,6 +147,7 @@ console.log(JSON.parse(localStorage.getItem("Account")))
               try {
                 const extension = await TalismanWalletExtension.enable();
                 const getAccounts = await extension.accounts.get();
+                localStorage.setItem("walletName", "talisman")
             
                 if (getAccounts && getAccounts.length > 0) {
                   setAccount(getAccounts)
@@ -164,6 +166,7 @@ console.log(JSON.parse(localStorage.getItem("Account")))
               try {
                 const extension = await PolkadotjsWalletExtension.enable();
                 const getAccounts = await extension.accounts.get();
+                localStorage.setItem("walletName", "polkadot-js")
             
                 if (getAccounts && getAccounts.length > 0) {
                   setAccount(getAccounts)
@@ -183,6 +186,7 @@ console.log(JSON.parse(localStorage.getItem("Account")))
               
                 try {
                   const getAccounts = await web3Accounts();
+                  localStorage.setItem("walletName", "nova")
               
                   if (getAccounts && getAccounts.length > 0) {
                     setAccount(getAccounts)
@@ -238,7 +242,7 @@ console.log(JSON.parse(localStorage.getItem("Account")))
               const allInjected = await web3Enable('my cool dapp');
               // returns an array of { address, meta: { name, source } }
           // meta.source contains the name of the extension that provides this account
-          const allAccounts = await web3Accounts();
+      
           
           // finds an injector for an address
           const SENDER = account && account?.address;
@@ -289,7 +293,7 @@ console.log(JSON.parse(localStorage.getItem("Account")))
             const feeAssetItem = 0;
             const weightLimit = "Unlimited";
           
-          api.tx.utility.batchAll([ await api.tx.xcmPallet.limitedTeleportAssets(dest, beneficiary, assets, feeAssetItem, weightLimit)]).signAndSend(SENDER, { signer: injector.signer }, async ({ status }) => {
+          api.tx.utility.batchAll([ await api.tx.xcmPallet.limitedTeleportAssets(dest, beneficiary, assets, feeAssetItem, weightLimit)]).signAndSend(SENDER, { signer: signer }, async ({ status }) => {
               if (status.isInBlock) {
                   toast.success(`Completed at block hash #${status.asInBlock.toString()}` , {
                     position: "top-right",
@@ -350,23 +354,24 @@ console.log(JSON.parse(localStorage.getItem("Account")))
         return JSON.parse(localStorage.getItem("walletConnected"))
       }
       const theme = JSON.parse(localStorage.getItem("theme"))
+      const nova = localStorage.getItem("walletName")
       return (
         <>
          {walletConnected() && selectedAccount ? (
         <Button variant="text" style={{ display: 'flex', alignItems: 'center' }} onClick={handleOpen} ><Identicon
           value={selectedAccount?.address}
           size={32}
-          theme="polkadot" className='icon-float-left' /><span style={{ marginLeft: '8px' }} className={theme}>{selectedAccount?.name}</span></Button>
+          theme="polkadot" className='icon-float-left' /><span style={{ marginLeft: '8px' }} >{nova === "nova"? selectedAccount?.meta && selectedAccount?.meta.name : selectedAccount?.name}</span></Button>
           ) : (
           <><Button onClick={handleOpen} color='pink' variant='md' style={{ display: 'flex', alignItems: 'center' }}>Connect</Button>
                 </>
       
           )}
     
-       <Dialog size="lg" open={open} handler={handleOpen} className={theme}>
+       <Dialog size="lg" open={open} handler={handleOpen} >
             <DialogHeader className="justify-between">
               <div>
-                <Typography variant="h5" className={theme}>
+                <Typography variant="h5" >
                   Connect a Wallet
                 </Typography>
               </div>
@@ -403,7 +408,7 @@ console.log(JSON.parse(localStorage.getItem("Account")))
                           alt="Subwallet"
                           className="h-12 w-12" />
                         <Typography
-                          className={`uppercase ${theme}`}
+                          className={`uppercase `}
                           color="blue-gray"
                           variant="h6"
                         >
@@ -416,7 +421,7 @@ console.log(JSON.parse(localStorage.getItem("Account")))
                           alt="Talisman"
                           className="h-12 w-12 rounded-md" />
                         <Typography
-                          className={`uppercase ${theme}`}
+                          className={`uppercase `}
                           color="blue-gray"
                           variant="h6"
                         >
@@ -432,7 +437,7 @@ console.log(JSON.parse(localStorage.getItem("Account")))
                             alt="Polkadot"
                             className="h-12 w-12 rounded-md border border-blue-gray-50" />
                           <Typography
-                            className={`uppercase ${theme}`}
+                            className={`uppercase `}
                             color="blue-gray"
                             variant="h6"
                           >
@@ -446,7 +451,7 @@ console.log(JSON.parse(localStorage.getItem("Account")))
                           alt="Nova"
                           className="h-12 w-12" />
                         <Typography
-                          className={`uppercase ${theme}`}
+                          className={`uppercase `}
                           color="blue-gray"
                           variant="h6"
                         >
@@ -476,14 +481,14 @@ window.location.reload()}}>
           theme="polkadot" className='icon' />
             <div className={isMobile? `flex flex-col overflow-hidden max-w-full` : undefined}>
                         <Typography
-                          className={`uppercase ${theme} ${isMobile? 'truncate' :undefined}`}
+                          className={`uppercase  ${isMobile? 'truncate' :undefined}`}
                           color="blue-gray"
                           variant="h6"
-                          key={account.name}
+                          key={nova === "nova"? account.meta && account.meta.name :account.name}
                         >
-                          {account.name}
+                          {nova === "nova"? account.meta && account.meta.name :account.name}
                           <Typography
-                        className={`lowercase text-nowrap uppercase ${isMobile? 'text-nowrap truncate' : undefined} ${theme}`}
+                        className={`lowercase text-nowrap uppercase ${isMobile? 'text-nowrap truncate' : undefined} `}
                         color="blue-gray"
                         variant="h12"
                         key={account.address}
@@ -502,11 +507,11 @@ window.location.reload()}}>
               }
             </DialogBody>
             <DialogFooter className="justify-between gap-2">
-              <Typography variant="small" color="gray" className={`font-normal ${theme}`}>
+              <Typography variant="small" color="gray" className={`font-normal `}>
                 New to Polkador wallets?
               </Typography>
               <Button variant="outlined" size="sm" >
-                <a href="https://polkadot.network/ecosystem/wallets/" className={theme}>Learn More</a>
+                <a href="https://polkadot.network/ecosystem/wallets/" >Learn More</a>
               </Button>
             </DialogFooter>
           </Dialog>
@@ -540,18 +545,18 @@ window.location.reload()}}>
               isMobile? 
               (
                 <div className="w-72">
-            <Select label="Endpoints" className={theme}>
+            <Select label="Endpoints" >
               {endpointOptions}
             </Select>
           </div>
               )
               : <Menu>
               <MenuHandler>
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={`w-6 h-6 ${theme}`}>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={`w-6 h-6 `}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 14.25v2.25m3-4.5v4.5m3-6.75v6.75m3-9v9M6 20.25h12A2.25 2.25 0 0 0 20.25 18V6A2.25 2.25 0 0 0 18 3.75H6A2.25 2.25 0 0 0 3.75 6v12A2.25 2.25 0 0 0 6 20.25Z" />
                     </svg>
               </MenuHandler>
-              <MenuList className={theme}>
+              <MenuList >
                 {endpointOptions}
               </MenuList>
             </Menu>
@@ -562,7 +567,7 @@ window.location.reload()}}>
       // Wallet is connected
       <Chip
         variant="ghost"
-        className={theme}
+        
         size="lg"
         value={` ${Object.keys(providers).find(key => providers[key] === endpoint)}`}
         icon={
@@ -573,7 +578,7 @@ window.location.reload()}}>
       // Wallet is not connected
       <Chip
         variant="ghost"
-        className={theme}
+        
         size="sm"
         value="Offline"
         icon={
