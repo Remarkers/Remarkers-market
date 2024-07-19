@@ -17,7 +17,7 @@ export default function Profile( ) {
     </div>
     <br />
     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center',  fontSize: '25px'}}>
-    <span style={{ marginLeft: '8px', textAlign: 'center' }} className={`${theme}`}>
+    <span style={{ marginLeft: '8px', textAlign: 'center' }} className={``}>
         {Account && Account?.address}
     </span>
 </div>

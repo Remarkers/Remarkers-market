@@ -355,7 +355,7 @@ function App() {
   return (
     <React.Fragment>
       <ThirdwebProvider clientId="019cf278511f800d2a474ef346ebc669">
-      <div className={theme}>
+      <div >
       <Navbar className={`sticky top-0 z-10 h-max max-w-full rounded-none px-4 py-2 lg:px-8 lg:py-4 ${
             isDarkMode ? ' bg-gray-800 border-black' : 'border-white'
           }`}>
@@ -467,7 +467,7 @@ function App() {
         placement="right"
         open={openRight}
         onClose={closeDrawerRight}
-        className={`p-4 ${theme}`} // Apply bg-black for dark mode and bg-white for light mode
+        className={`p-4 `} // Apply bg-black for dark mode and bg-white for light mode
       >
         <div className="mb-6 flex items-center justify-between">
         <Connection />
@@ -499,7 +499,7 @@ function App() {
         </div>
       </Drawer>
       <footer className="flex w-full flex-row flex-wrap items-center justify-center gap-y-6 gap-x-12 border-t border-blue-gray-50 py-6 text-center md:justify-between">
-      <Chip variant="ghost"  className={"font-normal text-${theme} "} color='purple' value="&copy; 2024 Remarker" />
+      <Chip variant="ghost"  className={"font-normal text- "} color='purple' value="&copy; 2024 Remarker" />
       <ul className="flex flex-wrap items-center gap-y-2 gap-x-8">
         <li>
           <a href="https://www.youtube.com/channel/UCgBdYI6j7M5xnaDPcXat4GQ"><svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="48" height="48" viewBox="0 0 50 50">

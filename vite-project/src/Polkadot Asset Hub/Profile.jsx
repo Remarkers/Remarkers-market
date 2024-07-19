@@ -666,7 +666,7 @@ export default function PAHProfile( ) {
       </div>
       <br />
       <div style={isMobile? { display: 'flex', alignItems: 'center', justifyContent: 'center',  fontSize: '20px'} : { display: 'flex', alignItems: 'center', justifyContent: 'center',  fontSize: '25px'}}>
-      <span style={{ marginLeft: '8px', textAlign: 'center' }} className={`${theme}`}>
+      <span style={{ marginLeft: '8px', textAlign: 'center' }} className={``}>
         {
           isMobile? (
             <>

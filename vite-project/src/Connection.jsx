@@ -368,10 +368,10 @@ console.log(JSON.parse(localStorage.getItem("Account")))
       
           )}
     
-       <Dialog size="lg" open={open} handler={handleOpen} className={theme}>
+       <Dialog size="lg" open={open} handler={handleOpen} >
             <DialogHeader className="justify-between">
               <div>
-                <Typography variant="h5" className={theme}>
+                <Typography variant="h5" >
                   Connect a Wallet
                 </Typography>
               </div>
@@ -408,7 +408,7 @@ console.log(JSON.parse(localStorage.getItem("Account")))
                           alt="Subwallet"
                           className="h-12 w-12" />
                         <Typography
-                          className={`uppercase ${theme}`}
+                          className={`uppercase `}
                           color="blue-gray"
                           variant="h6"
                         >
@@ -421,7 +421,7 @@ console.log(JSON.parse(localStorage.getItem("Account")))
                           alt="Talisman"
                           className="h-12 w-12 rounded-md" />
                         <Typography
-                          className={`uppercase ${theme}`}
+                          className={`uppercase `}
                           color="blue-gray"
                           variant="h6"
                         >
@@ -437,7 +437,7 @@ console.log(JSON.parse(localStorage.getItem("Account")))
                             alt="Polkadot"
                             className="h-12 w-12 rounded-md border border-blue-gray-50" />
                           <Typography
-                            className={`uppercase ${theme}`}
+                            className={`uppercase `}
                             color="blue-gray"
                             variant="h6"
                           >
@@ -451,7 +451,7 @@ console.log(JSON.parse(localStorage.getItem("Account")))
                           alt="Nova"
                           className="h-12 w-12" />
                         <Typography
-                          className={`uppercase ${theme}`}
+                          className={`uppercase `}
                           color="blue-gray"
                           variant="h6"
                         >
@@ -481,14 +481,14 @@ window.location.reload()}}>
           theme="polkadot" className='icon' />
             <div className={isMobile? `flex flex-col overflow-hidden max-w-full` : undefined}>
                         <Typography
-                          className={`uppercase ${theme} ${isMobile? 'truncate' :undefined}`}
+                          className={`uppercase  ${isMobile? 'truncate' :undefined}`}
                           color="blue-gray"
                           variant="h6"
                           key={nova === "nova"? account.meta && account.meta.name :account.name}
                         >
                           {nova === "nova"? account.meta && account.meta.name :account.name}
                           <Typography
-                        className={`lowercase text-nowrap uppercase ${isMobile? 'text-nowrap truncate' : undefined} ${theme}`}
+                        className={`lowercase text-nowrap uppercase ${isMobile? 'text-nowrap truncate' : undefined} `}
                         color="blue-gray"
                         variant="h12"
                         key={account.address}
@@ -507,11 +507,11 @@ window.location.reload()}}>
               }
             </DialogBody>
             <DialogFooter className="justify-between gap-2">
-              <Typography variant="small" color="gray" className={`font-normal ${theme}`}>
+              <Typography variant="small" color="gray" className={`font-normal `}>
                 New to Polkador wallets?
               </Typography>
               <Button variant="outlined" size="sm" >
-                <a href="https://polkadot.network/ecosystem/wallets/" className={theme}>Learn More</a>
+                <a href="https://polkadot.network/ecosystem/wallets/" >Learn More</a>
               </Button>
             </DialogFooter>
           </Dialog>
@@ -545,18 +545,18 @@ window.location.reload()}}>
               isMobile? 
               (
                 <div className="w-72">
-            <Select label="Endpoints" className={theme}>
+            <Select label="Endpoints" >
               {endpointOptions}
             </Select>
           </div>
               )
               : <Menu>
               <MenuHandler>
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={`w-6 h-6 ${theme}`}>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={`w-6 h-6 `}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 14.25v2.25m3-4.5v4.5m3-6.75v6.75m3-9v9M6 20.25h12A2.25 2.25 0 0 0 20.25 18V6A2.25 2.25 0 0 0 18 3.75H6A2.25 2.25 0 0 0 3.75 6v12A2.25 2.25 0 0 0 6 20.25Z" />
                     </svg>
               </MenuHandler>
-              <MenuList className={theme}>
+              <MenuList >
                 {endpointOptions}
               </MenuList>
             </Menu>
@@ -567,7 +567,7 @@ window.location.reload()}}>
       // Wallet is connected
       <Chip
         variant="ghost"
-        className={theme}
+        
         size="lg"
         value={` ${Object.keys(providers).find(key => providers[key] === endpoint)}`}
         icon={
@@ -578,7 +578,7 @@ window.location.reload()}}>
       // Wallet is not connected
       <Chip
         variant="ghost"
-        className={theme}
+        
         size="sm"
         value="Offline"
         icon={
