@@ -2370,7 +2370,7 @@ null
           </>
         ) : (
               <>
-               <Button fullWidth size="md" variant="filled" style={{marginTop: "10px"}} color="pink" onClick={() => AuctionToggleOpen("lg")}>Start Auction</Button>
+               <Button fullWidth size="md" variant="filled" style={{marginTop: "10px"}} color="pink" onClick={() => AuctionToggleOpen("lg")} loading={auctionStatus === undefined ? true : false} disabled={auctionStatus === undefined || auctionStatus === true ? true : false}>Start Auction</Button>
               </>
 
         )
@@ -2527,7 +2527,7 @@ null
           </>
         ) : (
           <>
-               <Button fullWidth size="md" variant="filled" style={{marginTop: "10px"}} color="pink" onClick={() => AuctionToggleOpen("lg")}>Start Auction</Button>
+               <Button fullWidth size="md" variant="filled" style={{marginTop: "10px"}} color="pink" onClick={() => AuctionToggleOpen("lg")} loading={auctionStatus === undefined ? true : false} disabled={auctionStatus === undefined || auctionStatus === true ? true : false}>Start Auction</Button>
           </>
         )
       }

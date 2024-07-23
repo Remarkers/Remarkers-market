@@ -3574,7 +3574,7 @@ const ipfsItemUri = `ipfs://${ipfsItemHash}`;
           </>
         ) : (
               <>
-              <Button fullWidth size="md" variant="filled" style={{marginTop: "10px"}} color="pink" onClick={AuctionToggleOpen}>Start Auction</Button>
+              <Button fullWidth size="md" variant="filled" style={{marginTop: "10px"}} color="pink" onClick={AuctionToggleOpen} loading={auctionStatus === undefined ? true : false} disabled={auctionStatus === undefined || auctionStatus === true ? true : false}>Start Auction</Button>
       <Collapse open={auctioOpen}>
 <div className="w-98" style={{marginTop: "30px"}}>
 <Input
@@ -3747,7 +3747,7 @@ const ipfsItemUri = `ipfs://${ipfsItemHash}`;
           </>
         ) : (
           <>
-              <Button fullWidth size="md" variant="filled" style={{marginTop: "10px"}} color="pink" onClick={AuctionToggleOpen}>Start Auction</Button>
+              <Button fullWidth size="md" variant="filled" style={{marginTop: "10px"}} color="pink" onClick={AuctionToggleOpen} loading={auctionStatus === undefined ? true : false} disabled={auctionStatus === undefined || auctionStatus === true ? true : false}>Start Auction</Button>
       <Collapse open={auctioOpen}>
 <div className="w-98" style={{marginTop: "30px"}}>
 <Input
