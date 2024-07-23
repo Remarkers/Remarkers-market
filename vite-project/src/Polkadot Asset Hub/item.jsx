@@ -3679,7 +3679,7 @@ const ipfsItemUri = `ipfs://${ipfsItemHash}`;
   </Typography>
       </CardBody>
       <CardFooter className="pt-0">
-      <Button fullWidth size="md" variant="filled" color="green" onClick={listToggleOpen}>List for sale</Button>
+      <Button fullWidth size="md" variant="filled" color="green" onClick={listToggleOpen} loading={auctionStatus === undefined ? true : false} disabled={auctionStatus === true ? true : false}>List for sale</Button>
       <Collapse open={listOpen}>
 <div className="w-98" style={{marginTop: "30px"}}>
 <Input
