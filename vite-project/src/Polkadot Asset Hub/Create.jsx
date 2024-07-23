@@ -498,10 +498,10 @@ export default function PAHCreate( ) {
                   },
               };
       
-              const nextCollectionId = (await api.query.nfts.nextCollectionId()).toString(); // Assuming the ID can be immediately used
+              const nextItemId = (await api.query.nfts.nextItemId()).toString(); // Assuming the ID can be immediately used
               const calls = [
                   api.tx.nfts.create(admin, config),
-                  api.tx.nfts.setCollectionMetadata(nextCollectionId, collectionMetadataHex),
+                  api.tx.nfts.setCollectionMetadata(nextItemId, collectionMetadataHex),
               ];
       
               const batch = api.tx.utility.batchAll(calls);
@@ -543,7 +543,7 @@ export default function PAHCreate( ) {
                   } else {
                       toast.info(`Current status: ${status.type}`, {
                           position: "top-right",
-                          autoClose: 2500,
+                          autoClose: 5000,
                           hideProgressBar: false,
                           closeOnClick: true,
                           pauseOnHover: true,
