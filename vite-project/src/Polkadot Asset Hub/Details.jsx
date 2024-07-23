@@ -2519,7 +2519,7 @@ null
   </Typography>
       </CardBody>
       <CardFooter className="pt-0">
-      <Button fullWidth size="md" variant="filled" color="green" onClick={() => handleOpen("lg")} loading={auctionStatus === undefined ? true : false} disabled={auctionStatus === true ? true : false}>List for sale</Button>
+      <Button fullWidth size="md" variant="filled" color="green" onClick={() => handleOpen("lg")} loading={auctionStatus === undefined ? true : false} disabled={auctionStatus === undefined || auctionStatus === true ? true : false}>List for sale</Button>
       {
         auctionStatus === true ? (
           <>
