@@ -171,7 +171,9 @@ const ownedNft = async() => {
 const checkAuction = async(item) => {
   try {
     const response = await Axios.get(`${import.meta.env.VITE_VPS_BACKEND_API}checkauction?data=${ItemId}&collectionId=${collectionId}`);
-    setAuctionStatus(response.data.data); // Store the data directly as an array of objects
+    setAuctionStatus(response.data.data.status); // Store the data directly as an array of objects
+    setAuctionHighestBidPrice(Number(response.data.data.swapData.price.amoun.replace(/,/g, '')) / 10000000000)
+    setDeadline(Number(response.data.data.swapData.deadline.replace(/,/g, '')) / 1000)
 } catch (error) {
     console.error('Error fetching data:', error);
 }

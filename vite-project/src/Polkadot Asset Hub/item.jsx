@@ -311,9 +311,7 @@ console.log('Polkadot Address:', polkadotAddress);
     const checkAuction = async(item) => {
       try {
         const response = await Axios.get(`${import.meta.env.VITE_VPS_BACKEND_API}checkauction?data=${item.Id}&collectionId=${id}`);
-        setAuctionStatus(response.data.data.status); // Store the data directly as an array of objects
-        setAuctionHighestBidPrice(Number(response.data.data.swapData.price.amoun.replace(/,/g, '')) / 10000000000)
-        setDeadline(Number(response.data.data.swapData.deadline.replace(/,/g, '')) / 1000)
+        setAuctionStatus(response.data.data);
     } catch (error) {
         console.error('Error fetching data:', error);
     }
