@@ -228,6 +228,7 @@ const itemIds = async() => {
       console.log(collectionOwner)
       console.log("price",price)
       console.log("integerPrice",integerPrice)
+      console.log("AUciton", auctionStatus)
 
       const endpoint = "wss://polkadot-asset-hub-rpc.polkadot.io";
 // Transaction
@@ -2366,19 +2367,10 @@ null
                         <Button fullWidth size="md" variant="filled" style={{marginTop: "10px"}} color="red" onClick={cancelAuction}>Cancel Auction</Button>
           </>
         ) : (
-          <>
-          {
-            auctionStatus === false? (
               <>
                <Button fullWidth size="md" variant="filled" style={{marginTop: "10px"}} color="pink" onClick={() => AuctionToggleOpen("lg")}>Start Auction</Button>
               </>
-            ) : (
-              <>
-              <Button loading={true} fullWidth size="md" variant="filled" style={{marginTop: "10px"}} color="pink">Auctions</Button>
-              </>
-            )
-          }
-          </>
+
         )
       }
       <Dialog
@@ -2525,7 +2517,7 @@ null
   </Typography>
       </CardBody>
       <CardFooter className="pt-0">
-      <Button fullWidth size="md" variant="filled" color="green" onClick={() => handleOpen("lg")} disabled={auctionStatus === undefined || auctionStatus === true} loading={auctionStatus === undefined? true : false}>List for sale</Button>
+      <Button fullWidth size="md" variant="filled" color="green" onClick={() => handleOpen("lg")}>List for sale</Button>
       {
         auctionStatus === true ? (
           <>
@@ -2533,17 +2525,7 @@ null
           </>
         ) : (
           <>
-          {
-            auctionStatus === false? (
-              <>
                <Button fullWidth size="md" variant="filled" style={{marginTop: "10px"}} color="pink" onClick={() => AuctionToggleOpen("lg")}>Start Auction</Button>
-              </>
-            ) : (
-              <>
-              <Button loading={true} fullWidth size="md" variant="filled" style={{marginTop: "10px"}} color="pink">Auctions</Button>
-              </>
-            )
-          }
           </>
         )
       }

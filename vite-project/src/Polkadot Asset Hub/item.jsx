@@ -3573,9 +3573,6 @@ const ipfsItemUri = `ipfs://${ipfsItemHash}`;
                         <Button fullWidth size="md" variant="filled" style={{marginTop: "10px"}} color="red" onClick={cancelAuction}>Cancel Auction</Button>
           </>
         ) : (
-          <>
-          {
-            auctionStatus === false ? (
               <>
               <Button fullWidth size="md" variant="filled" style={{marginTop: "10px"}} color="pink" onClick={AuctionToggleOpen}>Start Auction</Button>
       <Collapse open={auctioOpen}>
@@ -3600,13 +3597,6 @@ const ipfsItemUri = `ipfs://${ipfsItemHash}`;
       </Button>
     </div>
       </Collapse>
-              </>
-            ) : (
-              <>
-              <Button loading={true} fullWidth size="md" variant="filled" style={{marginTop: "10px"}} color="pink">Auctions</Button>
-              </>
-            )
-          }
           </>
         )
       }
@@ -3689,7 +3679,7 @@ const ipfsItemUri = `ipfs://${ipfsItemHash}`;
   </Typography>
       </CardBody>
       <CardFooter className="pt-0">
-      <Button fullWidth size="md" variant="filled" color="green" disabled={auctionStatus === undefined || auctionStatus === true} loading={auctionStatus === undefined? true : false} onClick={listToggleOpen}>List for sale</Button>
+      <Button fullWidth size="md" variant="filled" color="green" onClick={listToggleOpen}>List for sale</Button>
       <Collapse open={listOpen}>
 <div className="w-98" style={{marginTop: "30px"}}>
 <Input
@@ -3757,9 +3747,6 @@ const ipfsItemUri = `ipfs://${ipfsItemHash}`;
           </>
         ) : (
           <>
-          {
-            auctionStatus === false ? (
-              <>
               <Button fullWidth size="md" variant="filled" style={{marginTop: "10px"}} color="pink" onClick={AuctionToggleOpen}>Start Auction</Button>
       <Collapse open={auctioOpen}>
 <div className="w-98" style={{marginTop: "30px"}}>
@@ -3783,13 +3770,6 @@ const ipfsItemUri = `ipfs://${ipfsItemHash}`;
       </Button>
     </div>
       </Collapse>
-              </>
-            ) : (
-              <>
-              <Button loading={true} fullWidth size="md" variant="filled" style={{marginTop: "10px"}} color="pink">Auctions</Button>
-              </>
-            )
-          }
           </>
         )
       }
