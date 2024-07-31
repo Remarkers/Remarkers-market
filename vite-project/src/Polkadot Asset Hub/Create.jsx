@@ -120,7 +120,7 @@ export default function PAHCreate( ) {
 
       const itemId = async() => {
         try {
-            const response = await Axios.get(`${import.meta.env.VITE_VPS_BACKEND_API}itemId?selected=${selectedCollection.Id}`);
+            const response = await Axios.get(`${import.meta.env.VITE_VPS_BACKEND_API}itemId?selected=${selectedCollection && selectedCollection.Id}`);
             setNextItemId(response.data.data); // Store the data directly as an array of objects
         } catch(error) {
           console.error('Error fetching data:', error);
@@ -776,12 +776,11 @@ export default function PAHCreate( ) {
     
           signer = extension.signer;
         }
-      
+        console.log("nextItemId", nextItemId, selectedCollection.Id)
               const mint_to = connectedAccount.address;
     
             const duplicateCount = Number(nftformData.duplicate);
 
-            if(nextItemId){
               const calls = [];
 
               for (let i = 0; i <= duplicateCount; i++) {
@@ -850,7 +849,6 @@ export default function PAHCreate( ) {
                       theme: "colored",
                   });
               });
-            }
           } catch (error) {
               console.error('Operation failed:', error);
           }
