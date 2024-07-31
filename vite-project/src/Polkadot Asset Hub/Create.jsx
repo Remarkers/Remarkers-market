@@ -498,7 +498,7 @@ export default function PAHCreate( ) {
                   },
               };
       
-              const nextItemId = (await api.query.nfts.nextItemId()).toString(); // Assuming the ID can be immediately used
+              const nextItemId = (await api.query.nfts.nextCollectionId()).toString(); // Assuming the ID can be immediately used
               const calls = [
                   api.tx.nfts.create(admin, config),
                   api.tx.nfts.setCollectionMetadata(nextItemId, collectionMetadataHex),
