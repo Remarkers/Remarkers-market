@@ -28,9 +28,9 @@ import axios from "axios";
 import { ApiPromise, WsProvider } from '@polkadot/api';
 import { web3Enable, web3Accounts, web3FromAddress, web3EnablePromise } from '@polkadot/extension-dapp';
 import { ToastContainer, toast } from 'react-toastify';
-import {stringToHex} from '@polkadot/util'
+import {isUndefined, stringToHex} from '@polkadot/util'
 import {CheckIcon} from "@heroicons/react/24/outline";
-import { promise } from "zod";
+import { number, promise } from "zod";
 import { MediaRenderer } from "@thirdweb-dev/react";
 
 export default function PAHCreate( ) {
@@ -62,13 +62,13 @@ export default function PAHCreate( ) {
     const [addAttribute, setaddAttribute] = useState([])
     const [selectedFile, setSelectedFile] = useState(null);
     const [fileType, setFileType] = useState('');  
-    const [nextItemId, setNextItemId] = useState()
     const [nftformData, setNftFormData] = useState({
       itemFile: null,
       itemName: '',
       itemDescription: '',
       attributes: [],
-      duplicate: ''
+      duplicate: '',
+      nextItemId: null
     });
 
     useEffect(() => {
@@ -116,15 +116,6 @@ export default function PAHCreate( ) {
       } catch (error) {
           console.error('Error fetching data:', error);
       }
-      }
-
-      const itemId = async() => {
-        try {
-            const response = await Axios.get(`${import.meta.env.VITE_VPS_BACKEND_API}itemId?selected=${selectedCollection && selectedCollection.Id}`);
-            setNextItemId(response.data.data); // Store the data directly as an array of objects
-        } catch(error) {
-          console.error('Error fetching data:', error);
-        }
       }
 
       useEffect(() => {
@@ -498,10 +489,10 @@ export default function PAHCreate( ) {
                   },
               };
       
-              const nextItemId = (await api.query.nfts.nextCollectionId()).toString(); // Assuming the ID can be immediately used
+              const nextItemIds = (await api.query.nfts.nextCollectionId()).toString(); // Assuming the ID can be immediately used
               const calls = [
                   api.tx.nfts.create(admin, config),
-                  api.tx.nfts.setCollectionMetadata(nextItemId, collectionMetadataHex),
+                  api.tx.nfts.setCollectionMetadata(nextItemIds, collectionMetadataHex),
               ];
       
               const batch = api.tx.utility.batchAll(calls);
@@ -625,6 +616,19 @@ export default function PAHCreate( ) {
         }
         if (nftformData.itemDescription.length === 0) {
           toast.warning("Item Description is required", {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+          });
+          return;
+        }
+        if (!nftformData.nextItemId) {
+          toast.warning("Metadata not constructed", {
             position: "top-right",
             autoClose: 5000,
             hideProgressBar: false,
@@ -776,15 +780,16 @@ export default function PAHCreate( ) {
     
           signer = extension.signer;
         }
-        console.log("nextItemId", nextItemId, selectedCollection.Id)
+        console.log("nextItemId", nftformData.nextItemId, selectedCollection.Id)
               const mint_to = connectedAccount.address;
-    
-            const duplicateCount = Number(nftformData.duplicate);
+
+              const duplicateCount = Number(nftformData.duplicate);
+            console.log("duplicateCount", duplicateCount, nftformData.nextItemId)
 
               const calls = [];
 
               for (let i = 0; i <= duplicateCount; i++) {
-                const currentNftData = nextItemId + i; // Increment nftData by i for each duplicate
+                const currentNftData = nftformData.nextItemId + i; // Increment nftData by i for each duplicate
                 calls.push(api.tx.nfts.mint(selectedCollection.Id, currentNftData, mint_to, null));
                 calls.push(api.tx.nfts.setMetadata(selectedCollection.Id, currentNftData, itemMetadataHex));
               }
@@ -984,7 +989,41 @@ export default function PAHCreate( ) {
   </>
 ): (  <div style={{ display: 'flex', overflowX: 'auto' }}>
             <Card className="w-full">
-            {createdCollection && createdCollection.map((item, index) => (
+            {createdCollection && createdCollection.map((item, index) => {
+              const itemId = async(item) => {
+                try {
+                  const toastId = toast.info('Constructing Metadata', {
+                    position: "top-right",
+                    autoClose: false, // Set autoClose to false to keep the toast visible
+                    hideProgressBar: false,
+                    closeOnClick: false,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "colored",
+                    isLoading: true, // This shows the loading indicator
+                  });
+          const response = await Axios.get(`${import.meta.env.VITE_VPS_BACKEND_API}itemId?selected=${item && item.Id}`);
+          setNftFormData((prevFormData) => ({
+            ...prevFormData,
+            nextItemId: response.data.data
+          }));
+          console.log("nextItemIds", response.data.data)
+
+          if(response.data.data){
+            toast.update(toastId, {
+              render: 'successfully constructed',
+              type: 'success',
+              isLoading: false,
+              autoClose: 5000, // Close the toast after 5 seconds
+              closeOnClick: true,
+            });
+          }
+          } catch(error) {
+            console.error('Error fetching data:', error);
+            }
+              }
+              return (
                 <div key={index} style={{ marginRight: '10px' }} onClick={() => {
                   // handle item click
                 }}>
@@ -992,7 +1031,7 @@ export default function PAHCreate( ) {
                     <ListItem selected={selected} onClick={() => {
                       setSelectedItem();
                       setSelectedCollection(item);
-                      itemId()
+                      itemId(item)
                       // setOfferedItem(item.itemId);
                       // setOfferedCollection(item.collectionId);
                     }}>
@@ -1003,7 +1042,7 @@ export default function PAHCreate( ) {
                     </ListItem>
                   </List>
                 </div>
-              ))}
+              )})}
             </Card>
           </div>)}
     <br />
