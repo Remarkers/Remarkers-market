@@ -43,6 +43,7 @@ import {
 import './App.css'
 import Createfunc from './Create'
 import { Connection, Connections, Endpoints } from './Connection'
+import { Analytics } from "@vercel/analytics/react"
 import '@heroicons/react'
 import Profile from './Profile';
 import Explore from './Explore';
@@ -354,6 +355,7 @@ function App() {
   
   return (
     <React.Fragment>
+      <Analytics/>
       <ThirdwebProvider clientId="019cf278511f800d2a474ef346ebc669">
       <div >
       <Navbar className={`sticky top-0 z-10 h-max max-w-full rounded-none px-4 py-2 lg:px-8 lg:py-4 ${
