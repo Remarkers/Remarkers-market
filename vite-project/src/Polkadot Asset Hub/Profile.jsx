@@ -126,6 +126,7 @@ export default function PAHProfile( ) {
         try {
             const response = await Axios.get(`${import.meta.env.VITE_VPS_BACKEND_API}created?address=${JSON.stringify(Account?.address)}`);
             setCreatedCollection(response.data.data); // Store the data directly as an array of objects
+            console.log("created", response.data.data)
       } catch (error) {
           console.error('Error fetching data:', error);
       }
