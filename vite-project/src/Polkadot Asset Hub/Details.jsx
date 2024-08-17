@@ -36,6 +36,7 @@ import
   ListItemPrefix,
   Switch,
   Spinner,
+  Tooltip,
 
 } from '@material-tailwind/react'
 import {encodeAddress, decodeAddress} from '@polkadot/util-crypto'
@@ -92,6 +93,11 @@ export default function PAHDetails() {
     const [selectedImageUrl, setSelectedImageUrl] = useState(null);
     const [selectedJsondata, setJsondata] = useState(null);
     const [isMobile, setIsMobile] = useState();
+    const [nextItemId, setNextItemId] = useState()
+    const [duration, setDuration] = useState(null)
+    const [auctionStatus, setAuctionStatus] = useState()
+    const [auctioOpen, setAuctionOpen] = React.useState(null)
+    const [auctionPrice, setAuctionPrice] = useState() 
 
     useEffect(() => {
       const handleResize = () => {
@@ -137,6 +143,7 @@ const handleReceiveInputChange = (e) => {
 
 const [selected, setSelected] = React.useState();
 const setSelectedItem = (value) => setSelected(value);
+const AuctionToggleOpen = (value) => setAuctionOpen(value);
 
 const connectedAccount = JSON.parse(localStorage.getItem('Account'));
 const address = connectedAccount? connectedAccount.address : null;
@@ -159,6 +166,26 @@ const ownedNft = async() => {
 } catch (error) {
     console.error('Error fetching data:', error);
 }
+}
+
+const checkAuction = async(item) => {
+  try {
+    const response = await Axios.get(`${import.meta.env.VITE_VPS_BACKEND_API}checkauction?data=${ItemId}&collectionId=${collectionId}`);
+    setAuctionStatus(response.data.data.status); // Store the data directly as an array of objects
+    setAuctionHighestBidPrice(Number(response.data.data.swapData.price.amoun.replace(/,/g, '')) / 10000000000)
+    setDeadline(Number(response.data.data.swapData.deadline.replace(/,/g, '')) / 1000)
+} catch (error) {
+    console.error('Error fetching data:', error);
+}
+}
+
+const itemIds = async() => {
+  try {
+      const response = await Axios.get(`${import.meta.env.VITE_VPS_BACKEND_API}itemId?selected=${"173"}`);
+      setNextItemId(response.data.data); // Store the data directly as an array of objects
+  } catch(error) {
+    console.error('Error fetching data:', error);
+  }
 }
     
     const owned = async() => {
@@ -193,6 +220,7 @@ const ownedNft = async() => {
         owned();
         swap();
         ownedNft();
+        checkAuction();
       }, []);
       
     
@@ -202,9 +230,277 @@ const ownedNft = async() => {
       console.log(collectionOwner)
       console.log("price",price)
       console.log("integerPrice",integerPrice)
+      console.log("AUciton", auctionStatus)
 
       const endpoint = "wss://polkadot-asset-hub-rpc.polkadot.io";
 // Transaction
+
+const cancelAuction = async() => {
+  const endpoint = "wss://polkadot-asset-hub-rpc.polkadot.io";
+  try {
+    toast.info(`Cancelling Auction` , {
+      position: "top-right",
+      autoClose: 25009,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "colored",
+      });
+    // Create a new WebSocket provider
+    const wsProvider = new WsProvider(endpoint);
+
+    // Create the API instance
+    const api = await ApiPromise.create({ provider: wsProvider });
+
+    // Now you have the 'api' object ready for use
+    console.log('API initialized successfully:', api);
+
+    // You can set the 'api' object to the state or use it directly as needed
+    setApi(api);
+
+    // Enable the extension
+const wallet = localStorage.getItem("walletName");
+    let signer;
+
+    if (wallet === "nova") {
+      // Enable the extension
+      await web3Enable('remarker');
+      const allAccounts = await web3Accounts();
+      const injector = await web3FromAddress(connectedAccount.address);
+
+      // Get all accounts from the extension
+  
+
+      // Find the injector for the connected account
+  
+
+      signer = injector.signer;
+    } else {
+      // Check if the wallet extension exists in window.injectedWeb3
+      const Connectivity = window.injectedWeb3 && window.injectedWeb3[wallet];
+      if (!Connectivity) {
+        throw new Error(`${wallet} wallet extension not found.`);
+      }
+
+      // Enable the extension and get accounts
+      const extension = await Connectivity.enable();
+      const getAccounts = await extension.accounts.get();
+
+      signer = extension.signer;
+    }
+
+    // Get all accounts from the extension
+
+    // Sign and send the transaction
+    const send = await api.tx.nfts.cancelSwap(collectionId, ItemId)
+      .signAndSend(connectedAccount.address, { signer: signer }, ({ status }) => {
+        if (status.isInBlock) {
+          toast.success(`Completed at block hash #${status.asInBlock.toString()}` , {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+            });
+            const toastId = toast.info('Transaction is processing', {
+              position: "top-right",
+              autoClose: false, // Set autoClose to false to keep the toast visible
+              hideProgressBar: false,
+              closeOnClick: false,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "colored",
+              isLoading: true, // This shows the loading indicator
+            });
+          
+            // Simulate an async action, e.g., sending an NFT
+            setTimeout(() => {
+              toast.update(toastId, {
+                render: 'successfully cancelled',
+                type: 'success',
+                isLoading: false,
+                autoClose: 5000, // Close the toast after 5 seconds
+                closeOnClick: true,
+              });
+            }, 30000); // Example delay for the async action (e.g., 25 seconds)=
+            owned()
+        } else {
+          toast.info(`Current status: ${status.type}` , {
+            position: "top-right",
+            autoClose: 25009,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+            });
+        }
+    }).catch((error) => {
+      toast.error(`Transaction failed' ${error}` , {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+        });
+
+    });
+    
+  } catch (error) {
+    console.error('Transfer failed:', error);
+  }
+}
+useEffect(() => {
+  console.log("duration", duration);
+}, [duration]);
+
+const auction = async() => {
+  // Assuming you have 'api', 'collectionId', 'ItemId', and 'recipient' available in this context
+  if (!auctionPrice) {
+    alert("Please enter NFT price");
+    return;
+  }
+  try {
+    toast.info(`Auctioning your nft` , {
+      position: "top-right",
+      autoClose: 25009,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "colored",
+      });
+    // Create a new WebSocket provider
+    const wsProvider = new WsProvider(endpoint);
+
+    // Create the API instance
+    const api = await ApiPromise.create({ provider: wsProvider });
+
+    // Now you have the 'api' object ready for use
+    console.log('API initialized successfully:', api);
+
+    // You can set the 'api' object to the state or use it directly as needed
+    setApi(api);
+
+    const wallet = localStorage.getItem("walletName");
+    let signer;
+      if (wallet === "nova") {
+                  // Enable the extension
+        await web3Enable('remarker');
+        const allAccounts = await web3Accounts();
+        const injector = await web3FromAddress(connectedAccount.address);
+  
+        // Get all accounts from the extension
+    
+  
+        // Find the injector for the connected account
+    
+  
+        signer = injector.signer;
+      } else {
+        // Check if the wallet extension exists in window.injectedWeb3
+        const Connectivity = window.injectedWeb3 && window.injectedWeb3[wallet];
+        if (!Connectivity) {
+          throw new Error(`${wallet} wallet extension not found.`);
+        }
+  
+        // Enable the extension and get accounts
+        const extension = await Connectivity.enable();
+        const getAccounts = await extension.accounts.get();
+  
+        signer = extension.signer;
+      }
+    const price = auctionPrice * 10000000000;
+
+    const time = duration * 300
+
+    const calls = [
+      api.tx.nfts.mint("173", nextItemId, connectedAccount.address, null),
+      api.tx.nfts.createSwap(collectionId, ItemId, "173", null, {
+        amount: price,
+        direction: "receive"
+      }, time)
+  ];
+
+  const batch = api.tx.utility.batchAll(calls);
+
+    // Sign and send the transaction
+    const send = await batch.signAndSend(connectedAccount && connectedAccount.address, { signer }, ({ status }) => {
+        if (status.isInBlock) {
+          toast.success(`Completed at block hash #${status.asInBlock.toString()}` , {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+            });
+            const toastId = toast.info('Transaction is processing', {
+              position: "top-right",
+              autoClose: false, // Set autoClose to false to keep the toast visible
+              hideProgressBar: false,
+              closeOnClick: false,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "colored",
+              isLoading: true, // This shows the loading indicator
+            });
+          
+            // Simulate an async action, e.g., sending an NFT
+            setTimeout(() => {
+              toast.update(toastId, {
+                render: 'successfully created',
+                type: 'success',
+                isLoading: false,
+                autoClose: 5000, // Close the toast after 5 seconds
+                closeOnClick: true,
+              });
+            }, 30000); // Example delay for the async action (e.g., 25 seconds)=
+        } else {
+          toast.info(`Current status: ${status.type}` , {
+            position: "top-right",
+            autoClose: 25009,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+            });
+        }
+    }).catch((error) => {
+      toast.error(`Transaction failed' ${error}` , {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+        });
+    });
+    
+    
+  } catch (error) {
+    await api.disconnect()
+    console.error('Transfer failed:', error);
+  }
+}
 const transfer = async () => {
   // Assuming you have 'api', 'collectionId', 'ItemId', and 'recipient' available in this context
   if (!recipient) {
@@ -2067,6 +2363,82 @@ null
       </Button>
         </DialogFooter>
       </Dialog>
+      {
+        auctionStatus === true ? (
+          <>
+                        <Button fullWidth size="md" variant="filled" style={{marginTop: "10px"}} color="red" onClick={cancelAuction}>Cancel Auction</Button>
+          </>
+        ) : (
+              <>
+               <Button fullWidth size="md" variant="filled" style={{marginTop: "10px"}} color="pink" onClick={() => AuctionToggleOpen("lg")} loading={auctionStatus === undefined ? true : false} disabled={auctionStatus === undefined || auctionStatus === true ? true : false}>Start Auction</Button>
+              </>
+
+        )
+      }
+      <Dialog
+        open={auctioOpen === "lg"}
+        size={"lg"}
+        handler={AuctionToggleOpen}
+      >
+        <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        style={{ width: '500px', maxHeight: '10px' }} 
+      />
+        <DialogHeader className="justify-between"><div> <Typography variant="h5">Start Auction</Typography> </div>
+        <IconButton
+                color="blue-gray"
+                size="sm"
+                variant="text"
+                onClick={AuctionToggleOpen}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                  className="h-5 w-5"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </IconButton></DialogHeader>
+        <DialogBody>
+        <div className="w-98" style={{marginTop: "30px"}}>
+<Input
+        label="Highest Bid Price"
+        icon={ <svg fill="#FF0087" width={25} height={25} version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="-51.2 -51.2 614.40 614.40" xmlns:xlink="http://www.w3.org/1999/xlink" enable-background="new 0 0 512 512" stroke="#FF0087" stroke-width="0.00512" transform="matrix(1, 0, 0, 1, 0, 0)"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round" stroke="#FF0087" stroke-width="5.12"> <g> <g> <path d="m307.7,212.5c-10.2,12.7-6.6,28.7 2.2,37.5l13.6,12.6c15.3,15.4 34.4,5.3 39.6,0l59.4-58.9c7-7.1 13.8-26 0-40l-13.6-12.6c-10-10.1-27.5-10.5-38.2-1.3l-80.9-80.1c6.4-8.1 11.2-25.3-1.6-38.2l-13.6-12.6c-10.4-10.5-29.2-10.5-39.6,0l-59.4,58.9c-12.9,13-9.4,30.5 0,40l13.6,12.6c13.3,13.5 29.6,7.4 37,2.2l14.9,14.6-230.1,228.5 50,50.5 230.9-229.2 15.8,15.5zm76.2-47.7c2.9-3 7.5-3 11.5,1.1l13.6,12.6c2.4,2.5 2.5,6.9 0,9.5l-59.4,58.9c-3.1,3.2-8.3,3.2-11.5,0l-13.6-12.6c-2-2-4-6.5 0-10.5l59.4-59zm-27.2-1.1l-35.2,35-80-79.7 35.4-35.8 79.8,80.5zm-141.4-49c-3.1,3.2-8.3,3.2-11.5,0l-13.6-12.6c-2-2-4-6.5 0-10.5l59.4-58.9c2.9-3 7.5-3 11.5,1.1l13.6,12.6c2.4,2.5 2.5,6.9 0,9.5l-59.4,58.8zm-153.2,282.1l-21.9-21.1 215.4-214.3 21.7,21.3-215.2,214.1z"></path> <path d="m457.2,424.2v-55.8h-188.7v55.8h-43.8v76.8h276.3v-76.8h-43.8zm-167.8-35.8h148v35.8h-148v-35.8zm191.8,91.5h-235.6v-34.7h235.6v34.7z"></path> </g> </g> </g><g id="SVGRepo_iconCarrier"> <g> <g> <path d="m307.7,212.5c-10.2,12.7-6.6,28.7 2.2,37.5l13.6,12.6c15.3,15.4 34.4,5.3 39.6,0l59.4-58.9c7-7.1 13.8-26 0-40l-13.6-12.6c-10-10.1-27.5-10.5-38.2-1.3l-80.9-80.1c6.4-8.1 11.2-25.3-1.6-38.2l-13.6-12.6c-10.4-10.5-29.2-10.5-39.6,0l-59.4,58.9c-12.9,13-9.4,30.5 0,40l13.6,12.6c13.3,13.5 29.6,7.4 37,2.2l14.9,14.6-230.1,228.5 50,50.5 230.9-229.2 15.8,15.5zm76.2-47.7c2.9-3 7.5-3 11.5,1.1l13.6,12.6c2.4,2.5 2.5,6.9 0,9.5l-59.4,58.9c-3.1,3.2-8.3,3.2-11.5,0l-13.6-12.6c-2-2-4-6.5 0-10.5l59.4-59zm-27.2-1.1l-35.2,35-80-79.7 35.4-35.8 79.8,80.5zm-141.4-49c-3.1,3.2-8.3,3.2-11.5,0l-13.6-12.6c-2-2-4-6.5 0-10.5l59.4-58.9c2.9-3 7.5-3 11.5,1.1l13.6,12.6c2.4,2.5 2.5,6.9 0,9.5l-59.4,58.8zm-153.2,282.1l-21.9-21.1 215.4-214.3 21.7,21.3-215.2,214.1z"></path> <path d="m457.2,424.2v-55.8h-188.7v55.8h-43.8v76.8h276.3v-76.8h-43.8zm-167.8-35.8h148v35.8h-148v-35.8zm191.8,91.5h-235.6v-34.7h235.6v34.7z"></path> </g> </g> </g></svg>}
+        value={auctionPrice}
+        onChange={(e) => setAuctionPrice(e.target.value)}
+      />
+      <br />
+      <Typography variant="h6">Duration (less than)</Typography>
+      <br />
+      <Select size="md" color="pink" label="Duration" value={duration} onChange={(value) => {setDuration(value), console.log("duration", duration)}}>
+      <Option value={7}>7 days</Option>
+      <Option value={14}>14 days</Option>
+      <Option value={21}>21 days</Option>
+      <Option value={28}>28 days</Option>
+    </Select>
+    </div>
+        </DialogBody>
+        <DialogFooter>
+        <Button size="sm" variant="filled" color="green" style={{ float: "right", marginTop: "20px" }} onClick={() => {auction(), itemIds()}}>
+        Confirm Auction
+      </Button>
+        </DialogFooter>
+      </Dialog>
 
       </CardFooter>
     </Card>
@@ -2147,7 +2519,18 @@ null
   </Typography>
       </CardBody>
       <CardFooter className="pt-0">
-      <Button fullWidth size="md" variant="filled" color="green" onClick={() => handleOpen("lg")}>List for sale</Button>
+      <Button fullWidth size="md" variant="filled" color="green" onClick={() => handleOpen("lg")} loading={auctionStatus === undefined ? true : false} disabled={auctionStatus === undefined || auctionStatus === true ? true : false}>List for sale</Button>
+      {
+        auctionStatus === true ? (
+          <>
+                        <Button fullWidth size="md" variant="filled" style={{marginTop: "10px"}} color="red" onClick={cancelAuction}>Cancel Auction</Button>
+          </>
+        ) : (
+          <>
+               <Button fullWidth size="md" variant="filled" style={{marginTop: "10px"}} color="pink" onClick={() => AuctionToggleOpen("lg")} loading={auctionStatus === undefined ? true : false} disabled={auctionStatus === undefined || auctionStatus === true ? true : false}>Start Auction</Button>
+          </>
+        )
+      }
       <Dialog
         open={size === "lg"}
         size={"lg"}
@@ -2224,6 +2607,71 @@ null
         <DialogFooter>
         <Button size="sm" variant="filled" color="green" style={{ float: "right", marginTop: "20px" }} onClick={list}>
         Confirm List
+      </Button>
+        </DialogFooter>
+      </Dialog>
+
+      <Dialog
+        open={auctioOpen === "lg"}
+        size={"lg"}
+        handler={AuctionToggleOpen}
+      >
+        <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        style={{ width: '500px', maxHeight: '10px' }} 
+      />
+        <DialogHeader className="justify-between"><div> <Typography variant="h5">Start Auction</Typography> </div>
+        <IconButton
+                color="blue-gray"
+                size="sm"
+                variant="text"
+                onClick={AuctionToggleOpen}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                  className="h-5 w-5"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </IconButton></DialogHeader>
+        <DialogBody>
+        <div className="w-98" style={{marginTop: "30px"}}>
+<Input
+        label="Highest Bid Price"
+        icon={ <svg fill="#FF0087" width={25} height={25} version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="-51.2 -51.2 614.40 614.40" xmlns:xlink="http://www.w3.org/1999/xlink" enable-background="new 0 0 512 512" stroke="#FF0087" stroke-width="0.00512" transform="matrix(1, 0, 0, 1, 0, 0)"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round" stroke="#FF0087" stroke-width="5.12"> <g> <g> <path d="m307.7,212.5c-10.2,12.7-6.6,28.7 2.2,37.5l13.6,12.6c15.3,15.4 34.4,5.3 39.6,0l59.4-58.9c7-7.1 13.8-26 0-40l-13.6-12.6c-10-10.1-27.5-10.5-38.2-1.3l-80.9-80.1c6.4-8.1 11.2-25.3-1.6-38.2l-13.6-12.6c-10.4-10.5-29.2-10.5-39.6,0l-59.4,58.9c-12.9,13-9.4,30.5 0,40l13.6,12.6c13.3,13.5 29.6,7.4 37,2.2l14.9,14.6-230.1,228.5 50,50.5 230.9-229.2 15.8,15.5zm76.2-47.7c2.9-3 7.5-3 11.5,1.1l13.6,12.6c2.4,2.5 2.5,6.9 0,9.5l-59.4,58.9c-3.1,3.2-8.3,3.2-11.5,0l-13.6-12.6c-2-2-4-6.5 0-10.5l59.4-59zm-27.2-1.1l-35.2,35-80-79.7 35.4-35.8 79.8,80.5zm-141.4-49c-3.1,3.2-8.3,3.2-11.5,0l-13.6-12.6c-2-2-4-6.5 0-10.5l59.4-58.9c2.9-3 7.5-3 11.5,1.1l13.6,12.6c2.4,2.5 2.5,6.9 0,9.5l-59.4,58.8zm-153.2,282.1l-21.9-21.1 215.4-214.3 21.7,21.3-215.2,214.1z"></path> <path d="m457.2,424.2v-55.8h-188.7v55.8h-43.8v76.8h276.3v-76.8h-43.8zm-167.8-35.8h148v35.8h-148v-35.8zm191.8,91.5h-235.6v-34.7h235.6v34.7z"></path> </g> </g> </g><g id="SVGRepo_iconCarrier"> <g> <g> <path d="m307.7,212.5c-10.2,12.7-6.6,28.7 2.2,37.5l13.6,12.6c15.3,15.4 34.4,5.3 39.6,0l59.4-58.9c7-7.1 13.8-26 0-40l-13.6-12.6c-10-10.1-27.5-10.5-38.2-1.3l-80.9-80.1c6.4-8.1 11.2-25.3-1.6-38.2l-13.6-12.6c-10.4-10.5-29.2-10.5-39.6,0l-59.4,58.9c-12.9,13-9.4,30.5 0,40l13.6,12.6c13.3,13.5 29.6,7.4 37,2.2l14.9,14.6-230.1,228.5 50,50.5 230.9-229.2 15.8,15.5zm76.2-47.7c2.9-3 7.5-3 11.5,1.1l13.6,12.6c2.4,2.5 2.5,6.9 0,9.5l-59.4,58.9c-3.1,3.2-8.3,3.2-11.5,0l-13.6-12.6c-2-2-4-6.5 0-10.5l59.4-59zm-27.2-1.1l-35.2,35-80-79.7 35.4-35.8 79.8,80.5zm-141.4-49c-3.1,3.2-8.3,3.2-11.5,0l-13.6-12.6c-2-2-4-6.5 0-10.5l59.4-58.9c2.9-3 7.5-3 11.5,1.1l13.6,12.6c2.4,2.5 2.5,6.9 0,9.5l-59.4,58.8zm-153.2,282.1l-21.9-21.1 215.4-214.3 21.7,21.3-215.2,214.1z"></path> <path d="m457.2,424.2v-55.8h-188.7v55.8h-43.8v76.8h276.3v-76.8h-43.8zm-167.8-35.8h148v35.8h-148v-35.8zm191.8,91.5h-235.6v-34.7h235.6v34.7z"></path> </g> </g> </g></svg>}
+        value={auctionPrice}
+        onChange={(e) => setAuctionPrice(e.target.value)}
+      />
+      <br />
+      <Typography variant="h6">Duration (less than)</Typography>
+      <br />
+      <Select size="md" color="pink" label="Duration" value={duration} onChange={(value) => {setDuration(value), console.log("duration", duration)}}>
+      <Option value={7}>7 days</Option>
+      <Option value={14}>14 days</Option>
+      <Option value={21}>21 days</Option>
+      <Option value={28}>28 days</Option>
+    </Select>
+    </div>
+        </DialogBody>
+        <DialogFooter>
+        <Button size="sm" variant="filled" color="green" style={{ float: "right", marginTop: "20px" }} onClick={() => {auction(), itemIds()}}>
+        Confirm Auction
       </Button>
         </DialogFooter>
       </Dialog>

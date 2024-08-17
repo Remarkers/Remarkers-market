@@ -35,6 +35,7 @@ import {
   Switch,
   Spinner,
   ListItemSuffix,
+  Tooltip,
 
 
 
@@ -58,6 +59,7 @@ import usdtLogo from '/src/assets/logo.png';
 import usdcLogo from '/src/assets/usd-coin-usdc-logo.png';
 import dotWhiteLogo from '/src/assets/Polkadot_Token_PinkOnWhite.png';
 import wud from '/src/assets/file.png'
+import remarker from '/src/assets/R.png'
 import { Connection } from "../Connection";
 
 export default function PAHItems() {
@@ -74,6 +76,7 @@ export default function PAHItems() {
     const [price, setPrice] = useState()
     const [sendOpen, setSendOpen] = useState()
     const [listOpen, setListOpen] = useState()
+    const [auctioOpen, setAuctionOpen] = useState()
     const [activeTab, setActiveTab] = React.useState("Items");
     const [itemsActiveTab, setItemsActiveTab] = React.useState("Overview");
     const [collectionActivities, setCollectionActivity] = useState()
@@ -84,6 +87,7 @@ export default function PAHItems() {
     const [recipient, setRecipient] = useState('');
     const [api, setApi] = useState()
     const [itemPrice, setItemPrice] = useState() 
+    const [auctionPrice, setAuctionPrice] = useState() 
     const [whitelist, setWhitelist] = useState(false)
     const [whiteListAddress, setWhiteListAddress] = useState()
     const [integerPrice, setIntegerPrice] = useState()
@@ -115,6 +119,11 @@ export default function PAHItems() {
   const [isFilterOptionSet, setIsFilterOptionSet] = useState(false);
   const runCount = useRef(0);
   const [loadingData, setLoadingData] = useState(false)
+  const [nextItemId, setNextItemId] = useState()
+  const [duration, setDuration] = useState()
+  const [auctionStatus, setAuctionStatus] = useState()
+  const [auctionHighestBidPrice, setAuctionHighestBidPrice] = useState()
+  const [deadline, setDeadline] = useState()
 
   useEffect(() => {
     const handleResize = () => {
@@ -170,6 +179,7 @@ export default function PAHItems() {
 
     const sendToggleOpen = () => setSendOpen((cur) => !cur);
     const listToggleOpen = () => setListOpen((cur) => !cur);
+    const AuctionToggleOpen = () => setAuctionOpen((cur) => !cur);
  
   const handleOpen = (value) => setSize(value);
   const swapHandleOpen = (value) => setSwapSize(value);
@@ -298,6 +308,17 @@ console.log('Polkadot Address:', polkadotAddress);
     }
     }
 
+    const checkAuction = async(item) => {
+      try {
+        const response = await Axios.get(`${import.meta.env.VITE_VPS_BACKEND_API}checkauction?data=${item.Id}&collectionId=${id}`);
+        setAuctionStatus(response.data.data.status); // Store the data directly as an array of objects
+        setAuctionHighestBidPrice(Number(response.data.data.swapData.price.amoun.replace(/,/g, '')) / 10000000000)
+        setDeadline(Number(response.data.data.swapData.deadline.replace(/,/g, '')) / 1000)
+    } catch (error) {
+        console.error('Error fetching data:', error);
+    }
+    }
+
     const collectionActivity = async() => {
       try {
         const response = await Axios.get(`${import.meta.env.VITE_VPS_BACKEND_API}collectionActivity?collectionId=${IdData}`);
@@ -305,6 +326,14 @@ console.log('Polkadot Address:', polkadotAddress);
     } catch (error) {
         console.error('Error fetching data:', error);
     }
+    }
+    const itemIds = async() => {
+      try {
+          const response = await Axios.get(`${import.meta.env.VITE_VPS_BACKEND_API}itemId?selected=${"173"}`);
+          setNextItemId(response.data.data); // Store the data directly as an array of objects
+      } catch(error) {
+        console.error('Error fetching data:', error);
+      }
     }
 
     const Holders = async() => {
@@ -420,6 +449,7 @@ console.log('Polkadot Address:', polkadotAddress);
     console.log("Swap DATA", swapData);
     console.log("price", price)
     console.log("Collection Metadata", selectedCollectionMetadata)
+    console.log("swapping", auctionHighestBidPrice, deadline)
 
 function timeSince(date) {
   return formatDistanceToNow(date, { addSuffix: true });
@@ -726,6 +756,272 @@ const list = async() => {
       await api.disconnect()
       console.error('Transfer failed:', error);
     }
+}
+
+const cancelAuction = async() => {
+  const endpoint = "wss://polkadot-asset-hub-rpc.polkadot.io";
+  try {
+    toast.info(`Cancelling Auction` , {
+      position: "top-right",
+      autoClose: 25009,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "colored",
+      });
+    // Create a new WebSocket provider
+    const wsProvider = new WsProvider(endpoint);
+
+    // Create the API instance
+    const api = await ApiPromise.create({ provider: wsProvider });
+
+    // Now you have the 'api' object ready for use
+    console.log('API initialized successfully:', api);
+
+    // You can set the 'api' object to the state or use it directly as needed
+    setApi(api);
+
+    // Enable the extension
+const wallet = localStorage.getItem("walletName");
+    let signer;
+
+    if (wallet === "nova") {
+      // Enable the extension
+      await web3Enable('remarker');
+      const allAccounts = await web3Accounts();
+      const injector = await web3FromAddress(connectedAccount.address);
+
+      // Get all accounts from the extension
+  
+
+      // Find the injector for the connected account
+  
+
+      signer = injector.signer;
+    } else {
+      // Check if the wallet extension exists in window.injectedWeb3
+      const Connectivity = window.injectedWeb3 && window.injectedWeb3[wallet];
+      if (!Connectivity) {
+        throw new Error(`${wallet} wallet extension not found.`);
+      }
+
+      // Enable the extension and get accounts
+      const extension = await Connectivity.enable();
+      const getAccounts = await extension.accounts.get();
+
+      signer = extension.signer;
+    }
+
+    // Get all accounts from the extension
+
+    // Sign and send the transaction
+    const send = await api.tx.nfts.cancelSwap(id, ItemId)
+      .signAndSend(connectedAccount.address, { signer: signer }, ({ status }) => {
+        if (status.isInBlock) {
+          toast.success(`Completed at block hash #${status.asInBlock.toString()}` , {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+            });
+            const toastId = toast.info('Transaction is processing', {
+              position: "top-right",
+              autoClose: false, // Set autoClose to false to keep the toast visible
+              hideProgressBar: false,
+              closeOnClick: false,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "colored",
+              isLoading: true, // This shows the loading indicator
+            });
+          
+            // Simulate an async action, e.g., sending an NFT
+            setTimeout(() => {
+              toast.update(toastId, {
+                render: 'successfully cancelled',
+                type: 'success',
+                isLoading: false,
+                autoClose: 5000, // Close the toast after 5 seconds
+                closeOnClick: true,
+              });
+            }, 30000); // Example delay for the async action (e.g., 25 seconds)=
+            owned()
+        } else {
+          toast.info(`Current status: ${status.type}` , {
+            position: "top-right",
+            autoClose: 25009,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+            });
+        }
+    }).catch((error) => {
+      toast.error(`Transaction failed' ${error}` , {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+        });
+
+    });
+    
+  } catch (error) {
+    console.error('Transfer failed:', error);
+  }
+}
+useEffect(() => {
+  console.log("duration", duration);
+}, [duration]);
+const auction = async() => {
+  // Assuming you have 'api', 'collectionId', 'ItemId', and 'recipient' available in this context
+  if (!auctionPrice) {
+    alert("Please enter NFT price");
+    return;
+  }
+  try {
+    toast.info(`Auctioning your nft` , {
+      position: "top-right",
+      autoClose: 25009,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "colored",
+      });
+    // Create a new WebSocket provider
+    const wsProvider = new WsProvider(endpoint);
+
+    // Create the API instance
+    const api = await ApiPromise.create({ provider: wsProvider });
+
+    // Now you have the 'api' object ready for use
+    console.log('API initialized successfully:', api);
+
+    // You can set the 'api' object to the state or use it directly as needed
+    setApi(api);
+
+    const wallet = localStorage.getItem("walletName");
+    let signer;
+      if (wallet === "nova") {
+                  // Enable the extension
+        await web3Enable('remarker');
+        const allAccounts = await web3Accounts();
+        const injector = await web3FromAddress(connectedAccount.address);
+  
+        // Get all accounts from the extension
+    
+  
+        // Find the injector for the connected account
+    
+  
+        signer = injector.signer;
+      } else {
+        // Check if the wallet extension exists in window.injectedWeb3
+        const Connectivity = window.injectedWeb3 && window.injectedWeb3[wallet];
+        if (!Connectivity) {
+          throw new Error(`${wallet} wallet extension not found.`);
+        }
+  
+        // Enable the extension and get accounts
+        const extension = await Connectivity.enable();
+        const getAccounts = await extension.accounts.get();
+  
+        signer = extension.signer;
+      }
+    const price = auctionPrice * 10000000000;
+
+    const time = duration * 300
+
+    const calls = [
+      api.tx.nfts.mint("173", nextItemId, connectedAccount.address, null),
+      api.tx.nfts.createSwap(id, ItemId, "173", null, {
+        amount: price,
+        direction: "receive"
+      }, time)
+  ];
+
+  const batch = api.tx.utility.batchAll(calls);
+
+    // Sign and send the transaction
+    const send = await batch.signAndSend(connectedAccount && connectedAccount.address, { signer }, ({ status }) => {
+        if (status.isInBlock) {
+          toast.success(`Completed at block hash #${status.asInBlock.toString()}` , {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+            });
+            const toastId = toast.info('Transaction is processing', {
+              position: "top-right",
+              autoClose: false, // Set autoClose to false to keep the toast visible
+              hideProgressBar: false,
+              closeOnClick: false,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "colored",
+              isLoading: true, // This shows the loading indicator
+            });
+          
+            // Simulate an async action, e.g., sending an NFT
+            setTimeout(() => {
+              toast.update(toastId, {
+                render: 'successfully created',
+                type: 'success',
+                isLoading: false,
+                autoClose: 5000, // Close the toast after 5 seconds
+                closeOnClick: true,
+              });
+            }, 30000); // Example delay for the async action (e.g., 25 seconds)=
+        } else {
+          toast.info(`Current status: ${status.type}` , {
+            position: "top-right",
+            autoClose: 25009,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+            });
+        }
+    }).catch((error) => {
+      toast.error(`Transaction failed' ${error}` , {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+        });
+    });
+    
+    
+  } catch (error) {
+    await api.disconnect()
+    console.error('Transfer failed:', error);
+  }
 }
 
 const deList = async() => {
@@ -2094,18 +2390,129 @@ const ipfsItemUri = `ipfs://${ipfsItemHash}`;
                                          setError(true);
                                        }}/>
                                                                                     <Typography style={{marginLeft: "20px"}} variant="h5">
-                        {nameData}{
-                          id === "165"? (
+                                                                                      <div style={{display: "flex", alignItems: "center"}}>
+                        {nameData}
+                        {
+                          id === "165" || id === "7" || id === "173" ? (
                             <>
+                                                        <Tooltip
+      content={
+        <div className="w-80">
+          <Typography color="white" className="font-medium">
+          Verified collection
+          </Typography>
+          <Typography
+            variant="small"
+            color="white"
+            className="font-normal opacity-80"
+          >
+            Verified by remarker team
+          </Typography>
+        </div>
+      }
+    >
                             <IconButton variant="text" color="pink" className="rounded-full">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6" width={30}>
   <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 0 1-1.043 3.296 3.745 3.745 0 0 1-3.296 1.043A3.745 3.745 0 0 1 12 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 0 1-3.296-1.043 3.745 3.745 0 0 1-1.043-3.296A3.745 3.745 0 0 1 3 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 0 1 1.043-3.296 3.746 3.746 0 0 1 3.296-1.043A3.746 3.746 0 0 1 12 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 0 1 3.296 1.043 3.746 3.746 0 0 1 1.043 3.296A3.745 3.745 0 0 1 21 12Z" />
 </svg>
 
                         </IconButton>
+    </Tooltip>
                             </>
                           ) : null
                         }
+                        {
+                          id === "173"? (
+                            <>
+                            <Tooltip
+      content={
+        <div className="w-80">
+          <Typography color="white" className="font-medium">
+           Remarker collection
+          </Typography>
+          <Typography
+            variant="small"
+            color="white"
+            className="font-normal opacity-80"
+          >
+            Created by remarker team
+          </Typography>
+        </div>
+      }
+    >
+                            <IconButton variant="text">
+                              <img src={remarker} />
+                            </IconButton>
+    </Tooltip>
+                            </>
+                          ) : null
+                        }
+                        <div style={{marginLeft: "10px"}}>
+                        {
+                          id === "7" ? (
+                            <>
+                            <Tooltip
+      content={
+        <div className="w-80">
+          <Typography color="white" className="font-medium">
+           Derivative collection
+          </Typography>
+          <Typography
+            variant="small"
+            color="white"
+            className="font-normal opacity-80"
+          >
+            Inspired from crypto punks
+          </Typography>
+        </div>
+      }
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        strokeWidth={2}
+        className="h-5 w-5 cursor-pointer text-blue-gray-500"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"
+        />
+      </svg>
+    </Tooltip>
+                            </>
+                          ) : null
+                        }
+                        {
+                          id === "145" || id === "39" || id === "131" ? (
+                            <>
+                            <Tooltip
+      content={
+        <div className="w-80">
+          <Typography color="white" className="font-medium">
+           Testing Collection
+          </Typography>
+          <Typography
+            variant="small"
+            color="white"
+            className="font-normal opacity-80"
+          >
+            For testing purpose only
+          </Typography>
+        </div>
+      }
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6" width={20}>
+  <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
+</svg>
+    </Tooltip>
+                            </>
+                          ) : null
+                        }
+                        </div>
+                                                                                                              </div>
                     </Typography>
                     </div>
                     <div style={{marginTop: "30px", marginLeft: "10px"}}>
@@ -2217,18 +2624,129 @@ const ipfsItemUri = `ipfs://${ipfsItemHash}`;
                     isMobile? null : (
                       <>
                                           <Typography variant={ isMobile? "h6" : "h5"}>
-                        {nameData} {
-                          id === "165"? (
+                                          <div style={{display: "flex", alignItems: "center"}}>
+                        {nameData}
+                        {
+                          id === "165" || id === "7" || id === "173" ? (
                             <>
+                                                        <Tooltip
+      content={
+        <div className="w-80">
+          <Typography color="white" className="font-medium">
+          Verified collection
+          </Typography>
+          <Typography
+            variant="small"
+            color="white"
+            className="font-normal opacity-80"
+          >
+            Verified by remarker team
+          </Typography>
+        </div>
+      }
+    >
                             <IconButton variant="text" color="pink" className="rounded-full">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6" width={30}>
   <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 0 1-1.043 3.296 3.745 3.745 0 0 1-3.296 1.043A3.745 3.745 0 0 1 12 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 0 1-3.296-1.043 3.745 3.745 0 0 1-1.043-3.296A3.745 3.745 0 0 1 3 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 0 1 1.043-3.296 3.746 3.746 0 0 1 3.296-1.043A3.746 3.746 0 0 1 12 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 0 1 3.296 1.043 3.746 3.746 0 0 1 1.043 3.296A3.745 3.745 0 0 1 21 12Z" />
 </svg>
 
                         </IconButton>
+    </Tooltip>
                             </>
                           ) : null
                         }
+                        {
+                          id === "173"? (
+                            <>
+                            <Tooltip
+      content={
+        <div className="w-80">
+          <Typography color="white" className="font-medium">
+           Remarker collection
+          </Typography>
+          <Typography
+            variant="small"
+            color="white"
+            className="font-normal opacity-80"
+          >
+            Created by remarker team
+          </Typography>
+        </div>
+      }
+    >
+                            <IconButton variant="text">
+                              <img src={remarker} />
+                            </IconButton>
+    </Tooltip>
+                            </>
+                          ) : null
+                        }
+                         <div style={{marginLeft: "10px"}}>
+                        {
+                          id === "7" ? (
+                            <>
+                            <Tooltip
+      content={
+        <div className="w-80">
+          <Typography color="white" className="font-medium">
+           Derivative Collection
+          </Typography>
+          <Typography
+            variant="small"
+            color="white"
+            className="font-normal opacity-80"
+          >
+            Inspired from crypto punks
+          </Typography>
+        </div>
+      }
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        strokeWidth={2}
+        className="h-5 w-5 cursor-pointer text-blue-gray-500"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"
+        />
+      </svg>
+    </Tooltip>
+                            </>
+                          ) : null
+                        }
+                        {
+                         id === "145" || id === "39" || id === "131" ? (
+                            <>
+                            <Tooltip
+      content={
+        <div className="w-80">
+          <Typography color="white" className="font-medium">
+           Testing Collection
+          </Typography>
+          <Typography
+            variant="small"
+            color="white"
+            className="font-normal opacity-80"
+          >
+            For testing purpose only
+          </Typography>
+        </div>
+      }
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6" width={20}>
+  <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
+</svg>
+    </Tooltip>
+                            </>
+                          ) : null
+                        }
+                        </div>
+                                                                                                              </div>
                     </Typography>
                     <Typography color="blue-gray" className="font-medium" variant="h6" style={{ display: 'flex', alignItems: 'center', marginTop: "5px" }}>
                 <Typography color="blue-gray" className="font-medium" variant="h6" style={{ marginRight: '10px',  }}>
@@ -2629,6 +3147,7 @@ const ipfsItemUri = `ipfs://${ipfsItemHash}`;
                     swap(item);
                     getItemPrice(item);
                     metadata(item);
+                    checkAuction(item);
                   }}
                 >
                   <CardHeader shadow={false} floated={false} className="h-100">
@@ -3048,6 +3567,39 @@ const ipfsItemUri = `ipfs://${ipfsItemHash}`;
       </Button>
     </div>
       </Collapse>
+      {
+        auctionStatus  === true? (
+          <>
+                        <Button fullWidth size="md" variant="filled" style={{marginTop: "10px"}} color="red" onClick={cancelAuction}>Cancel Auction</Button>
+          </>
+        ) : (
+              <>
+              <Button fullWidth size="md" variant="filled" style={{marginTop: "10px"}} color="pink" onClick={AuctionToggleOpen} loading={auctionStatus === undefined ? true : false} disabled={auctionStatus === undefined || auctionStatus === true ? true : false}>Start Auction</Button>
+      <Collapse open={auctioOpen}>
+<div className="w-98" style={{marginTop: "30px"}}>
+<Input
+        label="Highest Bid Price"
+        icon={ <svg fill="#FF0087" width={25} height={25} version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="-51.2 -51.2 614.40 614.40" xmlns:xlink="http://www.w3.org/1999/xlink" enable-background="new 0 0 512 512" stroke="#FF0087" stroke-width="0.00512" transform="matrix(1, 0, 0, 1, 0, 0)"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round" stroke="#FF0087" stroke-width="5.12"> <g> <g> <path d="m307.7,212.5c-10.2,12.7-6.6,28.7 2.2,37.5l13.6,12.6c15.3,15.4 34.4,5.3 39.6,0l59.4-58.9c7-7.1 13.8-26 0-40l-13.6-12.6c-10-10.1-27.5-10.5-38.2-1.3l-80.9-80.1c6.4-8.1 11.2-25.3-1.6-38.2l-13.6-12.6c-10.4-10.5-29.2-10.5-39.6,0l-59.4,58.9c-12.9,13-9.4,30.5 0,40l13.6,12.6c13.3,13.5 29.6,7.4 37,2.2l14.9,14.6-230.1,228.5 50,50.5 230.9-229.2 15.8,15.5zm76.2-47.7c2.9-3 7.5-3 11.5,1.1l13.6,12.6c2.4,2.5 2.5,6.9 0,9.5l-59.4,58.9c-3.1,3.2-8.3,3.2-11.5,0l-13.6-12.6c-2-2-4-6.5 0-10.5l59.4-59zm-27.2-1.1l-35.2,35-80-79.7 35.4-35.8 79.8,80.5zm-141.4-49c-3.1,3.2-8.3,3.2-11.5,0l-13.6-12.6c-2-2-4-6.5 0-10.5l59.4-58.9c2.9-3 7.5-3 11.5,1.1l13.6,12.6c2.4,2.5 2.5,6.9 0,9.5l-59.4,58.8zm-153.2,282.1l-21.9-21.1 215.4-214.3 21.7,21.3-215.2,214.1z"></path> <path d="m457.2,424.2v-55.8h-188.7v55.8h-43.8v76.8h276.3v-76.8h-43.8zm-167.8-35.8h148v35.8h-148v-35.8zm191.8,91.5h-235.6v-34.7h235.6v34.7z"></path> </g> </g> </g><g id="SVGRepo_iconCarrier"> <g> <g> <path d="m307.7,212.5c-10.2,12.7-6.6,28.7 2.2,37.5l13.6,12.6c15.3,15.4 34.4,5.3 39.6,0l59.4-58.9c7-7.1 13.8-26 0-40l-13.6-12.6c-10-10.1-27.5-10.5-38.2-1.3l-80.9-80.1c6.4-8.1 11.2-25.3-1.6-38.2l-13.6-12.6c-10.4-10.5-29.2-10.5-39.6,0l-59.4,58.9c-12.9,13-9.4,30.5 0,40l13.6,12.6c13.3,13.5 29.6,7.4 37,2.2l14.9,14.6-230.1,228.5 50,50.5 230.9-229.2 15.8,15.5zm76.2-47.7c2.9-3 7.5-3 11.5,1.1l13.6,12.6c2.4,2.5 2.5,6.9 0,9.5l-59.4,58.9c-3.1,3.2-8.3,3.2-11.5,0l-13.6-12.6c-2-2-4-6.5 0-10.5l59.4-59zm-27.2-1.1l-35.2,35-80-79.7 35.4-35.8 79.8,80.5zm-141.4-49c-3.1,3.2-8.3,3.2-11.5,0l-13.6-12.6c-2-2-4-6.5 0-10.5l59.4-58.9c2.9-3 7.5-3 11.5,1.1l13.6,12.6c2.4,2.5 2.5,6.9 0,9.5l-59.4,58.8zm-153.2,282.1l-21.9-21.1 215.4-214.3 21.7,21.3-215.2,214.1z"></path> <path d="m457.2,424.2v-55.8h-188.7v55.8h-43.8v76.8h276.3v-76.8h-43.8zm-167.8-35.8h148v35.8h-148v-35.8zm191.8,91.5h-235.6v-34.7h235.6v34.7z"></path> </g> </g> </g></svg>}
+        value={auctionPrice}
+        onChange={(e) => setAuctionPrice(e.target.value)}
+      />
+      <br />
+      <Typography variant="h6">Duration (less than)</Typography>
+      <br />
+      <Select size="md" color="pink" label="Duration" value={duration} onChange={(value) => {setDuration(value), console.log("duration", duration)}}>
+      <Option value={7}>7 days</Option>
+      <Option value={14}>14 days</Option>
+      <Option value={21}>21 days</Option>
+      <Option value={28}>28 days</Option>
+    </Select>
+      <Button size="sm" variant="filled" color="green" style={{ float: "right", marginTop: "20px" }} onClick={() => {auction(), itemIds()}}>
+        Confirm Auction
+      </Button>
+    </div>
+      </Collapse>
+          </>
+        )
+      }
 
       </CardFooter>
     </Card>
@@ -3127,7 +3679,7 @@ const ipfsItemUri = `ipfs://${ipfsItemHash}`;
   </Typography>
       </CardBody>
       <CardFooter className="pt-0">
-      <Button fullWidth size="md" variant="filled" color="green" onClick={listToggleOpen}>List for sale</Button>
+      <Button fullWidth size="md" variant="filled" color="green" onClick={listToggleOpen} loading={auctionStatus === undefined ? true : false} disabled={auctionStatus === undefined || auctionStatus === true ? true : false}>List for sale</Button>
       <Collapse open={listOpen}>
 <div className="w-98" style={{marginTop: "30px"}}>
 <Input
@@ -3188,6 +3740,39 @@ const ipfsItemUri = `ipfs://${ipfsItemHash}`;
       </Button>
     </div>
       </Collapse>
+      {
+        auctionStatus  === true? (
+          <>
+                        <Button fullWidth size="md" variant="filled" style={{marginTop: "10px"}} color="red" onClick={cancelAuction}>Cancel Auction</Button>
+          </>
+        ) : (
+          <>
+              <Button fullWidth size="md" variant="filled" style={{marginTop: "10px"}} color="pink" onClick={AuctionToggleOpen} loading={auctionStatus === undefined ? true : false} disabled={auctionStatus === undefined || auctionStatus === true ? true : false}>Start Auction</Button>
+      <Collapse open={auctioOpen}>
+<div className="w-98" style={{marginTop: "30px"}}>
+<Input
+        label="Highest Bid Price"
+        icon={ <svg fill="#FF0087" width={25} height={25} version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="-51.2 -51.2 614.40 614.40" xmlns:xlink="http://www.w3.org/1999/xlink" enable-background="new 0 0 512 512" stroke="#FF0087" stroke-width="0.00512" transform="matrix(1, 0, 0, 1, 0, 0)"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round" stroke="#FF0087" stroke-width="5.12"> <g> <g> <path d="m307.7,212.5c-10.2,12.7-6.6,28.7 2.2,37.5l13.6,12.6c15.3,15.4 34.4,5.3 39.6,0l59.4-58.9c7-7.1 13.8-26 0-40l-13.6-12.6c-10-10.1-27.5-10.5-38.2-1.3l-80.9-80.1c6.4-8.1 11.2-25.3-1.6-38.2l-13.6-12.6c-10.4-10.5-29.2-10.5-39.6,0l-59.4,58.9c-12.9,13-9.4,30.5 0,40l13.6,12.6c13.3,13.5 29.6,7.4 37,2.2l14.9,14.6-230.1,228.5 50,50.5 230.9-229.2 15.8,15.5zm76.2-47.7c2.9-3 7.5-3 11.5,1.1l13.6,12.6c2.4,2.5 2.5,6.9 0,9.5l-59.4,58.9c-3.1,3.2-8.3,3.2-11.5,0l-13.6-12.6c-2-2-4-6.5 0-10.5l59.4-59zm-27.2-1.1l-35.2,35-80-79.7 35.4-35.8 79.8,80.5zm-141.4-49c-3.1,3.2-8.3,3.2-11.5,0l-13.6-12.6c-2-2-4-6.5 0-10.5l59.4-58.9c2.9-3 7.5-3 11.5,1.1l13.6,12.6c2.4,2.5 2.5,6.9 0,9.5l-59.4,58.8zm-153.2,282.1l-21.9-21.1 215.4-214.3 21.7,21.3-215.2,214.1z"></path> <path d="m457.2,424.2v-55.8h-188.7v55.8h-43.8v76.8h276.3v-76.8h-43.8zm-167.8-35.8h148v35.8h-148v-35.8zm191.8,91.5h-235.6v-34.7h235.6v34.7z"></path> </g> </g> </g><g id="SVGRepo_iconCarrier"> <g> <g> <path d="m307.7,212.5c-10.2,12.7-6.6,28.7 2.2,37.5l13.6,12.6c15.3,15.4 34.4,5.3 39.6,0l59.4-58.9c7-7.1 13.8-26 0-40l-13.6-12.6c-10-10.1-27.5-10.5-38.2-1.3l-80.9-80.1c6.4-8.1 11.2-25.3-1.6-38.2l-13.6-12.6c-10.4-10.5-29.2-10.5-39.6,0l-59.4,58.9c-12.9,13-9.4,30.5 0,40l13.6,12.6c13.3,13.5 29.6,7.4 37,2.2l14.9,14.6-230.1,228.5 50,50.5 230.9-229.2 15.8,15.5zm76.2-47.7c2.9-3 7.5-3 11.5,1.1l13.6,12.6c2.4,2.5 2.5,6.9 0,9.5l-59.4,58.9c-3.1,3.2-8.3,3.2-11.5,0l-13.6-12.6c-2-2-4-6.5 0-10.5l59.4-59zm-27.2-1.1l-35.2,35-80-79.7 35.4-35.8 79.8,80.5zm-141.4-49c-3.1,3.2-8.3,3.2-11.5,0l-13.6-12.6c-2-2-4-6.5 0-10.5l59.4-58.9c2.9-3 7.5-3 11.5,1.1l13.6,12.6c2.4,2.5 2.5,6.9 0,9.5l-59.4,58.8zm-153.2,282.1l-21.9-21.1 215.4-214.3 21.7,21.3-215.2,214.1z"></path> <path d="m457.2,424.2v-55.8h-188.7v55.8h-43.8v76.8h276.3v-76.8h-43.8zm-167.8-35.8h148v35.8h-148v-35.8zm191.8,91.5h-235.6v-34.7h235.6v34.7z"></path> </g> </g> </g></svg>}
+        value={auctionPrice}
+        onChange={(e) => setAuctionPrice(e.target.value)}
+      />
+      <br />
+      <Typography variant="h6">Duration (less than)</Typography>
+      <br />
+      <Select size="md" color="pink" label="Duration" value={duration} onChange={(value) => {setDuration(value), console.log("duration", duration)}}>
+      <Option value={7}>7 days</Option>
+      <Option value={14}>14 days</Option>
+      <Option value={21}>21 days</Option>
+      <Option value={28}>28 days</Option>
+    </Select>
+      <Button size="sm" variant="filled" color="green" style={{ float: "right", marginTop: "20px" }} onClick={() => {auction(), itemIds()}}>
+        Confirm Auction
+      </Button>
+    </div>
+      </Collapse>
+          </>
+        )
+      }
       </CardFooter>
     </Card>
               </>
@@ -3743,7 +4328,10 @@ const ipfsItemUri = `ipfs://${ipfsItemHash}`;
         <DialogBody className='h-[30rem] w-full overflow-scroll'>
           <div style={{ display: 'flex', overflowX: 'auto' }}>
             <Card className="w-full">
-              {ownedmetadata && ownedmetadata.map((item, index) => (
+              {
+                ownedmetadata? (
+                  <>
+                  {ownedmetadata && ownedmetadata.map((item, index) => (
                 <div key={index} style={{ marginRight: '10px' }} onClick={() => {
                   // handle item click
                 }}>
@@ -3763,6 +4351,17 @@ const ipfsItemUri = `ipfs://${ipfsItemHash}`;
                   </List>
                 </div>
               ))}
+                  </>
+                ) : (
+                  <>
+        <div className="flex justify-center items-start h-screen">
+          <div className="flex justify-center items-center w-full mt-20">
+          <Spinner className="h-8 w-8" color="pink" />
+          </div>
+        </div>
+                  </>
+                )
+              }
             </Card>
           </div>
           <br />
